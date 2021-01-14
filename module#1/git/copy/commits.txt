@@ -1,0 +1,70 @@
+
+Бегенч@Bega-PC MINGW64 ~/EPAM/git/task2 (git_3|AM 1/1)
+$ git log
+commit 8d311cd2fdddf7b0079bb7c2ad96b80a98a06fc6 (HEAD -> git_3)
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:10:20 2020 +0300
+
+    modif5 file
+
+commit c687ddf4758d878560639070aead06795cfdc53f
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:10:03 2020 +0300
+
+    modif4 file
+
+commit 0c60827c5e7a0da463b39dcffd0b56dbafbc028f
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:09:39 2020 +0300
+
+    modif3 file
+
+commit ae124f93f4c605f6948ab3bdf76f13b7b0e9a5e5
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:09:14 2020 +0300
+
+    modif2 file
+:...skipping...
+commit 8d311cd2fdddf7b0079bb7c2ad96b80a98a06fc6 (HEAD -> git_3)
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:10:20 2020 +0300
+
+    modif5 file
+
+commit c687ddf4758d878560639070aead06795cfdc53f
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:10:03 2020 +0300
+
+    modif4 file
+
+commit 0c60827c5e7a0da463b39dcffd0b56dbafbc028f
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:09:39 2020 +0300
+
+    modif3 file
+
+commit ae124f93f4c605f6948ab3bdf76f13b7b0e9a5e5
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:09:14 2020 +0300
+
+    modif2 file
+
+commit 1b7fb88c5099f01f601ccf158a18171093fac230
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:08:44 2020 +0300
+
+    modif1 file
+
+commit d8518b6f56a88a01d9504f42b6c41bb8f94571ed
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Wed Dec 30 00:08:02 2020 +0300
+
+    create file
+
+commit be7fa2eb5b4bd6a980ee7ed016fd0eb132686aa6 (origin/git_task, git_task)
+Author: Viktoria Shamuradova <viktoriashamuradova@gmail.com>
+Date:   Mon Dec 28 23:32:43 2020 +0300
+
+    readme
+~
+~
