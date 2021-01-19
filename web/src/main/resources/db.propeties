@@ -1,0 +1,5 @@
+db.driver= org.gjt.mm.mysql.Driver
+db.url= jdbc:mysql://localhost:3306/module2_gift_certificate?useSSL=false
+db.user= student
+db.password= student
+db.poolsize= 5

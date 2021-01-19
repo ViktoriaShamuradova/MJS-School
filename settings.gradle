@@ -1,0 +1,6 @@
+rootProject.name = 'Module2_GiftCertificates'
+include 'web'
+include 'persistence'
+include 'service'
+include 'model'
+
