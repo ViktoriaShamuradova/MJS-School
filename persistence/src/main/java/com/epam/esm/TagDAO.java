@@ -13,4 +13,6 @@ public interface TagDAO {
     public void deleteTag(int id);
 
     public List<Tag> findTagByCertificateId(int certificateId);
+
+    Tag findTagByName(String name);
 }

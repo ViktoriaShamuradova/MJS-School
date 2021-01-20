@@ -9,30 +9,25 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entitydtomapper.CertificateDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
-
     private CertificateDAO certificateDAO;
     @Autowired
     private TagService tagService;
-
     private CertificateDtoMapper certificateDtoMapper;
 
     @Autowired
     public CertificateServiceImpl(CertificateDAO certificateDAO, CertificateDtoMapper certificateDtoMapper) {
         this.certificateDAO = certificateDAO;
         this.certificateDtoMapper = certificateDtoMapper;
-
     }
-
 
     @Override
     public List<CertificateDTO> getAllCertificates() {
@@ -45,20 +40,24 @@ public class CertificateServiceImpl implements CertificateService {
                     return certificateDtoMapper.changeCertificateToDto(certificate, tags);
                 })
                 .collect(Collectors.toList());
-
     }
 
+    @Transactional
     @Override
     public void saveCertificate(CertificateDTO certificateDTO) {
         LocalDateTime timeCreate = LocalDateTime.now();
-        long millisCreateDate = timeCreate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         LocalDateTime timeEnd = timeCreate.plusDays(certificateDTO.getDuration());
-        long millisEndDate = timeEnd.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        Certificate certificate = certificateDtoMapper.changeDtoToCertificate(certificateDTO);
-        certificate.setCreateDate(millisCreateDate);
-        certificate.setLastUpdateDate(millisEndDate);
+        certificateDTO.setCreateDate(timeCreate);
+        certificateDTO.setUpdateLastDate(timeEnd);
+        certificateDAO.create(certificateDtoMapper.changeDtoToCertificate(certificateDTO));
 
-        certificateDAO.create(certificate);
+        for (TagDTO tagDTO : certificateDTO.getTagList()) {
+            TagDTO tagDTONew = tagService.createTag(tagDTO);
+            if (tagDTONew != null) {
+                certificateDAO.addCertificateTag(certificateDTO.getId(), tagDTONew.getId());
+            }
+        }
+
     }
 
     @Override
@@ -72,15 +71,34 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDAO.delete(id);
     }
 
+    @Transactional
     @Override
-    public void update(CertificateDTO certificateDTO) {
-        Certificate certificate = certificateDtoMapper.changeDtoToCertificate(certificateDTO);
-
-        for (TagDTO tagDTO : certificateDTO.getTagList()) {
-            tagService.createTag(tagDTO);
+    public void update(CertificateDTO certificateDTO, int certificateId ) {
+        Certificate certificateFromDb = certificateDAO.certificateById(certificateId);
+        if (certificateDTO.getName() != null ) {
+            certificateFromDb.setName(certificateDTO.getName());
         }
+        if (certificateDTO.getDescription() != null) {
+            certificateFromDb.setDescription(certificateDTO.getDescription());
+        }
+        if (certificateDTO.getPrice() != null) {
+            certificateFromDb.setPrice(certificateDTO.getPrice());
+        }
+        if (certificateDTO.getDuration() != 0) {
+            certificateFromDb.setDuration(certificateDTO.getDuration());
+        }
+        if (certificateDTO.getCreateDate() != null) {
+            certificateFromDb.setCreateDate(certificateDTO.getCreateDate());
+        }
+        LocalDateTime currentDate = LocalDateTime.now();
+        certificateFromDb.setUpdateLastDate(currentDate);
 
-        certificateDAO.update(certificate.getId(), certificate);
+        if(certificateDTO.getTagList()!=null){
+            for (TagDTO tagDTO : certificateDTO.getTagList()) {
+                tagService.createTag(tagDTO);
+            }
+        }
+        certificateDAO.update(certificateId, certificateFromDb);
     }
 
     @Override
@@ -94,6 +112,4 @@ public class CertificateServiceImpl implements CertificateService {
                 })
                 .collect(Collectors.toList());
     }
-
-
 }

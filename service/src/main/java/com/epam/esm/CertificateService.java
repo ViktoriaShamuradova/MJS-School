@@ -1,6 +1,7 @@
 package com.epam.esm;
 
 import com.epam.esm.dto.CertificateDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,8 +14,9 @@ public interface CertificateService {
 
     public void deleteCertificate(int id);
 
-    public void update(CertificateDTO certificateDTO);
+    @Transactional
+    void update(CertificateDTO certificateDTO, int certificateId);
 
-    public List<CertificateDTO> getCertificatesByTagId(int certificateId);
+    public List<CertificateDTO> getCertificatesByTagId(int tagId);
 
 }

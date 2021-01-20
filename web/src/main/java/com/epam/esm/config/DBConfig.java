@@ -25,7 +25,7 @@ public class DBConfig implements WebMvcConfigurer {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/module2_gift_certificate?useSSL=false");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/module2_certificates_tags?useSSL=false");
         dataSource.setUsername("student");
         dataSource.setPassword("student");
 

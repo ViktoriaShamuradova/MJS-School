@@ -1,5 +1,7 @@
 package com.epam.esm.entity;
 
+import java.time.LocalDateTime;
+
 public class Certificate {
 
     private Integer id;
@@ -7,9 +9,25 @@ public class Certificate {
     private Integer price;
     private String description;
     private Integer duration;
-    private  long createDate;
-    private long lastUpdateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateLastDate;
 
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    public LocalDateTime getUpdateLastDate() {
+        return updateLastDate;
+    }
+
+    public void setUpdateLastDate(LocalDateTime updateLastDate) {
+        this.updateLastDate = updateLastDate;
+    }
 
     public Integer getId() {
         return id;
@@ -51,32 +69,5 @@ public class Certificate {
         this.duration = duration;
     }
 
-    public long getCreateDate() {
-        return createDate;
-    }
 
-    public void setCreateDate(long createDate) {
-        this.createDate = createDate;
-    }
-
-    public long getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public void setLastUpdateDate(long lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Certificate{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                ", duration=" + duration +
-                ", createDate=" + createDate +
-                ", lastUpdateDate=" + lastUpdateDate +
-                '}';
-    }
 }

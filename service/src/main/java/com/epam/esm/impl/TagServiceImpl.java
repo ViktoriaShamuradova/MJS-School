@@ -8,6 +8,7 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entitydtomapper.TagDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class TagServiceImpl implements TagService {
 
         return tags.stream().map(tag -> {
             List<CertificateDTO> certificatesDTO = certificateService.getCertificatesByTagId(tag.getId());
-            return tagDtoMapper.changeTagToTagDTO(tag,certificatesDTO);
+            return tagDtoMapper.changeTagToTagDTO(tag, certificatesDTO);
         }).collect(Collectors.toList());
     }
 
@@ -45,8 +46,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDTO createTag(TagDTO tagDTO) {
-        if (!tagExist(tagDTO)) {
-            int tagId = tagDAO.addNewTag(tagDtoMapper.changeTagDtoToTag(tagDTO));
+        if (tagExist(tagDTO) == null) {
+            int tagId = tagDAO.addNewTag(new Tag(tagDTO.getName()));
             List<CertificateDTO> certificatesDTO = certificateService.getCertificatesByTagId(tagId);
             return tagDtoMapper.changeTagToTagDTO(tagDAO.findTagById(tagId), certificatesDTO);
         }
@@ -61,16 +62,18 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagDTO> getTagsByCertificateId(int certificateId) {
-        return null;
+        List<Tag> tags = tagDAO.findTagByCertificateId(certificateId);
+        return tags.stream().map(tag -> tagDtoMapper.changeTagToTagDTO(tag)).collect(Collectors.toList());
+
     }
 
-    private boolean tagExist(TagDTO tagDTO) {
-        List<Tag> tags = tagDAO.findAllTagList();
-        for (Tag tag : tags) {
-            if (tag.getName().equals(tagDTO.getName())) {
-                return true;
-            }
+    @Nullable
+    private TagDTO tagExist(TagDTO tagDTO) {
+        Tag tag = tagDAO.findTagByName(tagDtoMapper.changeTagDtoToTag(tagDTO).getName());
+        if (tag != null) {
+            return tagDtoMapper.changeTagToTagDTO(tag);
         }
-        return false;
+        return null;
+
     }
 }

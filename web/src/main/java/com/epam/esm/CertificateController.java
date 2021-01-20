@@ -7,44 +7,39 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/certificates")
 public class CertificateController {
 
     @Autowired
     private CertificateService certificateService;
 
-    @GetMapping("/certificates")
+    @GetMapping
     public List<CertificateDTO> showAllCertificate() {
         return certificateService.getAllCertificates();
-
     }
 
-    @PostMapping("/certificates")
+    @PostMapping
     public void addNewCertificate(@RequestBody CertificateDTO certificateDTO) {
         certificateService.saveCertificate(certificateDTO);
     }
 
-    @DeleteMapping("/certificates/{certificateId}")
+    @DeleteMapping("/{certificateId}")
     public String deleteCertificate(@PathVariable int certificateId) {
         CertificateDTO certificate = certificateService.getCertificate(certificateId);
         if (certificate == null) {
             throw new NoSuchException("There is no certificate with this id = " + certificateId + " in dataBase");
         }
-
         certificateService.deleteCertificate(certificateId);
         return "Certificate with id= " + certificateId + " was deleted";
     }
 
-    @PutMapping("/certificates")
-    public CertificateDTO updateCertificate(@RequestBody CertificateDTO certificate) {
-        certificateService.update(certificate);
-        return certificate;
+    @PutMapping("/{certificateId}")
+    public void updateCertificate(@RequestBody CertificateDTO certificate, @PathVariable int certificateId) {
+        certificateService.update(certificate, certificateId);
     }
 
-
-    @GetMapping("/certificates/{certificateId}")
+    @GetMapping("/{certificateId}")
     @ResponseBody
     public CertificateDTO certificate(@PathVariable int certificateId) {
         CertificateDTO certificate = certificateService.getCertificate(certificateId);
@@ -53,5 +48,4 @@ public class CertificateController {
         }
         return certificate;
     }
-
 }

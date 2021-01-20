@@ -15,11 +15,9 @@ public class CertificateDTO {
 
     private int id;
 
-    @NotBlank(message = "The field can't be empty")
     @Size(min = 3, max = 20, message = "The certificate name could be between 3 and 20 symbols")
     private String name;
 
-    @NotEmpty(message = "Please, write the certificate description")
     @Size(min = 5, max = 100, message = "Description could be between 5 and 100 symbols")
     private String description;
 
@@ -33,7 +31,7 @@ public class CertificateDTO {
     private LocalDateTime createDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime lastUpdateDate;
+    private LocalDateTime updateLastDate;
 
     private List<TagDTO> tagList;
 
@@ -88,12 +86,12 @@ public class CertificateDTO {
         this.createDate = createDate;
     }
 
-    public LocalDateTime getLastUpdateDate() {
-        return lastUpdateDate;
+    public LocalDateTime getUpdateLastDate() {
+        return updateLastDate;
     }
 
-    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
+    public void setUpdateLastDate(LocalDateTime updateLastDate) {
+        this.updateLastDate = updateLastDate;
     }
 
     public List<TagDTO> getTagList() {
@@ -104,18 +102,17 @@ public class CertificateDTO {
         this.tagList = tagList;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CertificateDTO that = (CertificateDTO) o;
-        return id == that.id && duration == that.duration && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(createDate, that.createDate) && Objects.equals(lastUpdateDate, that.lastUpdateDate) && Objects.equals(tagList, that.tagList);
+        return id == that.id && duration == that.duration && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(createDate, that.createDate) && Objects.equals(updateLastDate, that.updateLastDate) && Objects.equals(tagList, that.tagList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, duration, createDate, lastUpdateDate, tagList);
+        return Objects.hash(id, name, description, price, duration, createDate, updateLastDate, tagList);
     }
 
     @Override
@@ -127,7 +124,7 @@ public class CertificateDTO {
                 ", price=" + price +
                 ", duration=" + duration +
                 ", createDate=" + createDate +
-                ", lastUpdateDate=" + lastUpdateDate +
+                ", updateLastDate=" + updateLastDate +
                 ", tagList=" + tagList +
                 '}';
     }

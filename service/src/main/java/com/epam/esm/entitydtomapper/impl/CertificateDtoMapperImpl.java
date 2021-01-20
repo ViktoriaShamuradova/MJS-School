@@ -3,13 +3,9 @@ package com.epam.esm.entitydtomapper.impl;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entitydtomapper.CertificateDtoMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 @Component
@@ -22,13 +18,8 @@ public class CertificateDtoMapperImpl implements CertificateDtoMapper {
         certificate.setDescription(dto.getDescription());
         certificate.setPrice(dto.getPrice());
         certificate.setDuration(dto.getDuration());
-        if (dto.getCreateDate() != null && dto.getLastUpdateDate() != null) {
-            long millisCreateDate = dto.getCreateDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            certificate.setCreateDate(millisCreateDate);
-            long millisUpdateDate = dto.getCreateDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            certificate.setLastUpdateDate(millisUpdateDate);
-        }
-
+        certificate.setCreateDate(dto.getCreateDate());
+        certificate.setUpdateLastDate(dto.getUpdateLastDate());
         return certificate;
     }
 
@@ -40,10 +31,8 @@ public class CertificateDtoMapperImpl implements CertificateDtoMapper {
         dto.setDescription(certificate.getDescription());
         dto.setPrice(certificate.getPrice());
         dto.setDuration(dto.getDuration());
-        LocalDateTime timeCreate = Instant.ofEpochMilli(certificate.getCreateDate()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        dto.setCreateDate(timeCreate);
-        LocalDateTime timeLast = Instant.ofEpochMilli(certificate.getLastUpdateDate()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        dto.setLastUpdateDate(timeLast);
+        dto.setCreateDate(certificate.getCreateDate());
+        dto.setUpdateLastDate(certificate.getUpdateLastDate());
         dto.setTagList(tagList);
         return dto;
     }

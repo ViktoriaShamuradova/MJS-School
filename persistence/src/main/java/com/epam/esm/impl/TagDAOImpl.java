@@ -1,32 +1,30 @@
 package com.epam.esm.impl;
 
-import com.epam.esm.entity.Tag;
 import com.epam.esm.TagDAO;
+import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
-@Component
+@Repository
 public class TagDAOImpl implements TagDAO {
-    private static final String SQL_QUERY_READ_TAG_LIST = "Select * from module2_gift_certificate.tags;";
+    private static final String SQL_QUERY_READ_TAG_LIST = "Select * from module2_certificates_tags.tags;";
     private static final String SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID =
-            "SELECT id, name FROM module2_gift_certificate.tags t \n" +
-                    "inner join module2_gift_certificate.gift_certificates_tags ct \n" +
-                    "on t.id =ct.id_tags where ct.id_gift_certificates=?;";
-    private static final String SQL_QUERY_READ_ONE_TAG = "select * from tag where id = ?;";
-    private static final String SQL_QUERY_INSERT_TAG = "insert into tag (name) values (?);";
-    private static final String SQL_QUERY_DELETE_TAG = "delete from tag where id = ?;";
-
+            "SELECT id, name FROM module2_certificates_tags.tags t " +
+                    "inner join module2_certificates_tags.certificate_tag ct " +
+                    "on t.id =ct.id_tag where ct.id_certificate=?;";
+    private static final String SQL_QUERY_READ_ONE_TAG = "select * from module2_certificates_tags.tags where id = ?;";
+    private static final String SQL_QUERY_INSERT_TAG = "insert into module2_certificates_tags.tags (name) values (?);";
+    private static final String SQL_QUERY_DELETE_TAG = "delete from module2_certificates_tags.tags where id = ?;";
+    private static final String SQL_QUERY_READ_TAG_BY_NAME = "select * from module2_certificates_tags.tags where name = ?";
 
     private final JdbcTemplate template;
 
@@ -34,7 +32,6 @@ public class TagDAOImpl implements TagDAO {
     @Autowired
     public TagDAOImpl(JdbcTemplate template) {
         this.template = template;
-
     }
 
     @Override
@@ -43,6 +40,7 @@ public class TagDAOImpl implements TagDAO {
                 , new BeanPropertyRowMapper<>(Tag.class));
     }
 
+    @Nullable
     @Override
     public Tag findTagById(int id) {
         return template.query(SQL_QUERY_READ_ONE_TAG, new BeanPropertyRowMapper<>(Tag.class), id)
@@ -55,12 +53,12 @@ public class TagDAOImpl implements TagDAO {
 
         template.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(SQL_QUERY_INSERT_TAG);
+                    .prepareStatement(SQL_QUERY_INSERT_TAG, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, tag.getName());
             return ps;
         }, keyHolder);
 
-        return (int) keyHolder.getKey();
+        return keyHolder.getKey().intValue();
     }
 
     @Override
@@ -70,8 +68,14 @@ public class TagDAOImpl implements TagDAO {
 
     @Override
     public List<Tag> findTagByCertificateId(int certificateId) {
-       return template.query(SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID
-                , new BeanPropertyRowMapper<>(Tag.class));
+        return template.query(SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID
+                , new BeanPropertyRowMapper<>(Tag.class), certificateId);
+    }
 
+    @Nullable
+    @Override
+    public Tag findTagByName(String name) {
+        return template.query(SQL_QUERY_READ_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
+                .stream().findAny().orElse(null);
     }
 }

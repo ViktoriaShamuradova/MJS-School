@@ -10,11 +10,13 @@ public interface CertificateDAO {
 
     Certificate certificateById(int id);
 
-    void create(Certificate certificate);
+    int create(Certificate certificate);
 
     void update(int id, Certificate certificate);
 
     void delete(int id);
 
     List<Certificate> getCertificatesByTagId(int tagId);
+
+    void addCertificateTag(int certificateId, int tagId);
 }
