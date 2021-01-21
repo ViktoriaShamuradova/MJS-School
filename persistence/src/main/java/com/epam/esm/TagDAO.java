@@ -1,18 +1,19 @@
 package com.epam.esm;
 
 import com.epam.esm.entity.Tag;
+
 import java.util.List;
 
 public interface TagDAO {
-    public List<Tag> findAllTagList();
+    List<Tag> findAllTagList();
 
-    public Tag findTagById(int id);
+    Tag findTagById(int id);
 
-    public int addNewTag(Tag tag);
+    int addNewTag(Tag tag);
 
-    public void deleteTag(int id);
+    void deleteTag(int id);
 
-    public List<Tag> findTagByCertificateId(int certificateId);
+    List<Tag> findTagByCertificateId(int certificateId);
 
     Tag findTagByName(String name);
 }

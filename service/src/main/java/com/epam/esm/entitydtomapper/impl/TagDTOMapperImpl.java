@@ -19,7 +19,6 @@ public class TagDTOMapperImpl implements TagDtoMapper {
         return tagsDTO.stream().map(tag -> {
             return changeTagDtoToTag(tag);
         }).collect(Collectors.toList());
-
     }
 
     @Override
@@ -48,5 +47,4 @@ public class TagDTOMapperImpl implements TagDtoMapper {
         tagDTO.setCertificates(certificates);
         return tagDTO;
     }
-
 }

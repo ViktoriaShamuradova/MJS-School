@@ -7,6 +7,7 @@ import com.epam.esm.entitydtomapper.CertificateDtoMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CertificateDtoMapperImpl implements CertificateDtoMapper {

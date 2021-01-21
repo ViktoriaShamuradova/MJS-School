@@ -19,4 +19,6 @@ public interface CertificateDAO {
     List<Certificate> getCertificatesByTagId(int tagId);
 
     void addCertificateTag(int certificateId, int tagId);
+
+    List<Certificate> getCertificatesByPartOfNameOrDescription(String name, String description);
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,6 @@ public class TagServiceImpl implements TagService {
         this.tagDtoMapper = tagDtoMapper;
     }
 
-
     @Override
     public List<TagDTO> getAllTags() {
         List<Tag> tags = tagDAO.findAllTagList();
@@ -41,9 +41,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void deleteTag(int tagId) {
-
+        tagDAO.deleteTag(tagId);
     }
 
+    @Nullable
     @Override
     public TagDTO createTag(TagDTO tagDTO) {
         if (tagExist(tagDTO) == null) {
@@ -52,11 +53,16 @@ public class TagServiceImpl implements TagService {
             return tagDtoMapper.changeTagToTagDTO(tagDAO.findTagById(tagId), certificatesDTO);
         }
         return null;
-
     }
 
+    @Nullable
     @Override
     public TagDTO getTag(int tagId) {
+        Tag tag = tagDAO.findTagById(tagId);
+        if (tag != null) {
+            List<CertificateDTO> certificates = certificateService.getCertificatesByTagId(tag.getId());
+            return tagDtoMapper.changeTagToTagDTO(tag, certificates);
+        }
         return null;
     }
 
@@ -64,7 +70,17 @@ public class TagServiceImpl implements TagService {
     public List<TagDTO> getTagsByCertificateId(int certificateId) {
         List<Tag> tags = tagDAO.findTagByCertificateId(certificateId);
         return tags.stream().map(tag -> tagDtoMapper.changeTagToTagDTO(tag)).collect(Collectors.toList());
+    }
 
+    @Nullable
+    @Override
+    public TagDTO getTag(String name) {
+        Tag tag = tagDAO.findTagByName(name);
+        if (tag != null) {
+            List<CertificateDTO> certificates = certificateService.getCertificatesByTagId(tag.getId());
+            return tagDtoMapper.changeTagToTagDTO(tag, certificates);
+        }
+        return null;
     }
 
     @Nullable
@@ -74,6 +90,5 @@ public class TagServiceImpl implements TagService {
             return tagDtoMapper.changeTagToTagDTO(tag);
         }
         return null;
-
     }
 }

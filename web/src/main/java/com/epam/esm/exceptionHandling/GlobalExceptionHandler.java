@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<IncorrectData> handleException(NoSuchException e) {
+    public ResponseEntity<IncorrectData> handleException(NoSuchResourceException e) {
         IncorrectData data = new IncorrectData();
         data.setInfo(e.getMessage());
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);

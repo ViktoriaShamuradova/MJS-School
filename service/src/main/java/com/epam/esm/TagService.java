@@ -15,4 +15,5 @@ public interface TagService {
 
     List<TagDTO> getTagsByCertificateId(int certificateId);
 
+    TagDTO getTag(String name);
 }

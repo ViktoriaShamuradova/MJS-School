@@ -6,17 +6,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface CertificateService {
-    public List<CertificateDTO> getAllCertificates();
+    List<CertificateDTO> getAllCertificates();
 
-    public void saveCertificate(CertificateDTO certificateDTO);
+    void saveCertificate(CertificateDTO certificateDTO);
 
-    public CertificateDTO getCertificate(int id);
+    CertificateDTO getCertificate(int id);
 
-    public void deleteCertificate(int id);
+    void deleteCertificate(int id);
 
     @Transactional
     void update(CertificateDTO certificateDTO, int certificateId);
 
-    public List<CertificateDTO> getCertificatesByTagId(int tagId);
+    List<CertificateDTO> getCertificatesByTagId(int tagId);
 
+    //List<CertificateDTO> getCertificatesByPartOfNameOrDescription(String description);
+
+    List<CertificateDTO> getCertificatesByPartOfNameOrDescription(CertificateDTO certificateDTO);
 }
