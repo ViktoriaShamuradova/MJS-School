@@ -4,4 +4,15 @@ dependencies {
     implementation project (':persistence')
 
     implementation "org.springframework:spring-tx:${springVersion}"
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-all
+    testImplementation 'org.mockito:mockito-all:1.10.19'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.7.7'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.18.1'
+}
+
+test {
+    useJUnitPlatform()
 }

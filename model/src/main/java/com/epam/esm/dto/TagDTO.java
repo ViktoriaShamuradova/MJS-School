@@ -1,21 +1,11 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.Certificate;
-
 import java.util.List;
 
 public class TagDTO {
-    private int id;
+    private long id;
     private String name;
     private List<CertificateDTO> certificates;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public List<CertificateDTO> getCertificates() {
         return certificates;
@@ -33,5 +23,11 @@ public class TagDTO {
         this.name = name;
     }
 
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 }

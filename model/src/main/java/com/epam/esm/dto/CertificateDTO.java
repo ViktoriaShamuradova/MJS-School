@@ -1,19 +1,18 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
 public class CertificateDTO {
 
-    private int id;
+    private Long id;
 
     @Size(min = 3, max = 20, message = "The certificate name could be between 3 and 20 symbols")
     private String name;
@@ -21,28 +20,45 @@ public class CertificateDTO {
     @Size(min = 5, max = 100, message = "Description could be between 5 and 100 symbols")
     private String description;
 
+    @Digits(integer = 15, fraction = 2)
     @DecimalMin(value = "0", message = "Enter certificate price")
-    private Integer price;
+    private BigDecimal price;
 
     @DecimalMin(value = "1", message = "Enter certificate duration more than 1 day")
     private int duration;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime createDate;
+    private Instant createDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime updateLastDate;
+    private Instant updateLastDate;
 
     private List<TagDTO> tagList;
 
     public CertificateDTO() {
     }
 
-    public int getId() {
+    public Instant getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Instant createDate) {
+        this.createDate = createDate;
+    }
+
+    public Instant getUpdateLastDate() {
+        return updateLastDate;
+    }
+
+    public void setUpdateLastDate(Instant updateLastDate) {
+        this.updateLastDate = updateLastDate;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -62,14 +78,6 @@ public class CertificateDTO {
         this.description = description;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
     public int getDuration() {
         return duration;
     }
@@ -78,24 +86,16 @@ public class CertificateDTO {
         this.duration = duration;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public LocalDateTime getUpdateLastDate() {
-        return updateLastDate;
-    }
-
-    public void setUpdateLastDate(LocalDateTime updateLastDate) {
-        this.updateLastDate = updateLastDate;
-    }
-
     public List<TagDTO> getTagList() {
         return tagList;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public void setTagList(List<TagDTO> tagList) {

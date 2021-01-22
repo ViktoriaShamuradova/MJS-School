@@ -1,39 +1,38 @@
 package com.epam.esm.entity;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.Instant;
 
 public class Certificate {
 
-    private Integer id;
+    private Long id;
     private String name;
-    private Integer price;
+    private BigDecimal price;
     private String description;
     private Integer duration;
-    private LocalDateTime createDate;
-    private LocalDateTime updateLastDate;
+    private Instant createDate;
+    private Instant updateLastDate;
 
-
-    public LocalDateTime getCreateDate() {
+    public Instant getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
+    public void setCreateDate(Instant createDate) {
         this.createDate = createDate;
     }
 
-    public LocalDateTime getUpdateLastDate() {
+    public Instant getUpdateLastDate() {
         return updateLastDate;
     }
-
-    public void setUpdateLastDate(LocalDateTime updateLastDate) {
+    public void setUpdateLastDate(Instant updateLastDate) {
         this.updateLastDate = updateLastDate;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,11 +44,11 @@ public class Certificate {
         this.name = name;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
