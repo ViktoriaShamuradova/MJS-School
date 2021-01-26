@@ -5,7 +5,7 @@ import java.time.Instant;
 
 public class Certificate {
 
-    private Long id;
+    private long id;
     private String name;
     private BigDecimal price;
     private String description;
@@ -32,7 +32,7 @@ public class Certificate {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -67,6 +67,5 @@ public class Certificate {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-
 
 }

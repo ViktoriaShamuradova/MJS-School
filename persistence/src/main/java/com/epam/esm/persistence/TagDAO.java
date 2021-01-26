@@ -5,15 +5,15 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface TagDAO {
-    List<Tag> findAllTagList();
+    List<Tag> findAll();
 
-    Tag findTagById(long id);
+    Tag find(long id);
 
-    int addNewTag(Tag tag);
+    int add(Tag tag);
 
-    void deleteTag(long id);
+    void delete(long id);
 
-    List<Tag> findTagByCertificateId(long certificateId);
+    List<Tag> findByCertificateId(long certificateId);
 
-    Tag findTagByName(String name);
+    Tag find(String name);
 }

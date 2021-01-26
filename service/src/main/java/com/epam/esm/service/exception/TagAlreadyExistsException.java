@@ -1,7 +1,13 @@
-package com.epam.esm.web.exceptionHandling;
+package com.epam.esm.service.exception;
 
 public class TagAlreadyExistsException extends RuntimeException {
+    private final int errorCode= 4000;
+
     public TagAlreadyExistsException(String message) {
         super(message);
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 }

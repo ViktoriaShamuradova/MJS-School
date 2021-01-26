@@ -3,22 +3,21 @@ package com.epam.esm.persistence;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CertificateDAO {
 
-    List<Certificate> allCertificates();
+    List<Certificate> findAll();
 
-    Certificate certificateById(long id);
+    Optional<Certificate> find(long id);
 
-    long create(Certificate certificate);
+    void create(Certificate certificate);
 
-    void update(long id, Certificate certificate);
+    void update(Certificate certificate);
 
     void delete(long id);
 
-    List<Certificate> getCertificatesByTagId(long tagId);
+    List<Certificate> findByTagId(long tagId);
 
-    void addCertificateTag(long certificateId, long tagId);
-
-    List<Certificate> getCertificatesByPartOfNameOrDescription(String name, String description);
+    List<Certificate> findByPartOfNameOrDescription(String partOfNameOrDescription);
 }

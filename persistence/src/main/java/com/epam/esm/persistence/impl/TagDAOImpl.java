@@ -35,20 +35,20 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public List<Tag> findAllTagList() {
+    public List<Tag> findAll() {
         return template.query(SQL_QUERY_READ_TAG_LIST
                 , new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Nullable
     @Override
-    public Tag findTagById(long id) {
+    public Tag find(long id) {
         return template.query(SQL_QUERY_READ_ONE_TAG, new BeanPropertyRowMapper<>(Tag.class), id)
                 .stream().findAny().orElse(null);
     }
 
     @Override
-    public int addNewTag(Tag tag) {
+    public int add(Tag tag) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         template.update(connection -> {
@@ -62,19 +62,19 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public void deleteTag(long id) {
+    public void delete(long id) {
         template.update(SQL_QUERY_DELETE_TAG, id);
     }
 
     @Override
-    public List<Tag> findTagByCertificateId(long certificateId) {
+    public List<Tag> findByCertificateId(long certificateId) {
         return template.query(SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID
                 , new BeanPropertyRowMapper<>(Tag.class), certificateId);
     }
 
     @Nullable
     @Override
-    public Tag findTagByName(String name) {
+    public Tag find(String name) {
         return template.query(SQL_QUERY_READ_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
                 .stream().findAny().orElse(null);
     }

@@ -1,13 +1,23 @@
 package com.epam.esm.web.exceptionHandling;
 
 public class IncorrectData {
-    private String info;
+    private String message;
+    private int code;
 
-    public String getInfo() {
-        return info;
+
+    public int getCode() {
+        return code;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setInfo(String message) {
+        this.message = message;
     }
 }

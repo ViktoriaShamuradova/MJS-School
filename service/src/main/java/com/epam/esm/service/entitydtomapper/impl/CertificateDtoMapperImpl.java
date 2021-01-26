@@ -18,8 +18,8 @@ public class CertificateDtoMapperImpl implements CertificateDtoMapper {
         certificate.setDescription(dto.getDescription());
         certificate.setPrice(dto.getPrice());
         certificate.setDuration(dto.getDuration());
-       certificate.setCreateDate(dto.getCreateDate());
-       certificate.setUpdateLastDate(dto.getUpdateLastDate());
+        certificate.setCreateDate(dto.getCreateDate());
+        certificate.setUpdateLastDate(dto.getUpdateLastDate());
         return certificate;
     }
 

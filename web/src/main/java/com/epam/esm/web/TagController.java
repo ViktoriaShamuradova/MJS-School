@@ -2,8 +2,8 @@ package com.epam.esm.web;
 
 import com.epam.esm.service.TagService;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.web.exceptionHandling.NoSuchResourceException;
-import com.epam.esm.web.exceptionHandling.TagAlreadyExistsException;
+import com.epam.esm.service.exception.NoSuchResourceException;
+import com.epam.esm.service.exception.TagAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

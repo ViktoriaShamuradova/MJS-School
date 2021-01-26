@@ -5,17 +5,17 @@ import com.epam.esm.dto.CertificateDTO;
 import java.util.List;
 
 public interface CertificateService {
-    List<CertificateDTO> getAllCertificates();
+    List<CertificateDTO> findAll();
 
-    void saveCertificate(CertificateDTO certificateDTO);
+    void create(CertificateDTO certificateDTO);
 
-    CertificateDTO getCertificate(int id);
+    CertificateDTO find(int id);
 
-    void deleteCertificate(int id);
+    void delete(int id);
 
-    void update(CertificateDTO certificateDTO, long certificateId);
+    void update(CertificateDTO certificateDTO);
 
-    List<CertificateDTO> getCertificatesByTagId(long tagId);
+    List<CertificateDTO> findByTagId(long tagId);
 
-    List<CertificateDTO> getCertificatesByPartOfNameOrDescription(CertificateDTO certificateDTO);
+    List<CertificateDTO> findByPartOfNameOrDescription(String partOfNameOrDescription);
 }
