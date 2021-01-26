@@ -3,6 +3,8 @@ package com.epam.esm.web;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +32,9 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public String delete(@PathVariable int certificateId) {
+    public ResponseEntity<String> delete(@PathVariable int certificateId) {
         certificateService.delete(certificateId);
-        return "Certificate with id= " + certificateId + " was deleted";
+        return ResponseEntity.ok("Certificate with id= " + certificateId + " was deleted");
     }
 
     @PutMapping

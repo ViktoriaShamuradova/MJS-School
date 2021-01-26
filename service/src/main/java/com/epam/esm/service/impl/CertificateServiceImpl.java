@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +56,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         if (certificateDTO.getTagList() != null) {
             for (TagDTO tagDTO : certificateDTO.getTagList()) {
-                TagDTO tagDTONew = tagService.createTag(tagDTO);
+                TagDTO tagDTONew = tagService.create(tagDTO);
                 if (tagDTONew != null) {
                     certificateTagService.add(certificateDTO.getId(), tagDTONew.getId());
                 }
@@ -69,49 +68,32 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional(readOnly = true)
     public CertificateDTO find(int id) {
-        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException());
-        return certificateDtoMapper.changeCertificateToDto(certificate, tagService.getTagsByCertificateId(id));
+        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException("There is no certificate with this id = " + id + " in dataBase"));
+        return certificateDtoMapper.changeCertificateToDto(certificate, tagService.findByCertificateId(id));
     }
 
     @Override
     public void delete(int id) {
-        CertificateDTO certificate = find(id);
-        if (certificate == null) {
-            throw new NoSuchResourceException("There is no certificate with this id = " + id + " in dataBase");
-        }
+        find(id);
         certificateDAO.delete(id);
     }
 
     @Transactional
     @Override
     public void update(CertificateDTO certificateDTO) {
-        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException());
+        if (!isFieldsChanged(certificateDTO)) {
+            return;
+        }
+        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException("There is no certificate with this id = " + certificateDTO.getId() + " in dataBase"));
+        certificateDTO.setUpdateLastDate(Instant.now());
 
-//            if (certificateDTO.getName() != null) {
-//                certificateFromDb.setName(certificateDTO.getName());
-//            }
-//            if (certificateDTO.getDescription() != null) {
-//                certificateFromDb.setDescription(certificateDTO.getDescription());
-//            }
-//            if (certificateDTO.getPrice() != null) {
-//                certificateFromDb.setPrice(certificateDTO.getPrice());
-//            }
-//            if (certificateDTO.getDuration() != 0) {
-//                certificateFromDb.setDuration(certificateDTO.getDuration());
-//            }
-//            if (certificateDTO.getCreateDate() != null) {
-//                certificateFromDb.setCreateDate(certificateDTO.getCreateDate());
-//            }
-//            certificateFromDb.setUpdateLastDate(Instant.now());
-//
-//            if (certificateDTO.getTagList() != null) {
-//                for (TagDTO tagDTO : certificateDTO.getTagList()) {
-//                    tagService.createTag(tagDTO);
-//                }
-//            }
-//            certificateDAO.update(certificateId, certificateFromDb);
-
-   }
+        if (certificateDTO.getTagList() != null) {
+            for (TagDTO tagDTO : certificateDTO.getTagList()) {
+                tagService.create(tagDTO);
+            }
+        }
+        certificateDAO.update(certificateDTO);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -130,9 +112,16 @@ public class CertificateServiceImpl implements CertificateService {
         return certificates
                 .stream()
                 .map(certificate -> {
-                    List<TagDTO> tags = tagService.getTagsByCertificateId(certificate.getId());
+                    List<TagDTO> tags = tagService.findByCertificateId(certificate.getId());
                     return certificateDtoMapper.changeCertificateToDto(certificate, tags);
                 })
                 .collect(Collectors.toList());
+    }
+
+    private boolean isFieldsChanged(CertificateDTO certificateDTO) {
+        if (certificateDTO.getName() != null) return true;
+        if (certificateDTO.getDescription() != null) return true;
+        if (certificateDTO.getPrice() != null) return true;
+        return certificateDTO.getTagList() != null;
     }
 }

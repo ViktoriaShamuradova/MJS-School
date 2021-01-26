@@ -5,15 +5,15 @@ import com.epam.esm.dto.TagDTO;
 import java.util.List;
 
 public interface TagService {
-    List<TagDTO> getAllTags();
+    List<TagDTO> findAll();
 
-    void deleteTag(long tagId);
+    void delete(long id);
 
-    TagDTO createTag(TagDTO tagDTO);
+    void create(TagDTO tagDTO);
 
-    TagDTO getTag(long tagId);
+    TagDTO find(long id);
 
-    List<TagDTO> getTagsByCertificateId(long certificateId);
+    List<TagDTO> findByCertificateId(long certificateId);
 
-    TagDTO getTag(String name);
+    TagDTO find(String name);
 }

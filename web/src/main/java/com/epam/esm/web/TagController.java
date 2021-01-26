@@ -2,8 +2,6 @@ package com.epam.esm.web;
 
 import com.epam.esm.service.TagService;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.exception.TagAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,34 +15,23 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping
-    public List<TagDTO> showAllTags() {
-        return tagService.getAllTags();
+    public List<TagDTO> findAll() {
+        return tagService.findAll();
     }
 
     @PostMapping
-    public void addNewTag(@RequestBody TagDTO tagDTO) {
-        TagDTO t = tagService.createTag(tagDTO);
-        if (t == null) {
-            throw new TagAlreadyExistsException("such tag with name = " + tagDTO.getName() + " already exists in dataBase");
-        }
+    public void add(@RequestBody TagDTO tagDTO) {
+        tagService.create(tagDTO);
     }
-
+//esponseEntity
     @DeleteMapping("/{tagId}")
-    public String deleteTag(@PathVariable int tagId) {
-        TagDTO tagDTO = tagService.getTag(tagId);
-        if (tagDTO == null) {
-            throw new NoSuchResourceException("There is no tag with this id = " + tagId + " in dataBase");
-        }
-        tagService.deleteTag(tagId);
+    public String delete(@PathVariable int tagId) {
+        tagService.delete(tagId);
         return "Tag with id= " + tagId + " was deleted";
     }
 
     @GetMapping("/{name}")
-    public TagDTO findTag(@PathVariable("name") String name) {
-        TagDTO tag = tagService.getTag(name);
-        if (tag == null) {
-            throw new NoSuchResourceException("There is no tag with this name = " + name + " in dataBase");
-        }
-        return tag;
+    public TagDTO find(@PathVariable("name") String name) {
+        return tagService.find(name);
     }
 }

@@ -3,7 +3,9 @@ package com.epam.esm.persistence.impl;
 import com.epam.esm.persistence.CertificateTagDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CertificateTagDAOImpl implements CertificateTagDAO {
 
     private final JdbcTemplate jdbcTemplate;

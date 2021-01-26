@@ -1,5 +1,6 @@
 package com.epam.esm.persistence;
 
+import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface CertificateDAO {
 
     void create(Certificate certificate);
 
-    void update(Certificate certificate);
+    void update(CertificateDTO certificateDTO);
 
     void delete(long id);
 
