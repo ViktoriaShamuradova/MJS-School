@@ -15,7 +15,5 @@ public interface TagDAO {
 
     void delete(long id);
 
-    List<Tag> findByCertificateId(long certificateId);
-
     Optional<Tag> find(String name);
 }

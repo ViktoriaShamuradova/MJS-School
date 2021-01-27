@@ -10,7 +10,6 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.CertificateDtoMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +21,18 @@ import java.util.stream.Collectors;
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
-    private CertificateDAO certificateDAO;
-    private TagService tagService;
-    private CertificateDtoMapper certificateDtoMapper;
+    private final CertificateDAO certificateDAO;
+    private final TagService tagService;
+    private final CertificateDtoMapper certificateDtoMapper;
     private final CertificateTagService certificateTagService;
 
     @Autowired
     public CertificateServiceImpl(CertificateDAO certificateDAO,
                                   CertificateTagService certificateTagService,
-                                  CertificateDtoMapper certificateDtoMapper) {
+                                  CertificateDtoMapper certificateDtoMapper, TagService tagService) {
         this.certificateDAO = certificateDAO;
         this.certificateDtoMapper = certificateDtoMapper;
         this.certificateTagService = certificateTagService;
-    }
-
-    @Autowired
-    public void setTagService(TagService tagService) {
         this.tagService = tagService;
     }
 
@@ -64,17 +59,16 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
-    @Nullable
     @Override
     @Transactional(readOnly = true)
     public CertificateDTO find(int id) {
-        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException("There is no certificate with this id = " + id + " in dataBase"));
-        return certificateDtoMapper.changeCertificateToDto(certificate, tagService.findByCertificateId(id));
+        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException());
+        return certificateDtoMapper.changeCertificateToDto(certificate, certificateTagService.findTagByCertificateId(id));
     }
 
     @Override
     public void delete(int id) {
-        find(id);
+        certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException());
         certificateDAO.delete(id);
     }
 
@@ -84,7 +78,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (!isFieldsChanged(certificateDTO)) {
             return;
         }
-        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException("There is no certificate with this id = " + certificateDTO.getId() + " in dataBase"));
+        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException());
         certificateDTO.setUpdateLastDate(Instant.now());
 
         if (certificateDTO.getTagList() != null) {
@@ -96,15 +90,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CertificateDTO> findByTagId(long tagId) {
-        return getListCertificateDto(certificateDAO.findByTagId(tagId));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<CertificateDTO> findByPartOfNameOrDescription(String partOfNameOrDescription) {
-        System.out.println("Here");
         return getListCertificateDto(certificateDAO.findByPartOfNameOrDescription(partOfNameOrDescription));
     }
 
@@ -112,7 +98,7 @@ public class CertificateServiceImpl implements CertificateService {
         return certificates
                 .stream()
                 .map(certificate -> {
-                    List<TagDTO> tags = tagService.findByCertificateId(certificate.getId());
+                    List<TagDTO> tags = certificateTagService.findTagByCertificateId(certificate.getId());
                     return certificateDtoMapper.changeCertificateToDto(certificate, tags);
                 })
                 .collect(Collectors.toList());

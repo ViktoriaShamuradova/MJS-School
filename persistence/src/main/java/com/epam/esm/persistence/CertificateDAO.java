@@ -18,7 +18,5 @@ public interface CertificateDAO {
 
     void delete(long id);
 
-    List<Certificate> findByTagId(long tagId);
-
     List<Certificate> findByPartOfNameOrDescription(String partOfNameOrDescription);
 }

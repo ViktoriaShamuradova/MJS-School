@@ -6,7 +6,6 @@ import com.epam.esm.persistence.TagDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -17,10 +16,7 @@ import java.util.Optional;
 @Repository
 public class TagDAOImpl implements TagDAO {
     private static final String SQL_QUERY_READ_TAG_LIST = "SELECT * FROM tags;";
-    private static final String SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID =
-            "SELECT id, name FROM tags t " +
-                    "INNER JOIN certificate_tag ct " +
-                    "ON t.id =ct.id_tag WHERE ct.id_certificate=?;";
+
     private static final String SQL_QUERY_READ_ONE_TAG = "SELECT * FROM tags WHERE id = ?;";
     private static final String SQL_QUERY_INSERT_TAG = "INSERT into tags (name) VALUES (?);";
     private static final String SQL_QUERY_DELETE_TAG = "DELETE FROM tags WHERE id = ?;";
@@ -39,7 +35,6 @@ public class TagDAOImpl implements TagDAO {
                 , new BeanPropertyRowMapper<>(Tag.class));
     }
 
-    @Nullable
     @Override
     public Optional<Tag> find(long id) {
         return template.query(SQL_QUERY_READ_ONE_TAG, new BeanPropertyRowMapper<>(Tag.class), id)
@@ -61,13 +56,6 @@ public class TagDAOImpl implements TagDAO {
         template.update(SQL_QUERY_DELETE_TAG, id);
     }
 
-    @Override
-    public List<Tag> findByCertificateId(long certificateId) {
-        return template.query(SQL_QUERY_READ_TAG_LIST_BY_CERTIFICATE_ID
-                , new BeanPropertyRowMapper<>(Tag.class), certificateId);
-    }
-
-    @Nullable
     @Override
     public Optional<Tag> find(String name) {
         return template.query(SQL_QUERY_READ_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)

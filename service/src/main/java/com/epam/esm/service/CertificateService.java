@@ -15,7 +15,5 @@ public interface CertificateService {
 
     void update(CertificateDTO certificateDTO);
 
-    List<CertificateDTO> findByTagId(long tagId);
-
     List<CertificateDTO> findByPartOfNameOrDescription(String partOfNameOrDescription);
 }

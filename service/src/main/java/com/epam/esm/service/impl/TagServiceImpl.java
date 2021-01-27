@@ -4,13 +4,12 @@ import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.CertificateTagService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.TagDtoMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.TagAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private TagDAO tagDAO;
-    private TagDtoMapper tagDtoMapper;
-    private final CertificateService certificateService;
+    private final TagDAO tagDAO;
+    private final TagDtoMapper tagDtoMapper;
+    private final CertificateTagService certificateTagService;
 
     @Autowired
-    public TagServiceImpl(TagDAO tagDAO, TagDtoMapper tagDtoMapper, CertificateService certificateService) {
+    public TagServiceImpl(TagDAO tagDAO, TagDtoMapper tagDtoMapper, CertificateTagService certificateTagService) {
         this.tagDAO = tagDAO;
         this.tagDtoMapper = tagDtoMapper;
-        this.certificateService = certificateService;
+        this.certificateTagService = certificateTagService;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagDAO.findAll();
 
         return tags.stream().map(tag -> {
-            List<CertificateDTO> certificatesDTO = certificateService.findByTagId(tag.getId());
+            List<CertificateDTO> certificatesDTO = certificateTagService.findCertificateByTagId(tag.getId());
             return tagDtoMapper.changeTagToTagDTO(tag, certificatesDTO);
         }).collect(Collectors.toList());
     }
@@ -49,33 +48,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void create(TagDTO tagDTO) {
+    public TagDTO create(TagDTO tagDTO) {
         if (tagDAO.find(tagDTO.getName()).isPresent())
-            throw new TagAlreadyExistsException("such tag with name = " + tagDTO.getName() + " already exists in dataBase");
+            throw new TagAlreadyExistsException();
         tagDAO.add(tagDTO);
+        return tagDTO;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public TagDTO find(long id) {
-        Tag tag = tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("There is no tag with this id = " + id + " in dataBase"));
-        List<CertificateDTO> certificates = certificateService.findByTagId(id);
-        return tagDtoMapper.changeTagToTagDTO(tag, certificates);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TagDTO> findByCertificateId(long certificateId) {
-        List<Tag> tags = tagDAO.findByCertificateId(certificateId);
-        return tags.stream().map(tag -> tagDtoMapper.changeTagToTagDTO(tag)).collect(Collectors.toList());
-    }
-
-    @Nullable
     @Override
     @Transactional(readOnly = true)
     public TagDTO find(String name) {
-        Tag tag = tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("There is no tag with this name = " + name + " in dataBase"));
-        List<CertificateDTO> certificates = certificateService.findByTagId(tag.getId());
+        Tag tag = tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException( ));
+        List<CertificateDTO> certificates =
+        certificateTagService.findCertificateByTagId(tag.getId());
         return tagDtoMapper.changeTagToTagDTO(tag, certificates);
     }
 }

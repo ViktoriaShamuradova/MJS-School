@@ -9,11 +9,7 @@ public interface TagService {
 
     void delete(long id);
 
-    void create(TagDTO tagDTO);
-
-    TagDTO find(long id);
-
-    List<TagDTO> findByCertificateId(long certificateId);
+    TagDTO create(TagDTO tagDTO);
 
     TagDTO find(String name);
 }
