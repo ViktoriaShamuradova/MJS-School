@@ -1,18 +1,15 @@
 package com.epam.esm.service.exception;
 
-public class TagAlreadyExistsException extends RuntimeException {
+import java.util.Locale;
 
-    private final int errorCode = 4000;
-
-    public TagAlreadyExistsException(String message) {
-        super(message);
-    }
+public class TagAlreadyExistsException extends ServiceException {
 
     public TagAlreadyExistsException() {
-        super();
+        super("40901");
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public TagAlreadyExistsException(Locale locale) {
+        super("40901", locale);
     }
+
 }

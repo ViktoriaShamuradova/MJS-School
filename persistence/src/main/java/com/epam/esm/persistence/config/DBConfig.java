@@ -1,8 +1,8 @@
 package com.epam.esm.persistence.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -15,7 +15,11 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "com.epam.esm.persistence")
 @EnableTransactionManagement
+@PropertySource("classpath:db.properties")
 public class DBConfig {
+
+    @Autowired
+    private Environment env;
 
     @Bean
     PlatformTransactionManager transactionManager() {
@@ -24,11 +28,16 @@ public class DBConfig {
 
     @Bean
     public DataSource dataSource() {
+        String driver = env.getProperty("db.driver");
+        String url = env.getProperty("db.url");
+        String user = env.getProperty("db.user");
+        String password = env.getProperty("db.password");
+
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/module2_certificates_tags?useSSL=false&serverTimezone=UTC");
-        dataSource.setUsername("student");
-        dataSource.setPassword("student");
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
@@ -41,4 +50,7 @@ public class DBConfig {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
     }
+
+
 }
+

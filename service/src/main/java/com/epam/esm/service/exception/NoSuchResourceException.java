@@ -1,16 +1,19 @@
 package com.epam.esm.service.exception;
 
-public class NoSuchResourceException extends RuntimeException {
+import java.util.Locale;
 
-    private final int errorCode = 40401;
+public class NoSuchResourceException extends ServiceException {
+
+    public NoSuchResourceException() {
+        super("40401");
+    }
+
+    public NoSuchResourceException(Locale locale) {
+        super("40401", locale);
+    }
 
     public NoSuchResourceException(String message) {
-        super(message);
+        super(message, "40401");
     }
 
-    public NoSuchResourceException() {super();}
-
-    public int getErrorCode() {
-        return errorCode;
-    }
 }
