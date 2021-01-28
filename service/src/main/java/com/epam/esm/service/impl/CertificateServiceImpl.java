@@ -108,6 +108,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateDTO.getName() != null) return true;
         if (certificateDTO.getDescription() != null) return true;
         if (certificateDTO.getPrice() != null) return true;
+        if (certificateDTO.getDuration() != 0) return true;
         return certificateDTO.getTagList() != null;
     }
 }

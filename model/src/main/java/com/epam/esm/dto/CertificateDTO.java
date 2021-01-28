@@ -17,7 +17,7 @@ public class CertificateDTO {
     @Size(min = 3, max = 20, message = "The certificate name could be between 3 and 20 symbols")
     private String name;
 
-    @Size(min = 5, max = 100, message = "Description could be between 5 and 100 symbols")
+    @Size(min = 5, max = 100, message = "Description should be between 5 and 100 symbols")
     private String description;
 
     @Digits(integer = 15, fraction = 2)

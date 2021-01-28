@@ -1,4 +1,4 @@
-package com.epam.esm.persistence.impl;
+package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;

@@ -1,4 +1,4 @@
-package com.epam.esm.persistence.impl;
+package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
