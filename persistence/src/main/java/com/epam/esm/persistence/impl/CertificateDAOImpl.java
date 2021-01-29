@@ -1,6 +1,5 @@
-package com.epam.esm.service.impl;
+package com.epam.esm.persistence.impl;
 
-import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.constant.CertificateTableColumnName;
@@ -30,9 +29,13 @@ public class CertificateDAOImpl implements CertificateDAO {
             "(name, description, price, duration, create_date, update_last_date) " +
             "VALUES(:name, :description, :price, :duration, :create_date, :update_last_date);";
     private static final String SQL_QUERY_DELETE_CERTIFICATE_BY_ID = "DELETE FROM certificates WHERE id = ?;";
-
+    private static final String SQL_QUERY_INSERT_ID_CERTIFICATE_AND_ID_TAG =
+            "INSERT INTO certificate_tag " +
+                    "(id_certificate, id_tag) VALUES(?,?); ";
+    private static final String SQL_QUERY_READ_CERTIFICATE_LIST_BY_TAG_ID =
+            "SELECT id, name, price, description, duration, price, create_date, update_last_date  " +
+                    "FROM certificates c INNER JOIN certificate_tag ct ON c.id =ct.id_certificate WHERE ct.id_tag=?;";
     private static final String NAME_STORED_PROCEDURE_TO_FIND_BY_PART_OF_NAME_OR_DESCRIPTION = "find_certificate_by_part_of_name";
-
     private static final String NAME_OF_INPUT_PARAMETER_IN_STORED_PROCEDURE_TO_FIND_BY_PART_OF_NAME_OR_DESCRIPTION = "_part";
 
     private final JdbcTemplate jdbcTemplate;
@@ -45,45 +48,8 @@ public class CertificateDAOImpl implements CertificateDAO {
     }
 
     @Override
-    public void update(CertificateDTO certificateDTO) {
-        String query = buildQueryForUpdate(certificateDTO);
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(CertificateTableColumnName.ID, certificateDTO.getId())
-                .addValue(CertificateTableColumnName.NAME, certificateDTO.getName())
-                .addValue(CertificateTableColumnName.DESCRIPTION, certificateDTO.getDescription())
-                .addValue(CertificateTableColumnName.PRICE, certificateDTO.getPrice())
-                .addValue(CertificateTableColumnName.DURATION, certificateDTO.getDuration())
-                .addValue(CertificateTableColumnName.UPDATE_LAST_DATE, certificateDTO.getUpdateLastDate().toEpochMilli());
-
-        namedParameterJdbcTemplate.update(query, parameterSource);
-    }
-
-    @Override
-    public List<Certificate> findAll() {
-        return jdbcTemplate.query(SQL_QUERY_READ_CERTIFICATES_LIST, new CertificateMapper());
-    }
-
-    @Override
-    public Optional<Certificate> find(long id) {
-        return jdbcTemplate.query(SQL_QUERY_READ_ONE_CERTIFICATE_BY_ID,
-                new CertificateMapper(), id).stream().findAny();
-    }
-
-    @Override
-    public void create(Certificate certificate) {
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(CertificateTableColumnName.NAME, certificate.getName())
-                .addValue(CertificateTableColumnName.DESCRIPTION, certificate.getDescription())
-                .addValue(CertificateTableColumnName.PRICE, certificate.getPrice())
-                .addValue(CertificateTableColumnName.DURATION, certificate.getDuration())
-                .addValue(CertificateTableColumnName.CREATE_DATE, certificate.getCreateDate().toEpochMilli())
-                .addValue(CertificateTableColumnName.UPDATE_LAST_DATE, certificate.getUpdateLastDate().toEpochMilli());
-        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_CERTIFICATE, parameterSource);
-    }
-
-    @Override
-    public void delete(long id) {
-        jdbcTemplate.update(SQL_QUERY_DELETE_CERTIFICATE_BY_ID, id);
+    public void addLinkCertificateWithTags(long certificateId, long tagId) {
+        jdbcTemplate.update(SQL_QUERY_INSERT_ID_CERTIFICATE_AND_ID_TAG, certificateId, tagId);
     }
 
     @Override
@@ -100,23 +66,70 @@ public class CertificateDAOImpl implements CertificateDAO {
 
     }
 
-    private String buildQueryForUpdate(CertificateDTO certificateDTO) {
+    @Override
+    public List<Certificate> findCertificateByTagId(long id) {
+        return jdbcTemplate.query(SQL_QUERY_READ_CERTIFICATE_LIST_BY_TAG_ID
+                , new CertificateMapper(), id);
+    }
+
+    @Override
+    public Optional<Certificate> find(Long id) {
+        return jdbcTemplate.query(SQL_QUERY_READ_ONE_CERTIFICATE_BY_ID,
+                new CertificateMapper(), id).stream().findAny();
+    }
+
+    @Override
+    public void delete(Long id) {
+        jdbcTemplate.update(SQL_QUERY_DELETE_CERTIFICATE_BY_ID, id);
+    }
+
+    @Override
+    public void update(Certificate certificate) {
+        String query = buildQueryForUpdate(certificate);
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue(CertificateTableColumnName.ID, certificate.getId())
+                .addValue(CertificateTableColumnName.NAME, certificate.getName())
+                .addValue(CertificateTableColumnName.DESCRIPTION, certificate.getDescription())
+                .addValue(CertificateTableColumnName.PRICE, certificate.getPrice())
+                .addValue(CertificateTableColumnName.DURATION, certificate.getDuration())
+                .addValue(CertificateTableColumnName.UPDATE_LAST_DATE, certificate.getUpdateLastDate().toEpochMilli());
+
+        namedParameterJdbcTemplate.update(query, parameterSource);
+    }
+
+    @Override
+    public void create(Certificate certificate) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue(CertificateTableColumnName.NAME, certificate.getName())
+                .addValue(CertificateTableColumnName.DESCRIPTION, certificate.getDescription())
+                .addValue(CertificateTableColumnName.PRICE, certificate.getPrice())
+                .addValue(CertificateTableColumnName.DURATION, certificate.getDuration())
+                .addValue(CertificateTableColumnName.CREATE_DATE, certificate.getCreateDate().toEpochMilli())
+                .addValue(CertificateTableColumnName.UPDATE_LAST_DATE, certificate.getUpdateLastDate().toEpochMilli());
+        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_CERTIFICATE, parameterSource);
+    }
+
+
+    @Override
+    public List<Certificate> findAll() {
+        return jdbcTemplate.query(SQL_QUERY_READ_CERTIFICATES_LIST, new CertificateMapper());
+    }
+
+    private String buildQueryForUpdate(Certificate certificate) {
         StringBuilder queryStart = new StringBuilder("UPDATE certificates SET ");
-        if (certificateDTO.getName() != null) {
+        if (certificate.getName() != null) {
             queryStart.append("name= :name,");
         }
-        if (certificateDTO.getDescription() != null) {
+        if (certificate.getDescription() != null) {
             queryStart.append(" description= :description,");
         }
-        if (certificateDTO.getDuration() != 0) {
+        if (certificate.getDuration() != 0) {
             queryStart.append(" duration= :duration,");
         }
-        if (certificateDTO.getPrice() != null) {
+        if (certificate.getPrice() != null) {
             queryStart.append(" price= :price,");
         }
         queryStart.append(" update_last_date=:update_last_date WHERE id=:id ;");
         return new String(queryStart);
     }
 }
-
-

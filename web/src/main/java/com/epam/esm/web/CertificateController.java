@@ -48,7 +48,7 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public ResponseEntity<String> delete(@PathVariable int certificateId) {
+    public ResponseEntity<String> delete(@PathVariable long certificateId) {
         certificateService.delete(certificateId);
         return ResponseEntity.ok("Certificate with id= " + certificateId + " was deleted");
     }
@@ -59,7 +59,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{certificateId}")
-    public CertificateDTO find(@PathVariable int certificateId) {
+    public CertificateDTO find(@PathVariable long certificateId) {
         return certificateService.find(certificateId);
     }
 }

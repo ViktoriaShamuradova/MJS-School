@@ -1,8 +1,8 @@
 package com.epam.esm.service.entitydtomapper.impl;
 
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.entitydtomapper.CertificateDtoMapper;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class CertificateDtoMapperImpl implements CertificateDtoMapper {
     }
 
     @Override
-    public CertificateDTO changeCertificateToDto(Certificate certificate, List<TagDTO> tagList) {
+    public CertificateDTO changeCertificateToDto(Certificate certificate, List<Tag> tagList) {
         CertificateDTO dto = new CertificateDTO();
         dto.setId(certificate.getId());
         dto.setName(certificate.getName());
@@ -36,5 +36,4 @@ public class CertificateDtoMapperImpl implements CertificateDtoMapper {
         dto.setTagList(tagList);
         return dto;
     }
-
 }

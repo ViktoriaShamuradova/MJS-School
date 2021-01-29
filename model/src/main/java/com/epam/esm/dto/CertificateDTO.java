@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.entity.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.DecimalMin;
@@ -33,7 +34,7 @@ public class CertificateDTO {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Instant updateLastDate;
 
-    private List<TagDTO> tagList;
+    private List<Tag> tagList;
 
     public CertificateDTO() {
     }
@@ -86,7 +87,7 @@ public class CertificateDTO {
         this.duration = duration;
     }
 
-    public List<TagDTO> getTagList() {
+    public List<Tag> getTagList() {
         return tagList;
     }
 
@@ -98,7 +99,7 @@ public class CertificateDTO {
         this.price = price;
     }
 
-    public void setTagList(List<TagDTO> tagList) {
+    public void setTagList(List<Tag> tagList) {
         this.tagList = tagList;
     }
 

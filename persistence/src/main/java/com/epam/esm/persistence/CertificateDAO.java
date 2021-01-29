@@ -1,22 +1,15 @@
 package com.epam.esm.persistence;
 
-import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface CertificateDAO {
+public interface CertificateDAO extends CrudDAO<Certificate, Long> {
 
-    List<Certificate> findAll();
+    void addLinkCertificateWithTags(long certificateId, long tagId);
 
-    Optional<Certificate> find(long id);
-
-    void create(Certificate certificate);
-
-    void update(CertificateDTO certificateDTO);
-
-    void delete(long id);
+    List<Certificate> findCertificateByTagId(long id);
 
     List<Certificate> findByPartOfNameOrDescription(String partOfNameOrDescription);
+
 }

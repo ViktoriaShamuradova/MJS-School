@@ -4,12 +4,16 @@ import java.util.Locale;
 
 public class TagAlreadyExistsException extends ServiceException {
 
-    public TagAlreadyExistsException() {
-        super("40901");
+    public TagAlreadyExistsException(String messageKey, String message) {
+        super("40901", messageKey, message);
     }
 
-    public TagAlreadyExistsException(Locale locale) {
-        super("40901", locale);
+    public TagAlreadyExistsException(String messageKey, Locale locale) {
+        super("40901", messageKey, locale);
+    }
+
+    public TagAlreadyExistsException(String messageKey) {
+        super("40901", messageKey);
     }
 
 }

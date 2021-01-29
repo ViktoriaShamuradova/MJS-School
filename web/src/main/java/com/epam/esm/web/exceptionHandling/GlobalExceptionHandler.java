@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,7 +27,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleException(ServiceException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(e.getMessageKey());
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getMessageKey(), null, e.getLocale()));
+        ResourceBundle  bundle = ResourceBundle.getBundle("loc/messages", e.getLocale());
+        System.out.println(bundle.getString(e.getErrorCode() + e.getMessageKey()));
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(
+                e.getErrorCode() + e.getMessageKey(),
+                new Object[]{e.getMessage()},
+                e.getLocale())
+        );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 

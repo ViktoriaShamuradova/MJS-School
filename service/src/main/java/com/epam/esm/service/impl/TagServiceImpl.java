@@ -1,12 +1,8 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.service.CertificateTagService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.entitydtomapper.TagDtoMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.TagAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,53 +10,62 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
-
     private final TagDAO tagDAO;
-    private final TagDtoMapper tagDtoMapper;
-    private final CertificateTagService certificateTagService;
 
     @Autowired
-    public TagServiceImpl(TagDAO tagDAO, TagDtoMapper tagDtoMapper, CertificateTagService certificateTagService) {
+    public TagServiceImpl(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
-        this.tagDtoMapper = tagDtoMapper;
-        this.certificateTagService = certificateTagService;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<TagDTO> findAll() {
-        List<Tag> tags = tagDAO.findAll();
-
-        return tags.stream().map(tag -> {
-            List<CertificateDTO> certificatesDTO = certificateTagService.findCertificateByTagId(tag.getId());
-            return tagDtoMapper.changeTagToTagDTO(tag, certificatesDTO);
-        }).collect(Collectors.toList());
+    public List<Tag> findAll() {
+        return tagDAO.findAll();
     }
 
     @Override
-    public void delete(long id) {
-        tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException());
+    public Tag create(Tag tag) {
+        if (tagDAO.find(tag.getName()).isPresent())
+            throw new TagAlreadyExistsException(".tag", "name= " + tag.getName());
+        tagDAO.create(tag);
+        return tag;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Tag find(Long id) {
+        return tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".tag", "id= " + id));
+    }
+
+    @Override
+    public void delete(Long id) {
+        tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".tag", "id= " + id));
         tagDAO.delete(id);
     }
 
     @Override
-    public TagDTO create(TagDTO tagDTO) {
-        if (tagDAO.find(tagDTO.getName()).isPresent())
-            throw new TagAlreadyExistsException();
-        tagDAO.add(tagDTO);
-        return tagDTO;
+    @Transactional(readOnly = true)
+    public List<Tag> findByCertificateId(long id) {
+        return tagDAO.findByCertificateId(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TagDTO find(String name) {
-        Tag tag = tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException( ));
-        List<CertificateDTO> certificates =
-        certificateTagService.findCertificateByTagId(tag.getId());
-        return tagDtoMapper.changeTagToTagDTO(tag, certificates);
+    public Tag find(String name) {
+        return tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException(".tag", "name= " + name));
+    }
+
+    @Override
+    public void delete(String name) {
+        tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException(".tag", "name= " + name));
+        tagDAO.delete(name);
+    }
+
+    @Override
+    public void update(Tag tag) {
+
     }
 }

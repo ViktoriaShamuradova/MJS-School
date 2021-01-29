@@ -4,16 +4,16 @@ import java.util.Locale;
 
 public class NoSuchResourceException extends ServiceException {
 
-    public NoSuchResourceException() {
-        super("40401");
+    public NoSuchResourceException(String messageKey, String message) {
+        super("40401", messageKey, message);
     }
 
-    public NoSuchResourceException(Locale locale) {
-        super("40401", locale);
+    public NoSuchResourceException(String messageKey, Locale locale) {
+        super("40401", messageKey, locale);
     }
 
-    public NoSuchResourceException(String message) {
-        super(message, "40401");
+    public NoSuchResourceException(String messageKey) {
+        super("40401", messageKey);
     }
 
 }
