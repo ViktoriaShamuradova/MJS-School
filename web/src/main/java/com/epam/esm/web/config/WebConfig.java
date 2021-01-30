@@ -18,8 +18,9 @@ public class WebConfig {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
-        source.setBasename("loc/messages");
+        source.setBasename("loc/messages");//classpath:messages
         source.setDefaultEncoding("UTF-8");
+        source.setUseCodeAsDefaultMessage(true);
         return source;
     }
 }

@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 
 public class Certificate {
 
@@ -67,5 +68,19 @@ public class Certificate {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
+//переопределить
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Certificate that = (Certificate) o;
+        if(!(that.getPrice().compareTo(this.getPrice())==0)) return false;
 
+        return id == that.id && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) && Objects.equals(updateLastDate, that.updateLastDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, description, duration, createDate, updateLastDate);
+    }
 }
