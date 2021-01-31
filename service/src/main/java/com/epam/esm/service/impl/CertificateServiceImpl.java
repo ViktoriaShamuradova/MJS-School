@@ -38,6 +38,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDTO> findByTagId(long id) {
+        tagService.find(id);
         return getListCertificateDto(certificateDAO.findCertificateByTagId(id));
     }
 

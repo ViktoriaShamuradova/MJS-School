@@ -17,8 +17,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-//expected= что реально получила, аctual - ак должно быть
-//вынести в класс конфигурации
 public class CertificateDAOImplTest {
     private EmbeddedDatabase embeddedDatabase;
 

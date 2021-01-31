@@ -44,6 +44,11 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
+    public void update(Tag o) {
+        
+    }
+
+    @Override
     public void create(Tag tag) {
         template.update(connection -> {
             PreparedStatement ps = connection
@@ -76,8 +81,4 @@ public class TagDAOImpl implements TagDAO {
         template.update(SQL_QUERY_DELETE_TAG_BY_ID, id);
     }
 
-    @Override
-    public void update(Tag tag) {
-
-    }
 }
