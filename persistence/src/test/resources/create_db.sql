@@ -21,3 +21,5 @@ CREATE TABLE certificate_tag (
     CONSTRAINT id_t FOREIGN KEY (id_tag) REFERENCES tags (id) ON UPDATE CASCADE
 );
 
+
+

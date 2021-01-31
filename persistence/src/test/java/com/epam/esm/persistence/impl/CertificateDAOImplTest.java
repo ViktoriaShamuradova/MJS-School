@@ -2,6 +2,7 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
+import com.epam.esm.persistence.mappers.CertificateMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
+//expected= что реально получила, аctual - ак должно быть
 //вынести в класс конфигурации
 public class CertificateDAOImplTest {
     private EmbeddedDatabase embeddedDatabase;
@@ -40,8 +43,9 @@ public class CertificateDAOImplTest {
 
     @Test
     public void findAll_shouldFindAll() {
+        int expectedSize = 3;
         Assertions.assertThat(certificateDAO.findAll()).isNotNull();
-        Assertions.assertThat(3).isEqualTo(certificateDAO.findAll().size());
+        Assertions.assertThat(certificateDAO.findAll().size()).isEqualTo(expectedSize);
     }
 
     @Test
@@ -67,30 +71,80 @@ public class CertificateDAOImplTest {
         c.setUpdateLastDate(Instant.now());
 
         certificateDAO.create(c);
-        Assertions.assertThat(size + 1).isEqualTo(certificateDAO.findAll().size());
+        int expectedSize = size + 1;
+        Assertions.assertThat(certificateDAO.findAll().size()).isEqualTo(expectedSize);
     }
 
     @Test
     void update_shouldUpdateCertificate() {
-        Certificate c = new Certificate();
-        c.setName("Certificate 10");
-        c.setDescription("Desc");
-        c.setDuration(10);
-        c.setPrice(new BigDecimal(100));
-        c.setId(1L);
-        c.setUpdateLastDate(Instant.now());
+        Certificate actual = new Certificate();
+        actual.setName("Certificate 10");
+        actual.setDescription("Desc");
+        actual.setDuration(10);
+        actual.setPrice(new BigDecimal(100));
+        actual.setId(1L);
+        actual.setUpdateLastDate(Instant.now());
 
-        certificateDAO.update(c);
-        Certificate actual = certificateDAO.find(1L).get();
-        c.setCreateDate(actual.getCreateDate());
-        Assertions.assertThat(c).isEqualTo(actual);
+        certificateDAO.update(actual);
+        Certificate expected = certificateDAO.find(1L).get();
+        actual.setCreateDate(expected.getCreateDate());
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void delete_shouldDeleteCertificate() {
         int sizeActual = certificateDAO.findAll().size();
         certificateDAO.delete(1L);
-        Assertions.assertThat(sizeActual - 1).isEqualTo(certificateDAO.findAll().size());
+        int expectedSize = certificateDAO.findAll().size();
+        Assertions.assertThat(sizeActual - 1).isEqualTo(expectedSize);
+    }
+
+    @Test
+    public void addLinkCertificateWithTags_shouldAddLink() {
+        certificateDAO.addLinkCertificateWithTags(1, 3);
+        List<Certificate> certificates = certificateDAO.findCertificateByTagId(3);
+        int expectedId = 1;
+        for (Certificate actual : certificates) {
+            if (actual.getId() == 1) {
+                Assertions.assertThat(actual.getId()).isEqualTo(expectedId);
+            }
+        }
+    }
+
+    @Test
+    public void findByPartOfNameOrDescription_shouldFind() {
+        String partOfNameOrDescription = "Cert";
+        String sqlQuery = "select id, name, description, duration, price, create_date, update_last_date " +
+                "from certificates where name like '%" + partOfNameOrDescription + "%' or description like '%" + partOfNameOrDescription + "%';";
+
+        List<Certificate> certificates = jdbcTemplate.query(sqlQuery, new CertificateMapper());
+        int expectedSize = 3;
+        Assertions.assertThat(certificates.size()).isEqualTo(expectedSize);
+    }
+
+    @Test
+    public void findByPartOfNameOrDescription_shouldNotFind() {
+        String partOfNameOrDescription = "aaaaaaa";
+        String sqlQuery = "select id, name, description, duration, price, create_date, update_last_date " +
+                "from certificates where name like '%" + partOfNameOrDescription + "%' or description like '%" + partOfNameOrDescription + "%';";
+
+        List<Certificate> certificates = jdbcTemplate.query(sqlQuery, new CertificateMapper());
+        int expectedSize = 0;
+        Assertions.assertThat(certificates.size()).isEqualTo(expectedSize);
+    }
+
+    @Test
+    public void findCertificateByTagId_shouldFind() {
+        List<Certificate> certificates = certificateDAO.findCertificateByTagId(1);
+        int expectedSize = 2;
+        Assertions.assertThat(certificates.size()).isEqualTo(expectedSize);
+    }
+
+    @Test
+    public void findCertificateByTagId_shouldNotFind() {
+        List<Certificate> certificates = certificateDAO.findCertificateByTagId(4);
+        int expectedSize = 0;
+        Assertions.assertThat(certificates.size()).isEqualTo(expectedSize);
     }
 
     @AfterEach
