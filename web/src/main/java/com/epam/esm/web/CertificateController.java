@@ -55,6 +55,7 @@ public class CertificateController {
         certificateService.create(certificateDTO);
         return ResponseEntity.ok("Certificate was created");
     }
+
     /**
      * a method which realizes REST's DELETE operation of a specific resource with ID stored in a request path
      *

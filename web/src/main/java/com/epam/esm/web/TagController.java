@@ -32,11 +32,12 @@ public class TagController {
     public List<Tag> findAll() {
         return tagService.findAll();
     }
+
     /**
      * a method which realizes REST's CREATE operation
      *
      * @param tag an object which represents a resource "tags" that must be created
-     *                    in the data source
+     *            in the data source
      * @return an object which represents Http response of CREATE operation,
      * which body contains an information about successful creature
      */
@@ -45,6 +46,7 @@ public class TagController {
         tagService.create(tag);
         return new ResponseEntity<>("The tag=" + tag.getName() + " was created", HttpStatus.OK);
     }
+
     /**
      * a method which realizes REST's DELETE operation of a specific resource with ID stored in a request path
      *
@@ -56,6 +58,7 @@ public class TagController {
         tagService.delete(id);
         return new ResponseEntity<>("Tag with id= " + id + " was deleted", HttpStatus.OK);
     }
+
     /**
      * a method which realizes REST's READ operation of a specific resource with name stored in a request path
      *
