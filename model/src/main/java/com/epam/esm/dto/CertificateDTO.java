@@ -28,10 +28,10 @@ public class CertificateDTO {
     @DecimalMin(value = "1", message = "Enter certificate duration more than 1 day")
     private int duration;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
     private Instant createDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
     private Instant updateLastDate;
 
     private List<Tag> tagList;

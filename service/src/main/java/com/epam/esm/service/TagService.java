@@ -11,4 +11,6 @@ public interface TagService extends CrudService<Tag, Long> {
     Tag find(String name);
 
     void delete(String name);
+
+    boolean isExist(Tag tag);
 }

@@ -5,32 +5,24 @@ import java.util.Locale;
 public class ServiceException extends RuntimeException {
 
     private final String errorCode;
-    private final Locale locale;
-    private final String messageKey;
+    private final Locale locale = Locale.ENGLISH;
 
-    ServiceException(String errorCode, String messageKey) {
+    ServiceException(String errorCode) {
         super();
         this.errorCode = errorCode;
-        this.locale = Locale.getDefault();
-        this.messageKey = messageKey;
+        //this.locale = Locale.getDefault();
     }
 
-    ServiceException(String errorCode, String messageKey, String message) {
+    ServiceException(String errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
-        this.messageKey = messageKey;
-        this.locale = Locale.getDefault();
+        //this.locale = Locale.getDefault();
     }
 
-    ServiceException(String errorCode, String messageKey, Locale locale) {
+    ServiceException(String errorCode, Locale locale) {
         super();
         this.errorCode = errorCode;
-        this.locale = locale;
-        this.messageKey = messageKey;
-    }
-
-    public String getMessageKey() {
-        return messageKey;
+        //this.locale = locale;
     }
 
     public Locale getLocale() {

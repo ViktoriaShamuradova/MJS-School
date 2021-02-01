@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class TagServiceImpl implements TagService {
+
     private final TagDAO tagDAO;
 
     @Autowired
@@ -27,22 +28,22 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag create(Tag tag) {
+    public Long create(Tag tag) {
         if (tagDAO.find(tag.getName()).isPresent())
-            throw new TagAlreadyExistsException(".tag", "name= " + tag.getName());
-        tagDAO.create(tag);
-        return tag;
+            throw new TagAlreadyExistsException("name= " + tag.getName());
+        return tagDAO.create(tag);
+
     }
 
     @Override
     @Transactional(readOnly = true)
     public Tag find(Long id) {
-        return tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".tag", "id= " + id));
+        return tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id));
     }
 
     @Override
     public void delete(Long id) {
-        tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".tag", "id= " + id));
+        tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id));
         tagDAO.delete(id);
     }
 
@@ -55,13 +56,18 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public Tag find(String name) {
-        return tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException(".tag", "name= " + name));
+        return tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name));
     }
 
     @Override
     public void delete(String name) {
-        tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException(".tag", "name= " + name));
+        tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name));
         tagDAO.delete(name);
+    }
+
+    @Override
+    public boolean isExist(Tag tag) {
+       return tagDAO.find(tag.getName()).isPresent();
     }
 
     @Override

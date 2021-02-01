@@ -5,7 +5,7 @@ import java.util.List;
 public interface CrudService<T, ID> {
     List<T> findAll();
 
-    T create(T t);
+    ID create(T t);
 
     T find(ID id);
 

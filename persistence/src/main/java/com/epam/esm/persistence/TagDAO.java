@@ -11,4 +11,5 @@ public interface TagDAO extends CrudDAO<Tag, Long> {
     Optional<Tag> find(String name);
 
     void delete(String name);
+
 }

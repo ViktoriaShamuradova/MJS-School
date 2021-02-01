@@ -3,6 +3,8 @@ package com.epam.esm.web;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,28 +14,32 @@ import java.util.List;
  * a class which performs REST's CRUD operations on a resource called "Certificates"
  */
 @RestController
-@RequestMapping("/certificates")
+@RequestMapping(value = "/certificates", produces = "application/json; charset=utf-8")
 public class CertificateController {
 
     private final CertificateService certificateService;
+    @Autowired
+    private ReloadableResourceBundleMessageSource resourceBundle;
 
     @Autowired
     public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }
+
     /**
      * a method which realizes REST's READ operation of all resources
      *
      * @return a collection of CertificatesDTO, which represents a resource "certificate"
      */
     @GetMapping
-    public List<CertificateDTO> findAll() {
-        return certificateService.findAll();
+    public ResponseEntity<List<CertificateDTO>> findAll() {
+
+        return new ResponseEntity<>(certificateService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{partOfNameOrDescription}")
-    public List<CertificateDTO> findByPartOfNameOrDescription(@PathVariable("partOfNameOrDescription") String partOfNameOrDescription) {
-        return certificateService.findByPartOfNameOrDescription(partOfNameOrDescription);
+    public ResponseEntity<List<CertificateDTO>> findByPartOfNameOrDescription(@PathVariable("partOfNameOrDescription") String partOfNameOrDescription) {
+        return new ResponseEntity<>(certificateService.findByPartOfNameOrDescription(partOfNameOrDescription), HttpStatus.OK);
     }
 
     /**
@@ -43,8 +49,9 @@ public class CertificateController {
      *                       in the data source
      */
     @PostMapping
-    public void create(@RequestBody CertificateDTO certificateDTO) {
+    public ResponseEntity<String> create(@RequestBody CertificateDTO certificateDTO) {
         certificateService.create(certificateDTO);
+        return ResponseEntity.ok("Certificate was created");
     }
 
     @DeleteMapping("/{certificateId}")
@@ -59,7 +66,8 @@ public class CertificateController {
     }
 
     @GetMapping("/{certificateId}")
-    public CertificateDTO find(@PathVariable long certificateId) {
-        return certificateService.find(certificateId);
+    public ResponseEntity<CertificateDTO> find(@PathVariable long certificateId) {
+        return new ResponseEntity<>(certificateService.find(certificateId), HttpStatus.OK);
     }
+
 }

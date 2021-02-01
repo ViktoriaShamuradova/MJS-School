@@ -5,6 +5,8 @@ import com.epam.esm.persistence.TagDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -45,17 +47,19 @@ public class TagDAOImpl implements TagDAO {
 
     @Override
     public void update(Tag o) {
-        
+
     }
 
     @Override
-    public void create(Tag tag) {
+    public Long create(Tag tag) {
+        KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         template.update(connection -> {
             PreparedStatement ps = connection
                     .prepareStatement(SQL_QUERY_INSERT_TAG, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, tag.getName());
             return ps;
-        });
+        }, generatedKeyHolder);
+        return generatedKeyHolder.getKey().longValue();
     }
 
     @Override

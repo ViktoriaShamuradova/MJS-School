@@ -53,31 +53,32 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public CertificateDTO create(CertificateDTO certificateDTO) {
+    public Long create(CertificateDTO certificateDTO) {
         certificateDTO.setCreateDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
         certificateDTO.setUpdateLastDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
-        certificateDAO.create(certificateDtoMapper.changeDtoToCertificate(certificateDTO));
+        long certificateId = certificateDAO.create(certificateDtoMapper.changeDtoToCertificate(certificateDTO));
 
         if (certificateDTO.getTagList() != null) {
             for (Tag tag : certificateDTO.getTagList()) {
-                Tag tagDTONew = tagService.create(tag);
-                if (tagDTONew != null) {
-                    addLinkCertificateWithTags(certificateDTO.getId(), tagDTONew.getId());
+                if (!tagService.isExist(tag)) {
+                    tagService.create(tag);
                 }
+                tag = tagService.find(tag.getName());
+                addLinkCertificateWithTags(certificateId, tag.getId());
             }
         }
-        return certificateDTO;
+        return certificateId;
     }
 
     @Override
     public CertificateDTO find(Long id) {
-        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".cert","id= "+id));
+        Certificate certificate = certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id));
         return certificateDtoMapper.changeCertificateToDto(certificate, tagService.findByCertificateId(id));
     }
 
     @Override
     public void delete(Long id) {
-        certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException(".cert","id= " + id));
+        certificateDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id));
         certificateDAO.delete(id);
     }
 
@@ -86,7 +87,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (!isFieldsChanged(certificateDTO)) {
             return;
         }
-        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException(".cert", "id= "+ certificateDTO.getId()));
+        certificateDAO.find(certificateDTO.getId()).orElseThrow(() -> new NoSuchResourceException("id= " + certificateDTO.getId()));
         certificateDTO.setUpdateLastDate(Instant.now());
 
         if (certificateDTO.getTagList() != null) {

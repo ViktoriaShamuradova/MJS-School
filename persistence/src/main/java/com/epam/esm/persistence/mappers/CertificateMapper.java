@@ -7,7 +7,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
-
+/**
+ * a class which maps Certificate object and its database analogy
+ * while using org.springframework.jdbc.core.JdbcTemplate
+ */
 public class CertificateMapper implements RowMapper<Certificate> {
     @Override
     public Certificate mapRow(ResultSet rs, int rowNum) throws SQLException {

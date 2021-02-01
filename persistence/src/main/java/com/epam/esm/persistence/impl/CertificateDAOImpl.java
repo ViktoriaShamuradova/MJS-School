@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -98,7 +100,8 @@ public class CertificateDAOImpl implements CertificateDAO {
     }
 
     @Override
-    public void create(Certificate certificate) {
+    public Long create(Certificate certificate) {
+        KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue(CertificateTableColumnName.NAME, certificate.getName())
                 .addValue(CertificateTableColumnName.DESCRIPTION, certificate.getDescription())
@@ -106,7 +109,10 @@ public class CertificateDAOImpl implements CertificateDAO {
                 .addValue(CertificateTableColumnName.DURATION, certificate.getDuration())
                 .addValue(CertificateTableColumnName.CREATE_DATE, certificate.getCreateDate().toEpochMilli())
                 .addValue(CertificateTableColumnName.UPDATE_LAST_DATE, certificate.getUpdateLastDate().toEpochMilli());
-        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_CERTIFICATE, parameterSource);
+
+        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_CERTIFICATE, parameterSource, generatedKeyHolder, new String[]{"id"});
+        Number generatedId = generatedKeyHolder.getKey();
+        return generatedId.longValue();
     }
 
 

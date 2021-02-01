@@ -7,7 +7,7 @@ public interface CrudDAO<T, ID>{
 
     void update(T o);
 
-    void create(T o);
+    ID create(T o);
 
     List<T> findAll();
 
