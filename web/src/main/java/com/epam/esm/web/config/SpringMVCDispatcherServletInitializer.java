@@ -22,10 +22,10 @@ public class SpringMVCDispatcherServletInitializer extends AbstractAnnotationCon
         return new String[]{"/"};
     }
 
-//    @Override
-//    public void onStartup(ServletContext servletContext) throws ServletException {
-//        super.onStartup(servletContext);
-//        servletContext.setInitParameter("spring.profiles.active", "test");
-//    }
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+       // servletContext.setInitParameter("spring.profiles.active", "test");
+    }
 }
 

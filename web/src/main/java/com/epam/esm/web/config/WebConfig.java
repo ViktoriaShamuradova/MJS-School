@@ -20,7 +20,6 @@ public class WebConfig {
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
         source.setBasename("classpath:i18n/messages");//classpath:messages
         source.setDefaultEncoding("UTF-8");
-        //source.setUseCodeAsDefaultMessage(true);
         return source;
     }
 }

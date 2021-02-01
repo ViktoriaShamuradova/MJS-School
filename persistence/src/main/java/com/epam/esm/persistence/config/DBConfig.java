@@ -33,7 +33,6 @@ public class DBConfig {
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.user"));
         dataSource.setPassword(env.getProperty("db.password"));
-        System.out.println("from default");
         return dataSource;
     }
 
@@ -46,6 +45,7 @@ public class DBConfig {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
     }
+
 
 }
 
