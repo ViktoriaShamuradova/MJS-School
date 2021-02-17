@@ -1,0 +1,50 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+bootJar {
+    enabled = false
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
+    group = 'com.epam.esm'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:2.4.2")
+        }
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+       // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+// https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
+
+        implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+        //https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
+        //implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.3'
+
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
