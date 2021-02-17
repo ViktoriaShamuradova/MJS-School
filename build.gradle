@@ -33,13 +33,8 @@ subprojects {
 
     dependencies {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-       // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-// https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
 
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-        //https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
-        //implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '1.2.3'
 
     }
 

@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':model')
     implementation project(':service')
-    // https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
     compile group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.1.Final'
     implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
 }
@@ -10,7 +9,4 @@ bootJar {
     enabled = true
 }
 
-//jar {
-//    enabled = true
-//}
 
