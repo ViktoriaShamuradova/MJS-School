@@ -1,6 +1,7 @@
 package com.epam.esm.web.controller;
 
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,14 @@ public class TagController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param params - map witch contains information about pagination
+     * @param pageInfo - map witch contains information about pagination
      * @return a collection of TagDTO with links, which represents a resource "tag" from data base
      */
     @GetMapping
-    public RepresentationModel<?> findAll(@RequestParam Map<String, String> params) {
-        List<TagDTO> tags = tagService.findAll(params);
+    public RepresentationModel<?> findAll(@RequestParam PageInfo pageInfo) {
+        List<TagDTO> tags = tagService.findAll(pageInfo);
         long tagCount = tagService.getCount();
-        return hateoasBuilder.addLinksForListOfTag(tags, params, tagCount);
+        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
     }
 
     /**

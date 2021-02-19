@@ -1,10 +1,12 @@
 package com.epam.esm.persistence.impl;
 
+import com.epam.esm.dto.Person;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.constant.CertificateTableColumnName;
 import com.epam.esm.persistence.mappers.CertificateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -42,6 +44,13 @@ public class CertificateDAOImpl implements CertificateDAO {
     private static final String NAME_STORED_PROCEDURE_TO_FIND_BY_PART_OF_NAME_OR_DESCRIPTION = "find_certificate_by_part_of_name";
     private static final String NAME_OF_INPUT_PARAMETER_IN_STORED_PROCEDURE_TO_FIND_BY_PART_OF_NAME_OR_DESCRIPTION = "_part";
     private static final String SQL_QUERY_COUNT = "SELECT count(*) FROM certificate;";
+
+
+
+    private String SQL_QUERY_READ_Person_LIST="select * from person";
+    private String SQL_QUERY_INSERT_Person= "INSERT INTO person (instant) VALUES(from_unixtime(:instant*0.001));";
+    private String SQL_QUERY_READ_ONE_Person_BY_ID="select * from person where id=?";
+
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -143,7 +152,7 @@ public class CertificateDAOImpl implements CertificateDAO {
     }
 
     @Override
-    public List<Certificate> findAll(Long id, int limit) {
+    public List<Certificate> findAll(int id, int limit) {
         return jdbcTemplate.query(SQL_QUERY_READ_CERTIFICATES_LIST, new CertificateMapper(), id, limit);
     }
 
@@ -151,5 +160,26 @@ public class CertificateDAOImpl implements CertificateDAO {
     public Optional<Certificate> find(Long id) {
         return jdbcTemplate.query(SQL_QUERY_READ_ONE_CERTIFICATE_BY_ID,
                 new CertificateMapper(), id).stream().findAny();
+    }
+
+
+    public List<Person> findAllPersons() {
+        return jdbcTemplate.query(SQL_QUERY_READ_Person_LIST, new BeanPropertyRowMapper<>(Person.class));
+    }
+
+
+    public Person createPerson(Person person) {
+        KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("instant", person.getInstant().toEpochMilli());
+
+        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_Person, parameterSource, generatedKeyHolder, new String[]{"id"});
+
+        return findPerson(generatedKeyHolder.getKey().longValue()).get();
+    }
+
+    private Optional<Person> findPerson(long id) {
+        return jdbcTemplate.query(SQL_QUERY_READ_ONE_Person_BY_ID,
+                new BeanPropertyRowMapper<>(Person.class), id).stream().findAny();
     }
 }

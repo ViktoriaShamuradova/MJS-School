@@ -1,21 +1,49 @@
 package com.epam.esm.entity;
 
+import javax.annotation.sql.DataSourceDefinition;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "certificate")
 public class Certificate {
-
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "price")
     private BigDecimal price;
+    @Column(name = "description")
     private String description;
+    @Column(name = "duration")
     private Integer duration;
+    @Column(name = "create_date", columnDefinition = "TIMESTAMP")
     private Instant createDate;
+    @Column(name = "last_update_date", columnDefinition = "TIMESTAMP")
     private Instant updateLastDate;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "certificate_tag",
+            joinColumns = @JoinColumn(name = "id_certificate"),
+            inverseJoinColumns = @JoinColumn(name = "id_tag"))
+    private Set<Tag> tags;
 
     public Instant getCreateDate() {
         return createDate;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public void setCreateDate(Instant createDate) {
@@ -68,7 +96,8 @@ public class Certificate {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-//переопределить
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

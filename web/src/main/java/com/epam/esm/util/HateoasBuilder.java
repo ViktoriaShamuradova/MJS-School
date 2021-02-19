@@ -3,7 +3,7 @@ package com.epam.esm.util;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.entity.User;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.web.controller.CertificateController;
 import com.epam.esm.web.controller.TagController;
 import com.epam.esm.web.controller.UserController;
@@ -15,9 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.mediatype.hal.HalModelBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -33,21 +31,25 @@ public class HateoasBuilder {
     }
 
     public RepresentationModel<?> addLinksForListOfCertificates(List<CertificateDTO> certificates,
-                                                                Map<String, String> params, long certificatesCount) {
+                                                                PageInfo pageInfo, long certificatesCount) {
 
         certificates.forEach(certificateDTO -> certificateDTO.add(linkTo(methodOn(CertificateController.class)
                 .find(certificateDTO.getId()))
                 .withSelfRel()));
-        Map<String, Long> page = paginationPreparer.preparePage(params, certificatesCount);
+        PageInfo newPage = paginationPreparer.preparePage(pageInfo, certificatesCount);
         List<Link> links = paginationPreparer.preparePaginationLinks
-                (methodOn(CertificateController.class).findAll(params), params);
+                (methodOn(CertificateController.class).findAll(pageInfo, null), pageInfo);
 
         CollectionModel<CertificateDTO> collectionModel = CollectionModel.of(certificates);
-        return buildModel(collectionModel, links, page);
+        return buildModel(collectionModel, links, newPage);
     }
 
-    private RepresentationModel<?> buildModel(Object entity, List<Link> links, Map<String, Long> page) {
-        return HalModelBuilder.emptyHalModel().links(links).embed(page, LinkRelation.of(Constant.CURRENT_PAGE)).build();
+    private RepresentationModel<?> buildModel(Object entity, List<Link> links, PageInfo pageInfo) {
+        return HalModelBuilder
+                .halModelOf(entity)
+                .links(links)
+                .embed(pageInfo, LinkRelation.of(Constant.CURRENT_PAGE))
+                .build();
     }
 
     public CertificateDTO addLinkForCertificate(CertificateDTO certificate) {
@@ -57,46 +59,47 @@ public class HateoasBuilder {
         return certificate;
     }
 
-    public RepresentationModel<?> addLinksForListOfTag(List<TagDTO> tags, Map<String, String> params, long tagCount) {
+    public RepresentationModel<?> addLinksForListOfTag(List<TagDTO> tags, PageInfo pageInfo, long tagCount) {
         tags.forEach(tag -> tag.add(linkTo(methodOn(TagController.class)
                 .find(tag.getName()))
                 .withSelfRel()));
-        Map<String, Long> page = paginationPreparer.preparePage(params, tagCount);
-        List<Link> links = paginationPreparer.preparePaginationLinks(methodOn(TagController.class).findAll(params), params);
+        PageInfo preparedPage = paginationPreparer.preparePage(pageInfo, tagCount);
+        List<Link> links = paginationPreparer.preparePaginationLinks(methodOn(TagController.class).findAll(pageInfo), pageInfo);
         CollectionModel<TagDTO> collectionModel = CollectionModel.of(tags);
-        return buildModel(collectionModel, links, page);
+        return buildModel(collectionModel, links, preparedPage);
     }
 
     public TagDTO addLinksForTag(TagDTO tag) {
         tag.add(linkTo(methodOn(TagController.class)
                 .find(tag.getName()))
                 .withSelfRel());
-        tag.add(createLinkToGetCertificates(Constant.TAG,
-                tag.getName(), Constant.CERTIFICATES));
+//        tag.add(createLinkToGetCertificates(Constant.TAG,
+//                tag.getName(), Constant.CERTIFICATES));
         return tag;
     }
 
-    private Link createLinkToGetCertificates(String param, String value, String rel) {
-        Map<String, String> params = new HashMap<>();
-        params.put(param, value);
-        return linkTo(methodOn(CertificateController.class)
-                .findAll(params))
-                .withRel(rel);
-    }
+//    private Link createLinkToGetCertificates(String param, String value, String rel) {
+//
+//        Map<String, String> params = new HashMap<>();
+//        params.put(param, value);
+//        return linkTo(methodOn(CertificateController.class)
+//                .findAll(params))
+//                .withRel(rel);
+//    }
 
-    public RepresentationModel<?> addLinksForListOfUsers(List<UserDTO> users, Map<String, String> params, long userCount) {
+    public RepresentationModel<?> addLinksForListOfUsers(List<UserDTO> users, PageInfo pageInfo, long userCount) {
         users.forEach(user -> user.add(linkTo(methodOn(UserController.class)
                 .find(user.getId()))
                 .withSelfRel()));
-        Map<String, Long> page = paginationPreparer.preparePage(params, userCount);
+        PageInfo preparePage = paginationPreparer.preparePage(pageInfo, userCount);
         List<Link> links = paginationPreparer.preparePaginationLinks(
-                methodOn(UserController.class).findAll(params), params);
+                methodOn(UserController.class).findAll(pageInfo), pageInfo);
         CollectionModel<UserDTO> collectionModel = CollectionModel.of(users);
-        return buildModel(collectionModel, links, page);
+        return buildModel(collectionModel, links, preparePage);
     }
 
     private static class Constant {
-        private final static String CURRENT_PAGE = "current page";
+        private final static String CURRENT_PAGE = "currentPage";
         private final static String TAG = "tag";
         private final static String CERTIFICATES = "certificates";
 //        private final static String USER_ID = "userId";

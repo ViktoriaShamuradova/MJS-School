@@ -2,24 +2,36 @@ package com.epam.esm.entity;
 
 import com.epam.esm.dto.CartItem;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
+@Table(name = "order_item")
 public class OrderItem {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long certificateId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_certificate")
+    private Certificate  certificate;
+    @Column(name = "count")
     private int count;
-    private long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_order")
+    private Order order;
+    @Column(name = "price_certificate")
     private BigDecimal priceOfCertificate;
 
     public OrderItem() {
     }
 
     public OrderItem(CartItem cartItem) {
-        certificateId = cartItem.getCertificateDTO().getId();
-        count=cartItem.getCount();
-        priceOfCertificate=cartItem.getCertificateDTO().getPrice();
+       // certificateId = cartItem.getCertificateDTO().getId();
+        count = cartItem.getCount();
+        priceOfCertificate = cartItem.getCertificateDTO().getPrice();
     }
 
     public long getId() {
@@ -30,12 +42,12 @@ public class OrderItem {
         this.id = id;
     }
 
-    public long getCertificateId() {
-        return certificateId;
+    public Certificate getCertificate() {
+        return certificate;
     }
 
-    public void setCertificateId(long certificateId) {
-        this.certificateId = certificateId;
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
     }
 
     public int getCount() {
@@ -46,14 +58,6 @@ public class OrderItem {
         this.count = count;
     }
 
-    public long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
-    }
-
     public BigDecimal getPriceOfCertificate() {
         return priceOfCertificate;
     }
@@ -62,26 +66,34 @@ public class OrderItem {
         this.priceOfCertificate = priceOfCertificate;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItem orderItem = (OrderItem) o;
-        return id == orderItem.id && certificateId == orderItem.certificateId && count == orderItem.count && orderId == orderItem.orderId && Objects.equals(priceOfCertificate, orderItem.priceOfCertificate);
+        return id == orderItem.id && count == orderItem.count && Objects.equals(certificate, orderItem.certificate) && Objects.equals(order, orderItem.order) && Objects.equals(priceOfCertificate, orderItem.priceOfCertificate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, certificateId, count, orderId, priceOfCertificate);
+        return Objects.hash(id, certificate, count, order, priceOfCertificate);
     }
 
     @Override
     public String toString() {
         return "OrderItem{" +
                 "id=" + id +
-                ", certificateId=" + certificateId +
+                ", certificate=" + certificate +
                 ", count=" + count +
-                ", orderId=" + orderId +
+                ", order=" + order +
                 ", priceOfCertificate=" + priceOfCertificate +
                 '}';
     }

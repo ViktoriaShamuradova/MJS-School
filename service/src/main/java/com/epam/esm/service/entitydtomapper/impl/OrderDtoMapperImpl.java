@@ -13,7 +13,7 @@ public class OrderDtoMapperImpl implements OrderDtoMapper {
     @Override
     public Order changeDtoToEntity(OrderReadDto orderUpdateDto) {
         Order order = new Order();
-        order.setUserId(orderUpdateDto.getUserId());
+       // order.setUserId(orderUpdateDto.getUserId());
         order.setTotalSum(orderUpdateDto.getTotalSum());
         order.setCount(orderUpdateDto.getTotalCount());
 
@@ -26,7 +26,7 @@ public class OrderDtoMapperImpl implements OrderDtoMapper {
         orderReadDto.setId(order.getId());
         orderReadDto .setCreateDate(order.getCreateDate());
         orderReadDto.setTotalCount(order.getCount());
-        orderReadDto.setUserId(order.getUserId());
+       // orderReadDto.setUserId(order.getUserId());
         orderReadDto.setTotalSum(order.getTotalSum());
         orderReadDto.setOrderReadItems(orderItems);
         return orderReadDto;

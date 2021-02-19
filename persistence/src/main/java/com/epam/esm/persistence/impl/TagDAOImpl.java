@@ -93,7 +93,7 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public List<Tag> findAll(Long id, int limit) {
+    public List<Tag> findAll(int id, int limit) {
         return template.query(SQL_QUERY_READ_TAG_LIST, new BeanPropertyRowMapper<>(Tag.class), id, limit);
 
     }

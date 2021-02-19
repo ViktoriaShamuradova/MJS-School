@@ -9,6 +9,7 @@ import com.epam.esm.persistence.OrderDAO;
 import com.epam.esm.persistence.OrderItemDAO;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.entitydtomapper.OrderDtoMapper;
 import com.epam.esm.service.entitydtomapper.OrderItemMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -49,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
         Set<OrderReadItemDto> orderReadItemDtos = new HashSet<>();
         orderItems.forEach(orderItem -> {
-            orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem, certificateService.find(orderItem.getCertificateId())));
+          //  orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem, certificateService.find(orderItem.getCertificateId())));
         });
 
         return orderDtoMapper.changeEntityToDto(order, orderReadItemDtos);
@@ -68,13 +69,13 @@ public class OrderServiceImpl implements OrderService {
 
         Order finalO = o;
         orderItems.forEach(orderItem -> {
-            orderItem.setOrderId(finalO.getId());
+           // orderItem.setOrderId(finalO.getId());
             orderItem.setId(orderItemDAO.create(orderItem).get().getId());
         });
 
         Set<OrderReadItemDto> orderReadItemDtos = new HashSet<>();
         orderItems.stream().forEach(orderItem -> {
-            orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem, certificateService.find(orderItem.getCertificateId())));
+          //  orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem, certificateService.find(orderItem.getCertificateId())));
         });
 
         return orderDtoMapper.changeEntityToDto(o, orderReadItemDtos);
@@ -134,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderReadDto> findAll(Map<String, String> params) {
+    public List<OrderReadDto> findAll(PageInfo pageInfo) {
         return null;
     }
 

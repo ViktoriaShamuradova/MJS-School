@@ -1,22 +1,37 @@
 package com.epam.esm.entity;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "order")
 public class Order {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name ="id_user")
+    private User user;
+    @Column(name = "total_sum")
     private BigDecimal totalSum;
+    @Column(name = "count")
     private Integer count;
+    @Column(name = "create_date", columnDefinition = "TIMESTAMP")
     private Instant createDate;
+    //если удалить заказ, то будет произведено каскадное удаление, т.е. удалиться и заказ и его составляющие
+    //сли удалить оrder_item, то order не удалится, так как оrder_item не имеет связь с order
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    private Set<OrderItem> orderItems;
 
     public Order() {
     }
 
     public Order(long userId, Set<OrderItem> orderItems) {
-        this.userId = userId;
+       // this.userId = userId;
         createDate = Instant.now();
         calcSumAndCount(orderItems);
     }
@@ -29,12 +44,20 @@ public class Order {
         this.id = id;
     }
 
-    public long getUserId() {
-        return userId;
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public BigDecimal getTotalSum() {
@@ -61,27 +84,29 @@ public class Order {
         this.createDate = createDate;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && userId == order.userId && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate);
+        return id == order.id && Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate) && Objects.equals(orderItems, order.orderItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, totalSum, count, createDate);
+        return Objects.hash(id, user, totalSum, count, createDate, orderItems);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", userId=" + userId +
+                ", user=" + user +
                 ", totalSum=" + totalSum +
-                ", totalCount=" + count +
+                ", count=" + count +
                 ", createDate=" + createDate +
+                ", orderItems=" + orderItems +
                 '}';
     }
 

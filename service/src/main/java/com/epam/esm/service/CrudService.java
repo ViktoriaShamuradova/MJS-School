@@ -1,10 +1,9 @@
 package com.epam.esm.service;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CrudService<T, ID> {
-    List<T> findAll(Map<String, String> params);
+    List<T> findAll(PageInfo pageInfo);
 
     T create(T t);
 

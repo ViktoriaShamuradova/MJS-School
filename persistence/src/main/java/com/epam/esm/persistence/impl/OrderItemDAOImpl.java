@@ -37,9 +37,9 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     public Optional<OrderItem> create(OrderItem orderItem) {
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(OrderItemTableColumnName.ID_CERTIFICATE, orderItem.getCertificateId())
+              //  .addValue(OrderItemTableColumnName.ID_CERTIFICATE, orderItem.getCertificateId())
                 .addValue(OrderItemTableColumnName.COUNT, orderItem.getCount())
-                .addValue(OrderItemTableColumnName.ID_ORDER, orderItem.getOrderId())
+                //.addValue(OrderItemTableColumnName.ID_ORDER, orderItem.getOrderId())
                 .addValue(OrderItemTableColumnName.PRICE_CERTIFICATE, orderItem.getPriceOfCertificate());
         namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_ORDER_ITEM, parameterSource, generatedKeyHolder, new String[]{"id"});
 
@@ -47,7 +47,7 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     }
 
     @Override
-    public List<OrderItem> findAll(Long aLong, int limit) {
+    public List<OrderItem> findAll(int id, int limit) {
         return null;
     }
 

@@ -5,5 +5,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.4.2'
 
+    compile group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.1.Final'
 }
+//jar {
+//    enabled = true
+//}

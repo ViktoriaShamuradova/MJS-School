@@ -1,18 +1,21 @@
 package com.epam.esm.web.controller;
 
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.exception.ExceptionCode;
+import com.epam.esm.service.exception.ValidationException;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/certificates", produces = "application/json; charset=utf-8")
@@ -31,15 +34,21 @@ public class CertificateController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param params - map witch contains information about pagination
+     * @param pageInfo - object witch contains information about pagination
      * @return a collection of CertificatesDTO, which represents a resource "certificates" from data base with links
-     */
-    @GetMapping
-    public RepresentationModel<?> findAll(@RequestParam Map<String, String> params) {
-        List<CertificateDTO> certificates = certificateService.findAll(params);
+    */
+
+    @GetMapping()
+    public ResponseEntity<RepresentationModel<?>> findAll(@Valid PageInfo pageInfo, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//           throw new ValidationException(ExceptionCode.NOT_VALID_PAGE_INFO.getErrorCode());
+//        }
+        List<CertificateDTO> certificates = certificateService.findAll(pageInfo);
         long certificateCount = certificateService.getCount();
-        return hateoasBuilder.addLinksForListOfCertificates(certificates, params, certificateCount);
+        return new ResponseEntity<>(hateoasBuilder.addLinksForListOfCertificates(certificates, pageInfo, certificateCount),
+                HttpStatus.OK);
     }
+
 
     @GetMapping("/find")
     public ResponseEntity<List<CertificateDTO>> findByTags(@RequestParam List<String> tagNames) {

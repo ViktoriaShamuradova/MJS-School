@@ -1,14 +1,33 @@
 package com.epam.esm.entity;
 
+import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+@Entity
+@Table(name = "user")
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "create_date", columnDefinition = "TIMESTAMP")
     private Instant createDate;
+    @Column(name = "last_update_date", columnDefinition = "TIMESTAMP")
     private Instant lastUpdateDate;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Order> orders;
+
+
+    public User() {
+    }
 
     public long getId() {
         return id;
@@ -50,6 +69,39 @@ public class User {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    public Instant getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public void addOrder(Order order) {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        orders.add(order);
+        order.setUser(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(createDate, user.createDate) && Objects.equals(lastUpdateDate, user.lastUpdateDate) && Objects.equals(orders, user.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, createDate, lastUpdateDate, orders);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -58,6 +110,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", createDate=" + createDate +
                 ", lastUpdateDate=" + lastUpdateDate +
+                ", orders=" + orders +
                 '}';
     }
 }

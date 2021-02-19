@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.TagMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -29,11 +30,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TagDTO> findAll(Map<String, String> params) {
-        int pageNumber = Integer.parseInt(params.get("current page"));
-        int limit = Integer.parseInt(params.get("limit"));
-        long id = ((long) pageNumber * limit) - limit;
-        return getListTagDto(tagDAO.findAll(id, limit));
+    public List<TagDTO> findAll(PageInfo pageInfo) {
+        int pageNumber = pageInfo.getCurrentPage();
+        int limit = pageInfo.getLimit();
+        int offset = (pageNumber * limit) - limit;
+        return getListTagDto(tagDAO.findAll(offset, limit));
     }
 
     @Override

@@ -39,7 +39,7 @@ public class OrderDAOImpl implements OrderDAO {
     public Optional<Order> create(Order order) {
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(OrderTableColumnName.ID_USER, order.getUserId())
+                //.addValue(OrderTableColumnName.ID_USER, order.getUserId())
                 .addValue(OrderTableColumnName.COUNT, order.getCount())
                 .addValue(OrderTableColumnName.TOTAL_SUM, order.getTotalSum())
                 .addValue(OrderTableColumnName.CREATE_DATE, order.getCreateDate().toEpochMilli());
@@ -49,7 +49,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> findAll(Long aLong, int limit) {
+    public List<Order> findAll(int id, int limit) {
         return null;
     }
 

@@ -1,3 +1,5 @@
+apply plugin: 'org.springframework.boot'
+
 dependencies {
     implementation project(':model')
     implementation project(':service')
@@ -7,6 +9,10 @@ dependencies {
 
 bootJar {
     enabled = true
+    //mainClass = 'com.epam.esm.Application'
+}
+jar {
+    enabled = false
 }
 
 

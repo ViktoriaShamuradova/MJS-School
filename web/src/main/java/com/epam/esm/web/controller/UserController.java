@@ -1,13 +1,14 @@
 package com.epam.esm.web.controller;
 
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.entity.User;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +34,10 @@ public class UserController {
      * @return a collection of User, which represents a resource "user" from data base
      */
     @GetMapping
-    public RepresentationModel<?> findAll(@RequestParam Map<String, String> params) {
-        List<UserDTO> users = userService.findAll(params);
+    public RepresentationModel<?> findAll(@Valid PageInfo pageInfo) {
+        List<UserDTO> users = userService.findAll(pageInfo);
         long userCount = userService.getCount();
-        return hateoasBuilder.addLinksForListOfUsers(users, params, userCount);
+        return hateoasBuilder.addLinksForListOfUsers(users, pageInfo, userCount);
     }
 
     /**

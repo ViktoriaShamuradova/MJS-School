@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
+import com.epam.esm.dto.Person;
 
 import java.util.List;
 
@@ -18,5 +19,9 @@ public interface CertificateService extends CrudService<CertificateDTO, Long> {
     List<CertificateDTO> findByTags(List<String> tagNames);
 
     long getCount();
+
+    Person createPerson(Person person);
+
+    List<Person> findAllPersons();
 }
 

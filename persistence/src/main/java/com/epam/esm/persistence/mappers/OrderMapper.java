@@ -17,7 +17,7 @@ public class OrderMapper implements RowMapper<Order> {
         order.setCount(rs.getInt(OrderTableColumnName.COUNT));
         order.setTotalSum(rs.getBigDecimal(OrderTableColumnName.TOTAL_SUM));
         order.setCreateDate(Instant.ofEpochMilli(rs.getLong(OrderTableColumnName.CREATE_DATE)));
-        order.setUserId(rs.getInt(OrderTableColumnName.ID_USER));
+       // order.setUserId(rs.getInt(OrderTableColumnName.ID_USER));
 
         return order;
     }

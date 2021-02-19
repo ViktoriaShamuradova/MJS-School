@@ -12,8 +12,8 @@ public class OrderItemMapper implements RowMapper<OrderItem> {
         OrderItem or = new OrderItem();
         or.setId(rs.getInt("id"));
         or.setCount(rs.getInt("count"));
-        or.setOrderId(rs.getInt("id_order"));
-        or.setCertificateId(rs.getInt("id_certificate"));
+       // or.setOrderId(rs.getInt("id_order"));
+      //  or.setCertificateId(rs.getInt("id_certificate"));
         or.setPriceOfCertificate(rs.getBigDecimal("price_certificate"));
 
         return or;

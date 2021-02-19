@@ -9,7 +9,9 @@ public enum ExceptionCode {
     NO_SUCH_CERTIFICATE_FOUND("40401"),
     NO_SUCH_USER_FOUND("40403"),
     NO_SUCH_TAG_FOUND("40402"),
-    NO_SUCH_ORDER_FOUND("40404");
+    NO_SUCH_ORDER_FOUND("40404"),
+
+    NOT_VALID_PAGE_INFO("40005");
 
     private final String errorCode;
 

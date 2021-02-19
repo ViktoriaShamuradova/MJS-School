@@ -1,18 +1,44 @@
 package com.epam.esm.entity;
 
+import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "tag")
 public class Tag {
+
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "name")
     private String name;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "certificate_tag",
+            joinColumns = @JoinColumn(name = "id_tag"),
+            inverseJoinColumns = @JoinColumn(name = "id_certificate"))
+    private Set<Certificate> certificates;
 
     public Tag(String name) {
         this.name = name;
     }
-    public Tag(){}
+
+    public Tag() {
+    }
 
     public long getId() {
         return id;
+    }
+
+    public Set<Certificate> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(Set<Certificate> certificates) {
+        this.certificates = certificates;
     }
 
     public void setId(long id) {

@@ -2,10 +2,12 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
+import com.epam.esm.dto.Person;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.CertificateDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -52,13 +54,12 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDAO.addLinkCertificateWithTags(certificateId, tagId);
     }
 
-
     @Override
-    public List<CertificateDTO> findAll(Map<String, String> params) {
-        int pageNumber = Integer.parseInt(params.get("current page"));
-        int limit = Integer.parseInt(params.get("limit"));
-        long id = ((long) pageNumber * limit) - limit;
-        return getListCertificateDto(certificateDAO.findAll(id, limit));
+    public List<CertificateDTO> findAll(PageInfo pageInfo) {
+        int pageNumber = pageInfo.getCurrentPage();
+        int limit = pageInfo.getLimit();
+        int offset = (pageNumber * limit) - limit;
+        return getListCertificateDto(certificateDAO.findAll(offset, limit));
     }
 
     @Override
@@ -143,6 +144,17 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificateDTO update(CertificateDTO certificateDTO) {
         throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+    }
+
+
+
+    public List<Person> findAllPersons() {
+        return certificateDAO.findAllPersons();
+    }
+
+
+    public Person createPerson(Person person) {
+        return certificateDAO.createPerson(person);
     }
 
 }
