@@ -10,6 +10,9 @@ import java.util.Set;
 public class CertificateUpdateDto {
 
     @NotNull
+    private JsonNullable<Long> id = JsonNullable.undefined();
+
+    @NotNull
     private JsonNullable<String> name = JsonNullable.undefined();
 
     private JsonNullable<String> description = JsonNullable.undefined();
@@ -43,4 +46,7 @@ public class CertificateUpdateDto {
         return price;
     }
 
+    public JsonNullable<Long> getId() {
+        return id;
+    }
 }

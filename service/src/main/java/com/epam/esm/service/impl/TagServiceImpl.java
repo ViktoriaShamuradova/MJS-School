@@ -1,11 +1,12 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.service.PageInfo;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.entitydtomapper.TagMapper;
+import com.epam.esm.service.entitydtomapper.impl.TagMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.NotSupportedException;
@@ -28,13 +29,19 @@ public class TagServiceImpl implements TagService {
         this.tagDAO = tagDAO;
     }
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<TagDTO> findAll(PageInfo pageInfo) {
+//        int pageNumber = pageInfo.getCurrentPage();
+//        int limit = pageInfo.getLimit();
+//        int offset = (pageNumber * limit) - limit;
+//        return getListTagDto(tagDAO.findAll(offset, limit));
+//    }
+
     @Override
-    @Transactional(readOnly = true)
-    public List<TagDTO> findAll(PageInfo pageInfo) {
-        int pageNumber = pageInfo.getCurrentPage();
-        int limit = pageInfo.getLimit();
-        int offset = (pageNumber * limit) - limit;
-        return getListTagDto(tagDAO.findAll(offset, limit));
+    public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
+
+        return null;
     }
 
     @Override
@@ -43,20 +50,26 @@ public class TagServiceImpl implements TagService {
         if (tagOptional.isPresent()) {
             return mapper.changeToDto(tagOptional.get());
         } else {
-            return mapper.changeToDto(tagDAO.create(mapper.changeToEntity(tag)).get());
+            long id = tagDAO.create(mapper.changeToEntity(tag);
+            tag.setId(id);
+            return tag;
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TagDTO find(Long id) {
+    public TagDTO findById(Long id) {
         return mapper.changeToDto(tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
     }
 
     @Override
-    public void delete(Long id) {
-        tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id));
-        tagDAO.delete(id);
+    public boolean delete(Long id) {
+        Optional<Tag> tag = tagDAO.find(id);
+        if (tag.isPresent()) {
+            tagDAO.delete(tag.get());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -77,9 +90,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void delete(String name) {
-        tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name));
-        tagDAO.delete(name);
+    public boolean delete(String name) {
+        Optional<Tag> tag = tagDAO.find(name);
+        if (tag.isPresent()) {
+            tagDAO.delete(tag.get());
+            return true;
+        }
+        return false;
     }
 
     @Override

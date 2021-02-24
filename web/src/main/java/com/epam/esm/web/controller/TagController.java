@@ -1,20 +1,16 @@
 package com.epam.esm.web.controller;
 
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * a class which performs REST's CRUD operations on a resource called "Tag"
@@ -40,9 +36,10 @@ public class TagController {
      */
     @GetMapping
     public RepresentationModel<?> findAll(@RequestParam PageInfo pageInfo) {
-        List<TagDTO> tags = tagService.findAll(pageInfo);
-        long tagCount = tagService.getCount();
-        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
+//        List<TagDTO> tags = tagService.findAll(pageInfo);
+//        long tagCount = tagService.getCount();
+//        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
+        return null;
     }
 
     /**

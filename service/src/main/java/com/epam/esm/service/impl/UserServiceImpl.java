@@ -1,9 +1,11 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.criteria_info.CriteriaInfo;
+import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDAO;
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.entitydtomapper.UserMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -27,13 +29,14 @@ public class UserServiceImpl implements UserService {
         this.userDAO = userDAO;
     }
 
-    @Override
-    public List<UserDTO> findAll(PageInfo pageInfo) {
-        int pageNumber = pageInfo.getCurrentPage();
-        int limit = pageInfo.getLimit();
-        int offset = (pageNumber * limit) - limit;
-        return getList(userDAO.findAll(offset, limit));
-    }
+//    @Override
+//    public List<UserDTO> findAll(PageInfo pageInfo) {
+//        int pageNumber = pageInfo.getCurrentPage();
+//        int limit = pageInfo.getLimit();
+//        int offset = (pageNumber * limit) - limit;
+//        return null;
+//        //return getList(userDAO.findAll(offset, limit));
+//    }
 
     @Override
     public UserDTO find(Long id) {
@@ -52,6 +55,11 @@ public class UserServiceImpl implements UserService {
         throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
     }
 
+
+    @Override
+    public List<UserDTO> findAll(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
+        return null;
+    }
 
     @Override
     public UserDTO create(UserDTO user) {

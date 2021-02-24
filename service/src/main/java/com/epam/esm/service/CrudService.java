@@ -1,15 +1,18 @@
 package com.epam.esm.service;
 
+import com.epam.esm.criteria_info.CriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
+
 import java.util.List;
 
-public interface CrudService<T, ID> {
-    List<T> findAll(PageInfo pageInfo);
+public interface CrudService<T, ID, CRITERIA extends CriteriaInfo> {
+    List<T> find(PageInfo pageInfo, CRITERIA criteriaInfo);
 
     T create(T t);
 
-    T find(ID id);
+    T findById(ID id);
 
-    void delete(ID id);
+    boolean delete(ID id);
 
     T update(T t);
 }

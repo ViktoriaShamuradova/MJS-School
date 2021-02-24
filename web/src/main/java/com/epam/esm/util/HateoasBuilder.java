@@ -3,7 +3,7 @@ package com.epam.esm.util;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.web.controller.CertificateController;
 import com.epam.esm.web.controller.TagController;
 import com.epam.esm.web.controller.UserController;
@@ -38,7 +38,7 @@ public class HateoasBuilder {
                 .withSelfRel()));
         PageInfo newPage = paginationPreparer.preparePage(pageInfo, certificatesCount);
         List<Link> links = paginationPreparer.preparePaginationLinks
-                (methodOn(CertificateController.class).findAll(pageInfo, null), pageInfo);
+                (methodOn(CertificateController.class).find(pageInfo, null), pageInfo);
 
         CollectionModel<CertificateDTO> collectionModel = CollectionModel.of(certificates);
         return buildModel(collectionModel, links, newPage);

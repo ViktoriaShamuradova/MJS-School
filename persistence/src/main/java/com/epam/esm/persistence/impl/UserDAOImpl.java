@@ -2,11 +2,11 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDAO;
+import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
@@ -22,15 +22,13 @@ public class UserDAOImpl implements UserDAO {
     @Autowired
     private EntityManager entityManager;
 
-    private static final String SQL_QUERY_COUNT = "SELECT count(*) FROM user;";
-
     @Autowired
     public UserDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
-    public List<User> findAll(int offset, int limit) {
+    public List<User> findAll(List<Specification> specifications, int offset, int limit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         criteriaQuery.from(User.class);
@@ -53,15 +51,15 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(Long id) {
     }
 
     @Override
-    public void update(User o) {
+    public void update(User user) {
     }
 
     @Override
-    public Optional<User> create(User o) {
+    public Optional<User> create(User user) {
         return Optional.empty();
     }
 

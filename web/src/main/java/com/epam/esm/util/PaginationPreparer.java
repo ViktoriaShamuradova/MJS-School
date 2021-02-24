@@ -1,6 +1,6 @@
 package com.epam.esm.util;
 
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 

@@ -1,17 +1,15 @@
 package com.epam.esm.web.controller;
 
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.CertificateCriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.exception.ExceptionCode;
-import com.epam.esm.service.exception.ValidationException;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,31 +32,17 @@ public class CertificateController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo - object witch contains information about pagination
+     * @param pageInfo     - object witch contains information about pagination
+     * @param criteriaInfo - object with information about certificate to search
      * @return a collection of CertificatesDTO, which represents a resource "certificates" from data base with links
-    */
+     */
 
     @GetMapping()
-    public ResponseEntity<RepresentationModel<?>> findAll(@Valid PageInfo pageInfo, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//           throw new ValidationException(ExceptionCode.NOT_VALID_PAGE_INFO.getErrorCode());
-//        }
-        List<CertificateDTO> certificates = certificateService.findAll(pageInfo);
+    public ResponseEntity<RepresentationModel<?>> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
+        List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
         long certificateCount = certificateService.getCount();
         return new ResponseEntity<>(hateoasBuilder.addLinksForListOfCertificates(certificates, pageInfo, certificateCount),
                 HttpStatus.OK);
-    }
-
-
-    @GetMapping("/find")
-    public ResponseEntity<List<CertificateDTO>> findByTags(@RequestParam List<String> tagNames) {
-        return new ResponseEntity<>(certificateService.findByTags(tagNames), HttpStatus.OK);
-    }
-
-    @GetMapping("/find/{partOfNameOrDescription}")
-    public ResponseEntity<List<CertificateDTO>> findByPartOfNameOrDescription(@PathVariable("partOfNameOrDescription") String partOfNameOrDescription) {
-        List<CertificateDTO> certificates = certificateService.findByPartOfNameOrDescription(partOfNameOrDescription);
-        return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
     /**
@@ -76,19 +60,6 @@ public class CertificateController {
         return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
     }
 
-//    @PostMapping
-//    public ResponseEntity<CertificateDTO> create(@RequestBody CertificateDTO certificateDTO, UriComponentsBuilder builder) {
-//
-//        CertificateDTO certificate = certificateService.create(certificateDTO);
-//
-//        UriComponents uriComponents =
-//                builder.path("/{id}").buildAndExpand(certificate.getId());
-//
-//        HttpHeaders responseHeaders = new HttpHeaders();
-//        responseHeaders.setLocation(uriComponents.toUri());
-//        return new ResponseEntity<>(certificate, responseHeaders, HttpStatus.CREATED);
-//    }
-
     /**
      * a method which realizes REST's DELETE operation of a specific resource with ID stored in a request path
      *
@@ -97,22 +68,22 @@ public class CertificateController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable long id) {
-        certificateService.delete(id);
-        return ResponseEntity.ok("Certificate with id= " + id + " was deleted");
+        if (certificateService.delete(id)) {
+            return ResponseEntity.ok("Certificate with id= " + id + " was deleted");
+        } else {
+            return ResponseEntity.ok("Certificate with id= " + id + " was not found and not deleted");
+        }
     }
 
     /**
      * a method which realizes REST's UPDATE operation of a specific resource with ID stored in a request path
      * and CertificateUpdateDto
-     *
-     * @param id                   an identification number of a resource which should be updated
      * @param certificateUpdateDto contains information for updating certificate in data base
      * @return an object which represents Http response of certificate with links
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<CertificateDTO> update(@PathVariable("id") long id,
-                                                 @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
-        CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
+    @PatchMapping()
+    public ResponseEntity<CertificateDTO> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
+        CertificateDTO certificate = certificateService.update(certificateUpdateDto);
         return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
     }
 
@@ -124,7 +95,8 @@ public class CertificateController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<CertificateDTO> find(@PathVariable long id) {
-        CertificateDTO certificate = certificateService.find(id);
+        CertificateDTO certificate = certificateService.findById(id);
         return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
     }
+
 }

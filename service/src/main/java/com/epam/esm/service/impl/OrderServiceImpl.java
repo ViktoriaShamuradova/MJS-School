@@ -1,5 +1,7 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.criteria_info.CriteriaInfo;
+import com.epam.esm.criteria_info.OrderCriteriaInfo;
 import com.epam.esm.dto.CartContext;
 import com.epam.esm.dto.OrderReadDto;
 import com.epam.esm.dto.OrderReadItemDto;
@@ -9,7 +11,7 @@ import com.epam.esm.persistence.OrderDAO;
 import com.epam.esm.persistence.OrderItemDAO;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.service.entitydtomapper.OrderDtoMapper;
 import com.epam.esm.service.entitydtomapper.OrderItemMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
         Set<OrderReadItemDto> orderReadItemDtos = new HashSet<>();
         orderItems.forEach(orderItem -> {
-          //  orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem, certificateService.find(orderItem.getCertificateId())));
+          orderReadItemDtos.add(orderItemMapper.changeEntityToDto(orderItem));
         });
 
         return orderDtoMapper.changeEntityToDto(order, orderReadItemDtos);
@@ -103,6 +105,11 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    public List<OrderReadDto> findAll(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
+        return null;
+    }
+
+    @Override
     public OrderReadDto create(OrderReadDto orderReadDto) {
         return null;
     }
@@ -133,11 +140,6 @@ public class OrderServiceImpl implements OrderService {
         return totalSum;
     }
 
-
-    @Override
-    public List<OrderReadDto> findAll(PageInfo pageInfo) {
-        return null;
-    }
 
 
 //    private Order formOrder(Long userId, Set<OrderItem> orderItems) {

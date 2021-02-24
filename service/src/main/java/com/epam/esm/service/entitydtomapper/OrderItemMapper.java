@@ -6,6 +6,6 @@ import com.epam.esm.entity.OrderItem;
 
 public interface OrderItemMapper {
 
-    OrderReadItemDto changeEntityToDto(OrderItem orderItem, CertificateDTO certificateDTO);
+    OrderReadItemDto changeEntityToDto(OrderItem orderItem);
 
 }

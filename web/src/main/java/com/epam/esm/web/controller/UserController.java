@@ -1,7 +1,7 @@
 package com.epam.esm.web.controller;
 
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.service.PageInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * a class which performs GET operations on a resource called "user"
@@ -27,7 +26,6 @@ public class UserController {
         this.hateoasBuilder=hateoasBuilder;
         this.userService = userService;
     }
-
     /**
      * a method which realizes REST's READ operation of all resources
      *
@@ -35,11 +33,11 @@ public class UserController {
      */
     @GetMapping
     public RepresentationModel<?> findAll(@Valid PageInfo pageInfo) {
-        List<UserDTO> users = userService.findAll(pageInfo);
-        long userCount = userService.getCount();
-        return hateoasBuilder.addLinksForListOfUsers(users, pageInfo, userCount);
+//        List<UserDTO> users = userService.findAll(pageInfo);
+//        long userCount = userService.getCount();
+//        return hateoasBuilder.addLinksForListOfUsers(users, pageInfo, userCount);
+        return null;
     }
-
     /**
      * a method which realizes REST's READ operation of a specific resource with name stored in a request path
      *
@@ -48,7 +46,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public UserDTO find(@PathVariable("id") long id) {
-        return userService.find(id);
+        return userService.findById(id);
     }
 }
 

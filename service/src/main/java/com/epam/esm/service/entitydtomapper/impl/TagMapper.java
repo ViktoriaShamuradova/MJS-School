@@ -2,11 +2,11 @@ package com.epam.esm.service.entitydtomapper.impl;
 
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.entitydtomapper.TagMapper;
+import com.epam.esm.service.entitydtomapper.DtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TagMapperImp implements TagMapper {
+public class TagMapper implements DtoMapper<Tag, TagDTO> {
 
     @Override
     public Tag changeToEntity(TagDTO tagDTO) {

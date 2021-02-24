@@ -1,6 +1,5 @@
 package com.epam.esm.service.entitydtomapper.impl;
 
-import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderReadItemDto;
 import com.epam.esm.entity.OrderItem;
 import com.epam.esm.service.entitydtomapper.OrderItemMapper;
@@ -12,10 +11,11 @@ import java.math.BigDecimal;
 public class OrderItemMapperImpl implements OrderItemMapper {
 
     @Override
-    public OrderReadItemDto changeEntityToDto(OrderItem orderItem, CertificateDTO certificateDTO) {
+    public OrderReadItemDto changeEntityToDto(OrderItem orderItem) {
         OrderReadItemDto orderReadItem = new OrderReadItemDto();
 
-        orderReadItem.setCertificateDTO(certificateDTO);
+
+        orderReadItem.setCertificateDTO(new CertificateDtoMapper().changeToDto(orderItem.getCertificate()));
         orderReadItem.setTotalCount(orderItem.getCount());
         orderReadItem.setTotalSum(orderItem.getPriceOfCertificate().multiply(BigDecimal.valueOf(orderItem.getCount())));
         orderReadItem.setPriceOfCertificateAtTheTimeOfPurchase(orderItem.getPriceOfCertificate());

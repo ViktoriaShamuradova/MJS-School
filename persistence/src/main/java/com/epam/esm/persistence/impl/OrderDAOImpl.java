@@ -4,6 +4,7 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.persistence.OrderDAO;
 import com.epam.esm.persistence.constant.OrderTableColumnName;
 import com.epam.esm.persistence.mappers.OrderMapper;
+import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -49,7 +50,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> findAll(int id, int limit) {
+    public List<Order> findAll(List<Specification> specifications, int id, int limit) {
         return null;
     }
 

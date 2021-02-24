@@ -2,6 +2,7 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
+import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -93,7 +94,7 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public List<Tag> findAll(int id, int limit) {
+    public List<Tag> findAll(List<Specification> specifications, int id, int limit) {
         return template.query(SQL_QUERY_READ_TAG_LIST, new BeanPropertyRowMapper<>(Tag.class), id, limit);
 
     }
