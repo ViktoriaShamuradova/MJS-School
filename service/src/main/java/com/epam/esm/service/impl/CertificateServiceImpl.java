@@ -10,6 +10,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification_builder.SpecificationBuilder;
+import com.epam.esm.persistence.specification_builder.impl.CertificateSpecificationBuilder;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.impl.CertificateDtoMapper;
@@ -20,6 +21,7 @@ import com.epam.esm.service.exception.NotSupportedException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -35,14 +37,14 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateDAO certificateDAO;
     private final TagService tagService;
     private final CertificateDtoMapper certificateDtoMapper;
-    private final SpecificationBuilder specificationBuilder;
+    private final CertificateSpecificationBuilder specificationBuilder;
     private final PaginationValidator paginationValidator;
 
     @Autowired
     public CertificateServiceImpl(CertificateDAO certificateDAO,
                                   CertificateDtoMapper certificateDtoMapper,
                                   TagService tagService,
-                                  SpecificationBuilder specificationBuilder,
+                                  CertificateSpecificationBuilder specificationBuilder,
                                   PaginationValidator paginationValidator) {
         this.certificateDAO = certificateDAO;
         this.certificateDtoMapper = certificateDtoMapper;
@@ -51,15 +53,9 @@ public class CertificateServiceImpl implements CertificateService {
         this.paginationValidator = paginationValidator;
     }
 
-
-//    @Override
-//    public List<CertificateDTO> findByTagId(long id) {
-//        tagService.find(id);
-//        return getListCertificateDto(certificateDAO.findByTagId(id));
-//    }
-
     //переименовать
     @Override
+    @Transactional(readOnly = true)
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
@@ -67,16 +63,17 @@ public class CertificateServiceImpl implements CertificateService {
         return getListCertificateDto(certificates);
     }
 
+    @Transactional
     @Override
     public CertificateDTO create(CertificateDTO certificateDTO) {
         certificateDTO.setCreateDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
         certificateDTO.setUpdateLastDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
+
+        for (TagDTO t : certificateDTO.getTags()) {
+            t.setId(tagService.create(t).getId());
+        }
         long id = certificateDAO.create(certificateDtoMapper.changeToEntity(certificateDTO));
         certificateDTO.setId(id);
-
-        if (certificateDTO.getTags() != null) {
-            certificateDTO.getTags().forEach(tagService::create);
-        }
 
         return certificateDTO;
     }
@@ -88,6 +85,7 @@ public class CertificateServiceImpl implements CertificateService {
         return certificateDtoMapper.changeToDto(certificate);
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) {
         Optional<Certificate> certificate = certificateDAO.find(id);

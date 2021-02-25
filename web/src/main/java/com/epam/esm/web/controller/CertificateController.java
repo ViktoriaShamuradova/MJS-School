@@ -50,8 +50,7 @@ public class CertificateController {
      *
      * @param certificateDTO an object which represents a resource "certificates" that must be created
      *                       in the data source
-     * @return an object which represents Http response of CREATE operation,
-     * which body contains an information about successful creature
+     * @return an object which represents Http response of CREATE operation
      */
 
     @PostMapping

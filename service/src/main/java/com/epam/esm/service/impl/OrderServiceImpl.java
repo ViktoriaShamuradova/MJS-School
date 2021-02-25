@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderReadDto find(Long id) {
+    public OrderReadDto findById(Long id) {
         Order order = orderDAO.find(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_ORDER_FOUND.getErrorCode(), "id= " + id));
 
@@ -67,12 +67,12 @@ public class OrderServiceImpl implements OrderService {
         });
 
         Order o = new Order(cart.getUserId(), orderItems);
-        o = orderDAO.create(o).get();
+        o.setId( orderDAO.create(o));
 
         Order finalO = o;
         orderItems.forEach(orderItem -> {
            // orderItem.setOrderId(finalO.getId());
-            orderItem.setId(orderItemDAO.create(orderItem).get().getId());
+            //orderItem.setId(orderItemDAO.create(orderItem).get().getId());
         });
 
         Set<OrderReadItemDto> orderReadItemDtos = new HashSet<>();
@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderReadDto> findAll(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
+    public List<OrderReadDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
         return null;
     }
 
@@ -115,8 +115,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void delete(Long aLong) {
-
+    public boolean delete(Long aLong) {
+return false;
     }
 
     @Override

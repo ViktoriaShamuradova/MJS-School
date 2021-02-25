@@ -37,7 +37,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 
     @Override
-    public Optional<Order> create(Order order) {
+    public Long create(Order order) {
         KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 //.addValue(OrderTableColumnName.ID_USER, order.getUserId())
@@ -46,7 +46,8 @@ public class OrderDAOImpl implements OrderDAO {
                 .addValue(OrderTableColumnName.CREATE_DATE, order.getCreateDate().toEpochMilli());
         namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_ORDER, parameterSource, generatedKeyHolder, new String[]{"id"});
 
-        return find(generatedKeyHolder.getKey().longValue());
+       // return find(generatedKeyHolder.getKey().longValue());
+        return null;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(Order order) {
 
     }
 

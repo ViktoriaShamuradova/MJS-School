@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateDTO> {
@@ -23,6 +24,15 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
         certificate.setDuration(dto.getDuration());
         certificate.setCreateDate(dto.getCreateDate());
         certificate.setUpdateLastDate(dto.getUpdateLastDate());
+
+        TagMapper mapperImp = new TagMapper();
+        Set<TagDTO> tagsDTO = dto.getTags();
+
+        Set<Tag> tags = tagsDTO.stream()
+                .map(tagDTO -> new Tag(tagDTO.getId(), tagDTO.getName()))
+                .collect(Collectors.toSet());
+
+        certificate.setTags(tags);
         return certificate;
     }
 
@@ -39,7 +49,7 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
 
         Set<Tag> tags = certificate.getTags();
         Set<TagDTO> tagsDTO = new HashSet<>();
-        TagMapperImp mapperImp = new TagMapperImp();
+        TagMapper mapperImp = new TagMapper();
         tags.forEach(tag -> {
             tagsDTO.add(mapperImp.changeToDto(tag));
         });

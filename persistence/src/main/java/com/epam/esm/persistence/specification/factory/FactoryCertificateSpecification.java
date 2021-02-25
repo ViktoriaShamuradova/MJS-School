@@ -6,7 +6,7 @@ import com.epam.esm.persistence.specification.SortSpecification;
 import com.epam.esm.persistence.specification.Specification;
 
 
-public class FactoryCertificateSpecification {
+public class FactoryCertificateSpecification extends FactorySpecification{
 
     public static final SortSpecification SORT_BY_DATE_ASC =
             (criteriaBuilder, root) -> criteriaBuilder.asc(root.get("createDate"));
@@ -24,9 +24,6 @@ public class FactoryCertificateSpecification {
         return (SearchSpecification) (criteriaBuilder, root) -> criteriaBuilder.equal(criteriaBuilder.upper(root.join("tags").get("name")), tagName.toLowerCase());
     }
 
-    public static Specification getSpecificationByName(String name) {
-        return (SearchSpecification) (criteriaBuilder, root) -> criteriaBuilder.equal(root.get("name"), name);
-    }
 
     public static Specification getSpecificationByPartOfName(String partOfNameOrDescription) {
         return (SearchSpecification) (criteriaBuilder, root) -> criteriaBuilder.or(criteriaBuilder.like(root.get("name"), "%" + partOfNameOrDescription + "%"),

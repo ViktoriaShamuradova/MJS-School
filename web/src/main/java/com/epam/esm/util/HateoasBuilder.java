@@ -1,5 +1,6 @@
 package com.epam.esm.util;
 
+import com.epam.esm.criteria_info.CriteriaInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
@@ -54,24 +55,24 @@ public class HateoasBuilder {
 
     public CertificateDTO addLinkForCertificate(CertificateDTO certificate) {
         certificate.getTags().forEach(tag -> tag.add(linkTo(methodOn(TagController.class)
-                .find(tag.getName()))
+                .find(null, new CriteriaInfo(tag.getName())))
                 .withSelfRel()));
         return certificate;
     }
 
     public RepresentationModel<?> addLinksForListOfTag(List<TagDTO> tags, PageInfo pageInfo, long tagCount) {
         tags.forEach(tag -> tag.add(linkTo(methodOn(TagController.class)
-                .find(tag.getName()))
+                .find(null, new CriteriaInfo(tag.getName())))
                 .withSelfRel()));
         PageInfo preparedPage = paginationPreparer.preparePage(pageInfo, tagCount);
-        List<Link> links = paginationPreparer.preparePaginationLinks(methodOn(TagController.class).findAll(pageInfo), pageInfo);
+        List<Link> links = paginationPreparer.preparePaginationLinks(methodOn(TagController.class).find(pageInfo, null), pageInfo);
         CollectionModel<TagDTO> collectionModel = CollectionModel.of(tags);
         return buildModel(collectionModel, links, preparedPage);
     }
 
     public TagDTO addLinksForTag(TagDTO tag) {
         tag.add(linkTo(methodOn(TagController.class)
-                .find(tag.getName()))
+                .find(null, new CriteriaInfo(tag.getName())))
                 .withSelfRel());
 //        tag.add(createLinkToGetCertificates(Constant.TAG,
 //                tag.getName(), Constant.CERTIFICATES));

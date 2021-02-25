@@ -1,5 +1,7 @@
 package com.epam.esm.entity;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -11,8 +13,8 @@ public class Tag {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "name")
+    private Long id;
+    @Column(name = "name", unique=true)
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -29,6 +31,11 @@ public class Tag {
     public Tag() {
     }
 
+    public Tag(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
@@ -41,7 +48,7 @@ public class Tag {
         this.certificates = certificates;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

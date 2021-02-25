@@ -10,10 +10,7 @@ public class TagMapper implements DtoMapper<Tag, TagDTO> {
 
     @Override
     public Tag changeToEntity(TagDTO tagDTO) {
-        Tag t = new Tag();
-        t.setId(tagDTO.getId());
-        t.setName(tagDTO.getName());
-        return t;
+        return new Tag(tagDTO.getId(), tagDTO.getName());
     }
 
     @Override

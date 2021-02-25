@@ -39,14 +39,14 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public UserDTO find(Long id) {
+    public UserDTO findById(Long id) {
         return mapper.changeToDto(userDAO.find(id).orElseThrow(() -> new NoSuchResourceException(
                 ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= " + id)));
 
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
     }
 
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<UserDTO> findAll(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
+    public List<UserDTO> find(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
         return null;
     }
 

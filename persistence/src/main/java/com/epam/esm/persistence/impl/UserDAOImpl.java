@@ -43,6 +43,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public void delete(User user) {
+
+    }
+
+    @Override
     public long getCount() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
@@ -51,16 +56,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(Long id) {
-    }
-
-    @Override
     public void update(User user) {
     }
 
     @Override
-    public Optional<User> create(User user) {
-        return Optional.empty();
+    public Long create(User user) {
+        return null;
     }
 
 }

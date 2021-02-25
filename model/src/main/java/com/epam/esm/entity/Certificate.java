@@ -28,7 +28,7 @@ public class Certificate {
     private Instant updateLastDate;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
+            cascade = {CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "certificate_tag",
             joinColumns = @JoinColumn(name = "id_certificate"),
             inverseJoinColumns = @JoinColumn(name = "id_tag"))

@@ -1,7 +1,8 @@
 package com.epam.esm.web.controller;
 
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.criteria_info.CriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.HateoasBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,15 @@ public class TagController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo - map witch contains information about pagination
+     * @param pageInfo     - map witch contains information about pagination
+     * @param criteriaInfo - object with information about tag to search
      * @return a collection of TagDTO with links, which represents a resource "tag" from data base
      */
     @GetMapping
-    public RepresentationModel<?> findAll(@RequestParam PageInfo pageInfo) {
-//        List<TagDTO> tags = tagService.findAll(pageInfo);
-//        long tagCount = tagService.getCount();
-//        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
-        return null;
+    public RepresentationModel<?> find(PageInfo pageInfo, CriteriaInfo criteriaInfo) {
+        List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
+        long tagCount = tagService.getCount();
+        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
     }
 
     /**
@@ -47,46 +48,27 @@ public class TagController {
      *
      * @param tag an object which represents a resource "tags" that must be created
      *            in the data source
-     * @return an object which represents Http response of CREATE operation,
-     * which body contains an information about successful creature
+     * @return an object which represents Http response of CREATE operation
      */
     @PostMapping
     public ResponseEntity<TagDTO> create(@RequestBody TagDTO tag) {
         TagDTO tagNew = tagService.create(tag);
         return new ResponseEntity<>(hateoasBuilder.addLinksForTag(tagNew), HttpStatus.OK);
     }
-//    @PostMapping
-//    public ResponseEntity<TagDTO> create(@RequestBody TagDTO tag, UriComponentsBuilder builder) {
-//
-//        UriComponents uriComponents =
-//                builder.path("/{name}").buildAndExpand(tag.getName());
-//
-//        HttpHeaders responseHeaders = new HttpHeaders();
-//        responseHeaders.setLocation(uriComponents.toUri());
-//        return new ResponseEntity<>(tagService.create(tag), responseHeaders, HttpStatus.CREATED);
-//    }
 
     /**
      * a method which realizes REST's DELETE operation of a specific resource with ID stored in a request path
      *
-     * @param id an identification number of a resource which should be deleted
+     * @param tagName an identification number of a resource which should be deleted
      * @return an object which represents Http response of DELETE operation
      */
-    @DeleteMapping("/{tagId}")
-    public ResponseEntity<String> delete(@PathVariable long id) {
-        tagService.delete(id);
-        return new ResponseEntity<>("Tag with id= " + id + " was deleted", HttpStatus.OK);
-    }
-
-    /**
-     * a method which realizes REST's READ operation of a specific resource with name stored in a request path
-     *
-     * @param name an identification requested resource
-     * @return an object which represents a target resource
-     */
-    @GetMapping("/{name}")
-    public TagDTO find(@PathVariable("name") String name) {
-        return hateoasBuilder.addLinksForTag(tagService.find(name));
+    @DeleteMapping("/{tagName}")
+    public ResponseEntity<String> delete(@PathVariable String tagName) {
+        if (tagService.delete(tagName)) {
+            return ResponseEntity.ok("Tag with name= " + tagName + " was deleted");
+        } else {
+            return ResponseEntity.ok("Tag with name= " + tagName + " was not found and not deleted");
+        }
     }
 
     /**

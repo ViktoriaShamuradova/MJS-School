@@ -17,6 +17,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -32,19 +33,18 @@ import java.util.Optional;
 @Repository
 public class CertificateDAOImpl implements CertificateDAO {
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Autowired
     public CertificateDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+
     @Override
     public void delete(Certificate certificate) {
         entityManager.remove(certificate);
     }
-
 
     @Override
     public long getCount() {

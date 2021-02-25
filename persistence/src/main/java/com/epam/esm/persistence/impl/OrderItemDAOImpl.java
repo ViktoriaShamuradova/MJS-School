@@ -2,14 +2,8 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.OrderItem;
 import com.epam.esm.persistence.OrderItemDAO;
-import com.epam.esm.persistence.constant.OrderItemTableColumnName;
 import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -31,7 +25,7 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     }
 
     @Override
-    public Optional<OrderItem> create(OrderItem orderItem) {
+    public Long create(OrderItem orderItem) {
         entityManager.persist(orderItem);
         return null;
 //        OrderItem orderItem = entityManager.find(OrderItem.class, id);
@@ -61,7 +55,7 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     }
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(OrderItem orderItem) {
     }
 
     @Override
