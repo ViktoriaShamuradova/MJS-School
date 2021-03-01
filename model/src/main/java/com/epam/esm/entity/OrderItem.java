@@ -7,9 +7,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "order_items")
 public class OrderItem {
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +27,18 @@ public class OrderItem {
     public OrderItem() {
     }
 
+    public OrderItem(Certificate certificate, int count, Order order, BigDecimal priceOfCertificate) {
+        this.certificate = certificate;
+        this.count = count;
+        this.order = order;
+        this.priceOfCertificate = priceOfCertificate;
+    }
+
     public OrderItem(CartItem cartItem) {
-       // certificateId = cartItem.getCertificateDTO().getId();
+        this.certificate = new Certificate();
+        certificate.setId(cartItem.getIdCertificate());
         count = cartItem.getCount();
-        priceOfCertificate = cartItem.getCertificateDTO().getPrice();
+        priceOfCertificate = cartItem.getPriceOfCertificate();
     }
 
     public long getId() {

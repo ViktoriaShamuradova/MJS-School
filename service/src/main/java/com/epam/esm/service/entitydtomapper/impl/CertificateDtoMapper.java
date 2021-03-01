@@ -25,7 +25,6 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
         certificate.setCreateDate(dto.getCreateDate());
         certificate.setUpdateLastDate(dto.getUpdateLastDate());
 
-        TagMapper mapperImp = new TagMapper();
         Set<TagDTO> tagsDTO = dto.getTags();
 
         Set<Tag> tags = tagsDTO.stream()

@@ -2,22 +2,13 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
-import com.epam.esm.persistence.constant.CertificateTableColumnName;
-import com.epam.esm.persistence.mappers.CertificateMapper;
 import com.epam.esm.persistence.specification.SearchSpecification;
 import com.epam.esm.persistence.specification.SortSpecification;
 import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -39,7 +30,6 @@ public class CertificateDAOImpl implements CertificateDAO {
     public CertificateDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
 
     @Override
     public void delete(Certificate certificate) {
@@ -72,7 +62,6 @@ public class CertificateDAOImpl implements CertificateDAO {
     public List<Certificate> findAll(List<Specification> specifications, int offset, int limit) {
         return entityManager.createQuery(buildCriteriaQuery(specifications)).setMaxResults(limit).setFirstResult(offset).getResultList();
     }
-
 
     @Override
     public Optional<Certificate> find(Long id) {

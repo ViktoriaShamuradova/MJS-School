@@ -1,71 +1,74 @@
 package com.epam.esm.web.controller;
 
-import com.epam.esm.dto.*;
+import com.epam.esm.criteria_info.OrderCriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.dto.CartContext;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.util.OrderHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * class that represents the implementation of operations on a resource called "order"
+ * a class which performs GET, CREATE operations on a resource called "order"
  */
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderHateoasAssembler orderAssembler;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService,
+                           OrderHateoasAssembler orderAssembler) {
         this.orderService = orderService;
-    }
-
-    @PostMapping("/form")
-    public ResponseEntity<OrderReadDto> create(@RequestBody CartContext cart, UriComponentsBuilder builder) {
-        OrderReadDto order = orderService.create(cart);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<OrderReadDto> find(@PathVariable long id){
-        return new ResponseEntity<>(orderService.findById(id), HttpStatus.OK);
+        this.orderAssembler = orderAssembler;
     }
 
     /**
-     * a method which realizes REST's READ operation of resources by parameters
+     * a method which realizes REST's CREATE operation
      *
-     * @return a collection of OrderReadDto, which represents a resource "order" from data base
+     * @param cart an object which contains data for the formation of a new order
+     *             and saving the order in the database
+     * @return a responseEntity with status code and target resource order, which represents a resource "order" from database
+     * with links
      */
-
-    @GetMapping
-    public List<OrderReadDto> find(@RequestParam Map<String, String> params) {
-        return orderService.find(params);
+    @PostMapping()
+    public ResponseEntity<OrderDto> create(@RequestBody CartContext cart) {
+        OrderDto order = orderService.create(cart);
+        orderAssembler.appendAsForMainEntity(order);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
+    /**
+     * a method which realizes REST's READ operation of all resources
+     *
+     * @param pageInfo          - object witch contains information about pagination
+     * @param orderCriteriaInfo - object with information about order to search
+     * @return a collection of OrderDTO, which represents a resource "order" from database
+     */
+    @GetMapping
+    public ResponseEntity<CollectionModel<OrderDto>> find(PageInfo pageInfo, OrderCriteriaInfo orderCriteriaInfo) {
+        List<OrderDto> orders = orderService.find(pageInfo, orderCriteriaInfo);
+        return ResponseEntity.ok(orderAssembler.toHateoasCollectionOfEntities(orders));
+    }
 
-//    @GetMapping
-//    public ResponseEntity<CartContext> getCart(){
-//        CartContext cart = new CartContext();
-//        Set< CartItem> cartItems = new HashSet<>();
-//        CertificateDTO c = new CertificateDTO();
-//        c.setId(1L);
-//        c.setPrice(new BigDecimal(100));
-//
-//        CertificateDTO c2 = new CertificateDTO();
-//        c2.setId(2L);
-//        c2.setPrice(new BigDecimal(250));
-//
-//        cartItems.add(new CartItem(c,2));
-//        cartItems.add(new CartItem(c2, 3));
-//
-//        cart.setCartItems(cartItems);
-//
-//        return new ResponseEntity<>(cart, HttpStatus.OK);
-//    }
-
+    /**
+     * a method which realizes REST's READ operation of a specific resource with id stored in a request path
+     *
+     * @param id an identification number of a requested resource
+     * @return an ResponseEntity with OrderDTO wich contains links
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> find(@PathVariable long id) {
+        OrderDto order = orderService.findById(id);
+        orderAssembler.appendAsForMainEntity(order);
+        return ResponseEntity.ok(order);
+    }
 }

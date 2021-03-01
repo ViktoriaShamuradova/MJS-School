@@ -15,8 +15,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-
-//@Relation(itemRelation = "certificate", collectionRelation = "certificates")
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
     private long id;
@@ -70,7 +68,6 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
         return id;
     }
 
-    @Transient
     public String getName() {
         return name;
     }

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Сlass forms the required list of specifications for further search for the desired certificate
+ */
 @Component
 public class CertificateSpecificationBuilder implements SpecificationBuilder<CertificateCriteriaInfo> {
 

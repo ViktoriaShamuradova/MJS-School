@@ -5,9 +5,9 @@ import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.util.HateoasBuilder;
+import com.epam.esm.util.CertificateHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +15,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * a class which performs CRUD operations on a resource called "certificate"
+ */
 @RestController
 @RequestMapping(value = "/certificates", produces = "application/json; charset=utf-8")
 public class CertificateController {
 
     private final CertificateService certificateService;
-    private final HateoasBuilder hateoasBuilder;
+    private final CertificateHateoasAssembler certificateAssembler;
 
     @Autowired
-    public CertificateController(CertificateService certificateService,
-                                 HateoasBuilder builder) {
+    public CertificateController(CertificateService certificateService, CertificateHateoasAssembler certificateAssembler) {
         this.certificateService = certificateService;
-        this.hateoasBuilder = builder;
+        this.certificateAssembler = certificateAssembler;
     }
 
     /**
@@ -34,29 +36,27 @@ public class CertificateController {
      *
      * @param pageInfo     - object witch contains information about pagination
      * @param criteriaInfo - object with information about certificate to search
-     * @return a collection of CertificatesDTO, which represents a resource "certificates" from data base with links
+     * @return a collection of CertificatesDTO, which represents a resource "certificates" from database with links
      */
-
     @GetMapping()
-    public ResponseEntity<RepresentationModel<?>> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
+    public ResponseEntity<CollectionModel<CertificateDTO>> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
-        long certificateCount = certificateService.getCount();
-        return new ResponseEntity<>(hateoasBuilder.addLinksForListOfCertificates(certificates, pageInfo, certificateCount),
-                HttpStatus.OK);
+        return ResponseEntity.ok(certificateAssembler.toHateoasCollectionOfEntities(certificates));
     }
 
     /**
      * a method which realizes REST's CREATE operation
      *
-     * @param certificateDTO an object which represents a resource "certificates" that must be created
-     *                       in the data source
-     * @return an object which represents Http response of CREATE operation
+     * @param certificateDTO an object which represents a resource "certificates" that should be created
+     *                       in the database
+     * @return a responseEntity with status code and target resource certificate from database
+     * with links
      */
-
     @PostMapping
     public ResponseEntity<CertificateDTO> create(@RequestBody CertificateDTO certificateDTO) {
-        CertificateDTO certificate = certificateService.create(certificateDTO);
-        return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
+        CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
+        certificateAssembler.appendAsForMainEntity(certificateDTOCreated);
+        return new ResponseEntity<>(certificateDTOCreated, HttpStatus.CREATED);
     }
 
     /**
@@ -77,13 +77,15 @@ public class CertificateController {
     /**
      * a method which realizes REST's UPDATE operation of a specific resource with ID stored in a request path
      * and CertificateUpdateDto
+     *
      * @param certificateUpdateDto contains information for updating certificate in data base
      * @return an object which represents Http response of certificate with links
      */
     @PatchMapping()
     public ResponseEntity<CertificateDTO> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
         CertificateDTO certificate = certificateService.update(certificateUpdateDto);
-        return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
+        certificateAssembler.appendAsForMainEntity(certificate);
+        return ResponseEntity.ok(certificate);
     }
 
     /**
@@ -95,7 +97,7 @@ public class CertificateController {
     @GetMapping("/{id}")
     public ResponseEntity<CertificateDTO> find(@PathVariable long id) {
         CertificateDTO certificate = certificateService.findById(id);
-        return new ResponseEntity<>(hateoasBuilder.addLinkForCertificate(certificate), HttpStatus.OK);
+        certificateAssembler.appendAsForMainEntity(certificate);
+        return ResponseEntity.ok(certificate);
     }
-
 }

@@ -1,10 +1,9 @@
 package com.epam.esm.criteria_info;
 
 import java.util.List;
-//здесь же и провалидировать
 
 /**
- * Класс, содержащий информацию из url для построения запросов
+ * Class containing information from url for building requests
  */
 public class CertificateCriteriaInfo extends CriteriaInfo {
     private String byDateSortingWay;
@@ -56,15 +55,4 @@ public class CertificateCriteriaInfo extends CriteriaInfo {
                 ", partOfNameOrDescription='" + partOfNameOrDescription + '\'' +
                 '}';
     }
-
-//    private boolean isValid(String value) {
-//        return value.trim().toLowerCase().equals(Constant.ASC) || value.trim().toLowerCase().equals(Constant.DESC);
-//    }
-
-
-
-//    private static class Constant {
-//        private final static String ASC = "asc";
-//        private final static String DESC = "desc";
-//    }
 }

@@ -9,7 +9,6 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification_builder.SpecificationBuilder;
 import com.epam.esm.persistence.specification_builder.impl.CertificateSpecificationBuilder;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.TagService;
@@ -53,13 +52,12 @@ public class CertificateServiceImpl implements CertificateService {
         this.paginationValidator = paginationValidator;
     }
 
-    //переименовать
     @Override
     @Transactional(readOnly = true)
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<Certificate> certificates = certificateDAO.findAll(specifications, pageInfo.getOffset(), pageInfo.getLimit());
+        List<Certificate> certificates = certificateDAO.findAll(specifications, (int)pageInfo.getOffset(),(int) pageInfo.getLimit());
         return getListCertificateDto(certificates);
     }
 

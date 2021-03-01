@@ -1,13 +1,11 @@
 package com.epam.esm.entity;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 public class Tag {
 
     @Id
@@ -19,7 +17,7 @@ public class Tag {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "certificate_tag",
+    @JoinTable(name = "certificates_tags",
             joinColumns = @JoinColumn(name = "id_tag"),
             inverseJoinColumns = @JoinColumn(name = "id_certificate"))
     private Set<Certificate> certificates;

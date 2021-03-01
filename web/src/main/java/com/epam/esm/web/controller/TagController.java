@@ -2,11 +2,12 @@ package com.epam.esm.web.controller;
 
 import com.epam.esm.criteria_info.CriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.HateoasBuilder;
+import com.epam.esm.util.TagHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ import java.util.List;
 @RequestMapping("/tags")
 public class TagController {
 
-    private TagService tagService;
-    private final HateoasBuilder hateoasBuilder;
+    private final TagService tagService;
+    private final TagHateoasAssembler tagAssembler;
 
     @Autowired
-    public TagController(TagService tagService, HateoasBuilder hateoasBuilder) {
-        this.hateoasBuilder = hateoasBuilder;
+    public TagController(TagService tagService, TagHateoasAssembler tagAssembler) {
+        this.tagAssembler = tagAssembler;
         this.tagService = tagService;
     }
 
@@ -34,13 +35,12 @@ public class TagController {
      *
      * @param pageInfo     - map witch contains information about pagination
      * @param criteriaInfo - object with information about tag to search
-     * @return a collection of TagDTO with links, which represents a resource "tag" from data base
+     * @return a collection of TagDTO with links, which represents a resource "tag" from database with links
      */
     @GetMapping
-    public RepresentationModel<?> find(PageInfo pageInfo, CriteriaInfo criteriaInfo) {
+    public ResponseEntity<CollectionModel<TagDTO>> find(PageInfo pageInfo, CriteriaInfo criteriaInfo) {
         List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
-        long tagCount = tagService.getCount();
-        return hateoasBuilder.addLinksForListOfTag(tags, pageInfo, tagCount);
+        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags));
     }
 
     /**
@@ -53,7 +53,8 @@ public class TagController {
     @PostMapping
     public ResponseEntity<TagDTO> create(@RequestBody TagDTO tag) {
         TagDTO tagNew = tagService.create(tag);
-        return new ResponseEntity<>(hateoasBuilder.addLinksForTag(tagNew), HttpStatus.OK);
+        tagAssembler.appendAsForMainEntity(tagNew);
+        return new ResponseEntity<>(tagNew, HttpStatus.CREATED);
     }
 
     /**
@@ -77,7 +78,8 @@ public class TagController {
      * @return a collection of Tag, which represents a resource "tags" from data base
      */
     @GetMapping("/most-used")
-    public List<TagDTO> findMostUsedTag() {
-        return tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
+    public ResponseEntity<CollectionModel<TagDTO>> findMostUsedTag() {
+        List<TagDTO> tags =  tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
+        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags));
     }
 }

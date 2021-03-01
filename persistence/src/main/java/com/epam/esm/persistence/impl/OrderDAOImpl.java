@@ -2,68 +2,56 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.Order;
 import com.epam.esm.persistence.OrderDAO;
-import com.epam.esm.persistence.constant.OrderTableColumnName;
-import com.epam.esm.persistence.mappers.OrderMapper;
+import com.epam.esm.persistence.specification.SearchSpecification;
 import com.epam.esm.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
 
-    private String SQL_QUERY_INSERT_ORDER = "INSERT INTO mjs_school.order " +
-            "(id_user, count, total_sum, create_date) " +
-            "VALUES(:id_user, :count, :total_sum, :create_date);";
-    private static final String SQL_QUERY_READ_ONE_ORDER_BY_ID = "SELECT * FROM mjs_school.order WHERE id =?;";
-    private static final String SQL_QUERY_READ_ORDER_LIST_BY_USER_ID = "SELECT * FROM mjs_school.order WHERE id_user =?;";
-
-    private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final EntityManager entityManager;
 
     @Autowired
-    public OrderDAOImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.jdbcTemplate = jdbcTemplate;
+    public OrderDAOImpl( EntityManager entityManager ) {
+        this.entityManager=entityManager;
     }
-
 
     @Override
     public Long create(Order order) {
-        KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                //.addValue(OrderTableColumnName.ID_USER, order.getUserId())
-                .addValue(OrderTableColumnName.COUNT, order.getCount())
-                .addValue(OrderTableColumnName.TOTAL_SUM, order.getTotalSum())
-                .addValue(OrderTableColumnName.CREATE_DATE, order.getCreateDate().toEpochMilli());
-        namedParameterJdbcTemplate.update(SQL_QUERY_INSERT_ORDER, parameterSource, generatedKeyHolder, new String[]{"id"});
-
-       // return find(generatedKeyHolder.getKey().longValue());
-        return null;
+        entityManager.persist(order);
+        return order.getId();
     }
 
     @Override
-    public List<Order> findAll(List<Specification> specifications, int id, int limit) {
-        return null;
+    public List<Order> findAll(List<Specification> specifications, int offset, int limit) {
+        return entityManager.createQuery(buildCriteriaQuery(specifications))
+        .setMaxResults(limit).setFirstResult(offset).getResultList();
     }
 
     @Override
     public Optional<Order> find(Long id) {
-        return jdbcTemplate.query(SQL_QUERY_READ_ONE_ORDER_BY_ID, new OrderMapper(), id).stream().findAny();
+        Order order = entityManager.find(Order.class, id);
+        return order != null ? Optional.of(order) : Optional.empty();
     }
 
-    @Override
-    public List<Order> findByUserId(long userId) {
-        return jdbcTemplate.query(SQL_QUERY_READ_ORDER_LIST_BY_USER_ID
-                , new OrderMapper(), userId);
+    private CriteriaQuery<Order> buildCriteriaQuery(List<Specification> specifications) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
+        List<Predicate> predicateList = new ArrayList<>();
+        specifications.forEach(specification -> predicateList.add(((SearchSpecification)specification).toPredicate(criteriaBuilder, root)));
+        criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+        return criteriaQuery;
     }
 
     @Override
@@ -71,10 +59,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     }
 
-
     @Override
     public void delete(Order order) {
-
     }
-
 }

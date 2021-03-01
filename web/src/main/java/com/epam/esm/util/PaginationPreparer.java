@@ -5,7 +5,9 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -22,14 +24,14 @@ public class PaginationPreparer {
         return preparedPage;
     }
 
-    private int calculatePageCount(long countOfEntity, int limit) {
+    private long calculatePageCount(long countOfEntity, long limit) {
         int pageCount = (int) Math.ceil(countOfEntity * 1.0 / limit);
         return pageCount == 0 ? FIRST_PAGE : pageCount;
     }
 
     public List<Link> preparePaginationLinks(Object invocationModel, PageInfo pageInfo) {
-        int currentPage = pageInfo.getCurrentPage();
-        int pageCount = pageInfo.getNumberOfPages();
+        long currentPage = pageInfo.getCurrentPage();
+        long pageCount = pageInfo.getNumberOfPages();
 
         List<Link> links = new ArrayList<>();
 

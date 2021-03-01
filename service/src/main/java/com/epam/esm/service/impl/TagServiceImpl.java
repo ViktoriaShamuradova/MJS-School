@@ -43,7 +43,7 @@ public class TagServiceImpl implements TagService {
     public List<TagDTO> find(PageInfo pageInfo, CriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<Tag> tags = tagDAO.findAll(specifications, pageInfo.getOffset(), pageInfo.getLimit());
+        List<Tag> tags = tagDAO.findAll(specifications,(int) pageInfo.getOffset(), (int)pageInfo.getLimit());
         return getListTagDto(tags);
     }
 

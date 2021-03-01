@@ -3,18 +3,19 @@ package com.epam.esm.entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name ="id_user")
+    @JoinColumn(name = "id_user")
     private User user;
     @Column(name = "total_sum")
     private BigDecimal totalSum;
@@ -22,18 +23,17 @@ public class Order {
     private Integer count;
     @Column(name = "create_date", columnDefinition = "TIMESTAMP")
     private Instant createDate;
-    //если удалить заказ, то будет произведено каскадное удаление, т.е. удалиться и заказ и его составляющие
-    //сли удалить оrder_item, то order не удалится, так как оrder_item не имеет связь с order
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
     private Set<OrderItem> orderItems;
 
     public Order() {
+        createDate = Instant.now();
     }
 
-    public Order(long userId, Set<OrderItem> orderItems) {
-       // this.userId = userId;
+    public Order(long userId) {
+        this.user = new User();
+        user.setId(userId);
         createDate = Instant.now();
-        calcSumAndCount(orderItems);
     }
 
     public long getId() {
@@ -84,6 +84,32 @@ public class Order {
         this.createDate = createDate;
     }
 
+    public void add(OrderItem orderItem) {
+        if (orderItems == null) {
+            orderItems = new HashSet<>();
+        }
+        boolean isExistOrderItem = false;
+        for (OrderItem orderItem1 : orderItems) {
+            if (orderItem1.getCertificate().getId() == orderItem.getCertificate().getId()) {
+                orderItem1.setCount(orderItem1.getCount() + orderItem.getCount());
+                isExistOrderItem = true;
+            }
+        }
+        if (!isExistOrderItem) {
+            orderItem.setOrder(this);
+            orderItems.add(orderItem);
+        }
+        refreshDataSumAndCount();
+    }
+
+    private void refreshDataSumAndCount() {
+        count = 0;
+        totalSum = BigDecimal.ZERO;
+        for (OrderItem item : getOrderItems()) {
+            count = count + item.getCount();
+            totalSum = totalSum.add(item.getPriceOfCertificate().multiply(BigDecimal.valueOf(item.getCount())));
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -95,7 +121,7 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, totalSum, count, createDate, orderItems);
+        return Objects.hash(id, user, totalSum, count, createDate);
     }
 
     @Override
@@ -108,14 +134,5 @@ public class Order {
                 ", createDate=" + createDate +
                 ", orderItems=" + orderItems +
                 '}';
-    }
-
-    private void calcSumAndCount(Set<OrderItem> orderItems) {
-        count = 0;
-        totalSum = BigDecimal.ZERO;
-        for (OrderItem item : orderItems) {
-            count = count + item.getCount();
-            totalSum = totalSum.add(item.getPriceOfCertificate().multiply(BigDecimal.valueOf(item.getCount())));
-        }
     }
 }

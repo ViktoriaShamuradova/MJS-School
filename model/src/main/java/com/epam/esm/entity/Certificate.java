@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "certificate")
+@Table(name = "certificates")
 public class Certificate {
     @Id
     @Column(name = "id")
@@ -29,10 +29,15 @@ public class Certificate {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "certificate_tag",
+    @JoinTable(name = "certificates_tags",
             joinColumns = @JoinColumn(name = "id_certificate"),
             inverseJoinColumns = @JoinColumn(name = "id_tag"))
     private Set<Tag> tags;
+
+    public Certificate(long id) {
+        this.id = id;
+    }
+    public Certificate(){}
 
     public Instant getCreateDate() {
         return createDate;

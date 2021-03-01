@@ -1,14 +1,18 @@
 package com.epam.esm.web.controller;
 
-import com.epam.esm.dto.UserDTO;
 import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.criteria_info.UserCriteriaInfo;
+import com.epam.esm.dto.UserDTO;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.HateoasBuilder;
+import com.epam.esm.util.UserHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -19,34 +23,41 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final HateoasBuilder hateoasBuilder;
+    private final UserHateoasAssembler userAssembler;
 
     @Autowired
-    public UserController(UserService userService, HateoasBuilder hateoasBuilder) {
-        this.hateoasBuilder=hateoasBuilder;
+    public UserController(UserService userService,
+                          UserHateoasAssembler userAssembler) {
         this.userService = userService;
+        this.userAssembler = userAssembler;
     }
+
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @return a collection of User, which represents a resource "user" from data base
+     * @param pageInfo         - object witch contains information about pagination
+     * @param userCriteriaInfo - object with information about user to search
+     * @return a responseEntity with status code and collection of User, which represents a resource "user" from database
+     * with links
      */
     @GetMapping
-    public RepresentationModel<?> findAll(@Valid PageInfo pageInfo) {
-//        List<UserDTO> users = userService.findAll(pageInfo);
-//        long userCount = userService.getCount();
-//        return hateoasBuilder.addLinksForListOfUsers(users, pageInfo, userCount);
-        return null;
+    public ResponseEntity<CollectionModel<UserDTO>> find(PageInfo pageInfo, UserCriteriaInfo userCriteriaInfo) {
+        List<UserDTO> users = userService.find(pageInfo, userCriteriaInfo);
+        return ResponseEntity.ok(userAssembler.toHateoasCollectionOfEntities(users));
     }
+
     /**
      * a method which realizes REST's READ operation of a specific resource with name stored in a request path
      *
      * @param id an identification requested resource
-     * @return an object which represents a target resource
+     * @return a responseEntity with status code and target resource user, which represents a resource "user" from database
+     * with links
      */
     @GetMapping("/{id}")
-    public UserDTO find(@PathVariable("id") long id) {
-        return userService.findById(id);
+    public ResponseEntity<UserDTO> find(@PathVariable("id") long id) {
+        UserDTO userDTO = userService.findById(id);
+        userAssembler.appendAsForMainEntity(userDTO);
+        return ResponseEntity.ok(userDTO);
     }
 }
 
