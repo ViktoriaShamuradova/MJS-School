@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     private final MessageSource resourceBundle;
 
-    private final static String SQL_ERROR_CODE = "5001";
+    private final static String DEFAULT_ERROR_CODE = "50100";
 
     @Autowired
     public GlobalExceptionHandler(@Qualifier("messageSource") MessageSource resourceBundle) {
@@ -62,8 +62,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleException(Exception e) {
         e.printStackTrace();
         ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setErrorCode(SQL_ERROR_CODE);
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(SQL_ERROR_CODE, null, Locale.getDefault()));
+        exceptionResponse.setErrorCode(DEFAULT_ERROR_CODE);
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(DEFAULT_ERROR_CODE, null, Locale.getDefault()));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

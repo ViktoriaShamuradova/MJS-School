@@ -5,16 +5,8 @@ import org.springframework.hateoas.RepresentationModel;
 import java.util.Objects;
 
 public class TagDTO extends RepresentationModel<TagDTO> {
-    private Long id;
+
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -30,11 +22,11 @@ public class TagDTO extends RepresentationModel<TagDTO> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TagDTO tagDTO = (TagDTO) o;
-        return Objects.equals(id, tagDTO.id) && Objects.equals(name, tagDTO.name);
+        return Objects.equals(name, tagDTO.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name);
+        return Objects.hash(super.hashCode(), name);
     }
 }

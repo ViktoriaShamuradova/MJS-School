@@ -1,7 +1,7 @@
 package com.epam.esm.entity;
 
-import javax.annotation.sql.DataSourceDefinition;
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
@@ -9,11 +9,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "certificates")
-public class Certificate {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Certificate extends com.epam.esm.entity.Entity<Long> {
+
     @Column(name = "name")
     private String name;
     @Column(name = "price")
@@ -27,15 +24,14 @@ public class Certificate {
     @Column(name = "last_update_date", columnDefinition = "TIMESTAMP")
     private Instant updateLastDate;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade= {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "certificates_tags",
             joinColumns = @JoinColumn(name = "id_certificate"),
             inverseJoinColumns = @JoinColumn(name = "id_tag"))
     private Set<Tag> tags;
 
     public Certificate(long id) {
-        this.id = id;
+        super(id);
     }
     public Certificate(){}
 
@@ -60,14 +56,6 @@ public class Certificate {
     }
     public void setUpdateLastDate(Instant updateLastDate) {
         this.updateLastDate = updateLastDate;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -108,13 +96,11 @@ public class Certificate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Certificate that = (Certificate) o;
-        if(!(that.getPrice().compareTo(this.getPrice())==0)) return false;
-
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) && Objects.equals(updateLastDate, that.updateLastDate);
+        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(description, that.description) && Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) && Objects.equals(updateLastDate, that.updateLastDate) && Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, description, duration, createDate, updateLastDate);
+        return Objects.hash(name, price, description, duration, createDate, updateLastDate);
     }
 }

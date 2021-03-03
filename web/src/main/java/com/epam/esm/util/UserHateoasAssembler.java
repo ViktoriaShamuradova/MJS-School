@@ -23,16 +23,16 @@ public class UserHateoasAssembler {
         users.forEach(this::appendSelfReference);
         Link selfLink = linkTo(UserController.class).withSelfRel();
         CollectionModel<UserDTO> collectionModel = CollectionModel.of(users, selfLink);
-        appendGenericOrderHateoasActions(collectionModel);
+        appendGenericUserHateoasActions(collectionModel);
         return collectionModel;
     }
 
-    private void appendGenericOrderHateoasActions(RepresentationModel dto) {
+    private void appendGenericUserHateoasActions(RepresentationModel dto) {
         dto.add(linkTo(UserController.class).withRel("GET: get all users"));
     }
 
     public void appendAsForMainEntity(UserDTO userDTO) {
         appendSelfReference(userDTO);
-        appendGenericOrderHateoasActions(userDTO);
+        appendGenericUserHateoasActions(userDTO);
     }
 }

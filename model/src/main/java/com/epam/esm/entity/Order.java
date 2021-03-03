@@ -7,13 +7,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "orders")
-public class Order {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Order extends Entity<Long>{
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
     private User user;
@@ -27,21 +24,15 @@ public class Order {
     private Set<OrderItem> orderItems;
 
     public Order() {
+        super();
         createDate = Instant.now();
     }
 
     public Order(long userId) {
+        super();
         this.user = new User();
         user.setId(userId);
         createDate = Instant.now();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Set<OrderItem> getOrderItems() {
@@ -116,23 +107,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate) && Objects.equals(orderItems, order.orderItems);
+        return Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate) && Objects.equals(orderItems, order.orderItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, totalSum, count, createDate);
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", user=" + user +
-                ", totalSum=" + totalSum +
-                ", count=" + count +
-                ", createDate=" + createDate +
-                ", orderItems=" + orderItems +
-                '}';
+        return Objects.hash(user, totalSum, count, createDate, orderItems);
     }
 }

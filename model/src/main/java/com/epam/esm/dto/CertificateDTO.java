@@ -2,13 +2,11 @@ package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Size;
-import java.beans.Transient;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
@@ -33,7 +31,7 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
     private Integer duration;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
-    private  Instant createDate;
+    private Instant createDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "UTC")
     private Instant updateLastDate;
@@ -41,31 +39,15 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
     private Set<TagDTO> tags = new HashSet<>();
 
     @JsonCreator
-
     public CertificateDTO() {
-    }
-
-    @JsonCreator
-    public CertificateDTO(@JsonProperty("id") long id,
-                          @JsonProperty("name") String name,
-                          @JsonProperty("description") String description,
-                          @JsonProperty("price") BigDecimal price,
-                          @JsonProperty("duration") int duration,
-                          @JsonProperty("createDate") Instant createDate,
-                          @JsonProperty("updateLastDate") Instant updateLastDate,
-                          @JsonProperty("tags") Set<TagDTO> tags) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.duration = duration;
-        this.createDate = createDate;
-        this.updateLastDate = updateLastDate;
-        this.tags = tags;
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -149,9 +131,5 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
                 ", updateLastDate=" + updateLastDate +
                 ", tags=" + tags +
                 '}';
-    }
-
-    public void setId(Long id) {
-        this.id=id;
     }
 }

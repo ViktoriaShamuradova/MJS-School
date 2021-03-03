@@ -1,6 +1,6 @@
 package com.epam.esm.persistence.specification_builder.impl;
 
-import com.epam.esm.criteria_info.CriteriaInfo;
+import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification.factory.FactoryTagSpecification;
 import com.epam.esm.persistence.specification_builder.SpecificationBuilder;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class TagSpecificationBuilder implements SpecificationBuilder<CriteriaInfo> {
+public class TagSpecificationBuilder implements SpecificationBuilder<TagCriteriaInfo> {
 
     private List<Specification> specifications;
 
     @Override
-    public List<Specification> build(CriteriaInfo criteriaInfo) {
+    public List<Specification> build(TagCriteriaInfo criteriaInfo) {
         specifications = new ArrayList<>();
 
         addSpecificationName(criteriaInfo.getName());

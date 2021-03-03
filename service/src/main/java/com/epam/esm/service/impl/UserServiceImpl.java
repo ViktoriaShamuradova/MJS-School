@@ -8,10 +8,9 @@ import com.epam.esm.persistence.UserDAO;
 import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification_builder.impl.UserSpecificationBuilder;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.entitydtomapper.UserMapper;
+import com.epam.esm.service.entitydtomapper.impl.UserMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.exception.NotSupportedException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,18 +42,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
-        return mapper.changeToDto(userDAO.find(id).orElseThrow(() -> new NoSuchResourceException(
+        return mapper.changeToDto(userDAO.find(id).orElseThrow(()
+                -> new NoSuchResourceException(
                 ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= " + id)));
     }
 
     @Override
     public boolean delete(Long id) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public UserDTO update(UserDTO user) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO create(UserDTO user) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override

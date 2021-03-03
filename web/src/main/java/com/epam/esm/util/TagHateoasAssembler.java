@@ -29,11 +29,11 @@ public class TagHateoasAssembler {
         tags.forEach(this::appendSelfReference);
         Link selfLink = linkTo(TagController.class).withSelfRel();
         CollectionModel<TagDTO> collectionModel = CollectionModel.of(tags, selfLink);
-        appendGenericOrderHateoasActions(collectionModel);
+        appendGenericTagHateoasActions(collectionModel);
         return collectionModel;
     }
 
-    private void appendGenericOrderHateoasActions(RepresentationModel dto) {
+    public void appendGenericTagHateoasActions(RepresentationModel dto) {
         dto.add(linkTo(TagController.class).withRel("GET: get all tags"));
         dto.add(linkTo(TagController.class).withRel("POST: create tag"));
         dto.add(linkTo(methodOn(TagController.class).findMostUsedTag()).withRel("GET: find most used tag"));
@@ -41,6 +41,6 @@ public class TagHateoasAssembler {
 
     public void appendAsForMainEntity(TagDTO tag) {
         appendSelfReference(tag);
-        appendGenericOrderHateoasActions(tag);
+        appendGenericTagHateoasActions(tag);
     }
 }

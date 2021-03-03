@@ -26,7 +26,7 @@ public class CertificateHateoasAssembler {
         this.tagAssembler = tagAssembler;
     }
 
-    public void appendSelfReference(CertificateDTO dto) {
+    private void appendSelfReference(CertificateDTO dto) {
         dto.add(linkTo(methodOn(CertificateController.class).find(dto.getId())).withSelfRel());
         dto.add(linkTo(CertificateController.class).withRel("PATCH: update a current certificate"));
         dto.add(linkTo(CertificateController.class).withRel("DELETE: delete a current certificate"));
@@ -38,17 +38,17 @@ public class CertificateHateoasAssembler {
         certificates.forEach(this::appendSelfReference);
         Link selfLink = linkTo(CertificateController.class).withSelfRel();
         CollectionModel<CertificateDTO> collectionModel = CollectionModel.of(certificates, selfLink);
-        appendGenericOrderHateoasActions(collectionModel);
+        appendGenericCertificateHateoasActions(collectionModel);
         return collectionModel;
     }
 
-    private void appendGenericOrderHateoasActions(RepresentationModel dto) {
+    public void appendGenericCertificateHateoasActions(RepresentationModel dto) {
         dto.add(linkTo(CertificateController.class).withRel("GET: get all certificates"));
         dto.add(linkTo(CertificateController.class).withRel("POST: create certificate"));
     }
 
     public void appendAsForMainEntity(CertificateDTO certificate) {
         appendSelfReference(certificate);
-        appendGenericOrderHateoasActions(certificate);
+        appendGenericCertificateHateoasActions(certificate);
     }
 }

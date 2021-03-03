@@ -28,7 +28,7 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
         Set<TagDTO> tagsDTO = dto.getTags();
 
         Set<Tag> tags = tagsDTO.stream()
-                .map(tagDTO -> new Tag(tagDTO.getId(), tagDTO.getName()))
+                .map(tagDTO -> new Tag(tagDTO.getName()))
                 .collect(Collectors.toSet());
 
         certificate.setTags(tags);

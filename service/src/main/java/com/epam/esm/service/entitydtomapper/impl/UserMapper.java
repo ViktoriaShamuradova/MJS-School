@@ -2,11 +2,11 @@ package com.epam.esm.service.entitydtomapper.impl;
 
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.entity.User;
-import com.epam.esm.service.entitydtomapper.UserMapper;
+import com.epam.esm.service.entitydtomapper.DtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapperImpl implements UserMapper {
+public class UserMapper implements DtoMapper<User, UserDTO> {
 
     @Override
     public User changeToEntity(UserDTO user) {

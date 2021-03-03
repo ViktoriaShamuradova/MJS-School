@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> findAll(List<Specification> specifications, int offset, int limit) {
+    public  List<User> findAll(List<Specification> specifications, int offset, int limit) {
         return entityManager.createQuery(buildCriteriaQuery(specifications)).setMaxResults(limit).setFirstResult(offset).getResultList();
     }
 
@@ -63,14 +63,16 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void delete(User user) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void update(User user) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Long create(User user) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

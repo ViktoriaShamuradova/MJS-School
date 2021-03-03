@@ -2,7 +2,7 @@ package com.epam.esm.web.controller;
 
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
-import com.epam.esm.dto.CartContext;
+import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.OrderHateoasAssembler;
@@ -40,7 +40,7 @@ public class OrderController {
      * with links
      */
     @PostMapping()
-    public ResponseEntity<OrderDto> create(@RequestBody CartContext cart) {
+    public ResponseEntity<OrderDto> create(@RequestBody Cart cart) {
         OrderDto order = orderService.create(cart);
         orderAssembler.appendAsForMainEntity(order);
         return new ResponseEntity<>(order, HttpStatus.CREATED);

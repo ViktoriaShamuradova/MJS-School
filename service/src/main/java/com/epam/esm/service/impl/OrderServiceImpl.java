@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
-import com.epam.esm.dto.CartContext;
+import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.CartItem;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Order;
@@ -14,7 +14,6 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.entitydtomapper.impl.OrderDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.exception.NotSupportedException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderDto create(CartContext cart) {
+    public OrderDto create(Cart cart) {
         Order order = new Order(cart.getUserId());
         for (CartItem cartItem : cart.getCartItems()) {
             order.add(new OrderItem(cartItem));
@@ -78,16 +77,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(OrderDto orderReadDto) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean delete(Long aLong) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public OrderDto update(OrderDto orderReadDto) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 }

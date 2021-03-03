@@ -2,35 +2,26 @@ package com.epam.esm.persistence.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.persistence.specification.SearchSpecification;
-import com.epam.esm.persistence.specification.SortSpecification;
 import com.epam.esm.persistence.specification.Specification;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigInteger;
 import java.util.*;
 
 @Repository
-public class TagDAOImpl implements TagDAO {
-    private final static String SELECT_USED_TAG = "SELECT t.name, t.id, count(*) as count FROM mjs_school.tags t " +
-            "JOIN mjs_school.certificates_tags ct ON t.id=ct.id_tag \n" +
-            "JOIN mjs_school.certificates c ON c.id=ct.id_certificate \n" +
-            "JOIN mjs_school.order_items oi ON oi.id_certificate=c.id \n" +
-            "JOIN mjs_school.orders o ON o.id=oi.id_order \n" +
-            "WHERE o.id_user=(SELECT id_user FROM mjs_school.orders GROUP BY id_user ORDER BY SUM(total_sum) DESC LIMIT 1) \n" +
-            "GROUP BY t.name ORDER BY count(*)  DESC";
+public class TagDAOImpl extends AbstractCrudDAO<Tag, Long> implements TagDAO {
+    private final static String SELECT_USED_TAG = "SELECT t.name, t.id, count(*) as count FROM mjs_school.orders AS o " +
+            "JOIN order_items ot ON ot.id_order=o.id " +
+            "JOIN certificates_tags ct ON ct.id_certificate=ot.id_certificate " +
+            "JOIN tags t ON t.id=ct.id_tag " +
+            "WHERE o.total_sum=(SELECT MAX(total_sum) FROM mjs_school.orders) GROUP BY t.name ORDER BY count(*) DESC ";
 
-    private final EntityManager entityManager;
-
-    @Autowired
-    public TagDAOImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    protected TagDAOImpl(EntityManager entityManager) {
+        super(entityManager);
     }
 
     @Override
@@ -66,14 +57,11 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Long create(Tag tag) {
-        entityManager.persist(tag);
-        return tag.getId();
-    }
-
-    @Override
     public List<Tag> findAll(List<Specification> specifications, int offset, int limit) {
-        return entityManager.createQuery(buildCriteriaQuery(specifications)).setMaxResults(limit).setFirstResult(offset).getResultList();
+        return entityManager.createQuery(buildCriteriaQuery(specifications, Tag.class))
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
@@ -83,28 +71,8 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
-    public void delete(Tag tag) {
-        entityManager.remove(tag);
+    public void update(Tag tag) {
+        throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void update(Tag o) {
-
-    }
-
-    private CriteriaQuery<Tag> buildCriteriaQuery(List<Specification> specifications) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
-        Root<Tag> root = criteriaQuery.from(Tag.class);
-        List<Predicate> predicates = new ArrayList<>();
-        specifications.forEach(specification -> {
-            if (specification instanceof SearchSpecification) {
-                predicates.add(((SearchSpecification) specification).toPredicate(criteriaBuilder, root));
-            } else {
-                criteriaQuery.orderBy(((SortSpecification) specification).toOrder(criteriaBuilder, root));
-            }
-        });
-        criteriaQuery.where(predicates.toArray(new Predicate[0]));
-        return criteriaQuery;
-    }
 }

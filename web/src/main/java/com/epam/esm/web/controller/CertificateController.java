@@ -8,6 +8,7 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.CertificateHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ import java.util.List;
  * a class which performs CRUD operations on a resource called "certificate"
  */
 @RestController
-@RequestMapping(value = "/certificates", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "/certificates")
 public class CertificateController {
 
     private final CertificateService certificateService;
@@ -66,11 +67,13 @@ public class CertificateController {
      * @return an object which represents Http response of DELETE operation
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable long id) {
+    public ResponseEntity<RepresentationModel> delete(@PathVariable long id) {
+        RepresentationModel representationModel = new RepresentationModel();
+        certificateAssembler.appendGenericCertificateHateoasActions(representationModel);
         if (certificateService.delete(id)) {
-            return ResponseEntity.ok("Certificate with id= " + id + " was deleted");
+            return new ResponseEntity<>(representationModel, HttpStatus.OK);
         } else {
-            return ResponseEntity.ok("Certificate with id= " + id + " was not found and not deleted");
+            return new ResponseEntity<>(representationModel, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -81,9 +84,9 @@ public class CertificateController {
      * @param certificateUpdateDto contains information for updating certificate in data base
      * @return an object which represents Http response of certificate with links
      */
-    @PatchMapping()
-    public ResponseEntity<CertificateDTO> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
-        CertificateDTO certificate = certificateService.update(certificateUpdateDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<CertificateDTO> update(@PathVariable("id") Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
+        CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
         certificateAssembler.appendAsForMainEntity(certificate);
         return ResponseEntity.ok(certificate);
     }

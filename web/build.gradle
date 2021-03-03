@@ -9,7 +9,6 @@ dependencies {
 
 bootJar {
     enabled = true
-    //mainClass = 'com.epam.esm.Application'
 }
 jar {
     enabled = false

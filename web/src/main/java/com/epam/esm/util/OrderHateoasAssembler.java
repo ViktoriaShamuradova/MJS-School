@@ -15,7 +15,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class OrderHateoasAssembler {
 
-    public void appendSelfReference(OrderDto dto) {
+    private void appendSelfReference(OrderDto dto) {
         dto.add(linkTo(methodOn(OrderController.class).find(dto.getId())).withSelfRel());
     }
 

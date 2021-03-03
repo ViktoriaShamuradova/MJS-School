@@ -34,7 +34,6 @@ public class UserController {
 
     /**
      * a method which realizes REST's READ operation of all resources
-     *
      * @param pageInfo         - object witch contains information about pagination
      * @param userCriteriaInfo - object with information about user to search
      * @return a responseEntity with status code and collection of User, which represents a resource "user" from database
@@ -48,9 +47,8 @@ public class UserController {
 
     /**
      * a method which realizes REST's READ operation of a specific resource with name stored in a request path
-     *
      * @param id an identification requested resource
-     * @return a responseEntity with status code and target resource user, which represents a resource "user" from database
+     * @return a responseEntity with status code and object user, which represents a resource "user" from database
      * with links
      */
     @GetMapping("/{id}")

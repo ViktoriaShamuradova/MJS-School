@@ -5,12 +5,10 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
+//TODO
 @Component
 public class PaginationPreparer {
     private static final int FIRST_PAGE = 1;

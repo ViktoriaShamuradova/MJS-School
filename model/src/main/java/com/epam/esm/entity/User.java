@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "user")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
+public class User extends com.epam.esm.entity.Entity<Long>{
+
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
@@ -25,16 +22,12 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Order> orders;
 
-
     public User() {
+        super();
     }
 
     public User(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
+        super(id);
     }
 
     public String getName() {
@@ -47,10 +40,6 @@ public class User {
 
     public String getSurname() {
         return surname;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void setSurname(String surname) {
@@ -98,23 +87,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(createDate, user.createDate) && Objects.equals(lastUpdateDate, user.lastUpdateDate) && Objects.equals(orders, user.orders);
+        return Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(createDate, user.createDate) && Objects.equals(lastUpdateDate, user.lastUpdateDate) && Objects.equals(orders, user.orders);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, createDate, lastUpdateDate, orders);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", createDate=" + createDate +
-                ", lastUpdateDate=" + lastUpdateDate +
-                ", orders=" + orders +
-                '}';
+        return Objects.hash(name, surname, createDate, lastUpdateDate, orders);
     }
 }

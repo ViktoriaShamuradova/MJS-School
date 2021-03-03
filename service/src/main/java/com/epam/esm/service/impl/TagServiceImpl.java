@@ -1,17 +1,15 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.criteria_info.CriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
 import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification_builder.impl.TagSpecificationBuilder;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.entitydtomapper.impl.TagMapper;
-import com.epam.esm.service.exception.ExceptionCode;
+import com.epam.esm.service.entitydtomapper.impl.TagMapper;;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.exception.NotSupportedException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +38,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TagDTO> find(PageInfo pageInfo, CriteriaInfo criteriaInfo) {
+    public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
         List<Tag> tags = tagDAO.findAll(specifications,(int) pageInfo.getOffset(), (int)pageInfo.getLimit());
@@ -55,7 +53,6 @@ public class TagServiceImpl implements TagService {
             return mapper.changeToDto(tagOptional.get());
         } else {
             Long id = tagDAO.create(mapper.changeToEntity(tag));
-            tag.setId(id);
             return tag;
         }
     }
@@ -106,12 +103,12 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDTO update(TagDTO tag) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean delete(Long aLong) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 
     private List<TagDTO> getListTagDto(List<Tag> tags) {

@@ -13,12 +13,6 @@ public class CartItem {
     private int count;
     private BigDecimal priceOfCertificate;
 
-    public CartItem(long idCertificate, int count, BigDecimal priceOfCertificate) {
-        this.idCertificate = idCertificate;
-        this.count = count;
-        this.priceOfCertificate = priceOfCertificate;
-    }
-
     public CartItem() {
     }
 

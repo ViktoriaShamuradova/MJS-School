@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class CartContext {
+public class Cart {
 
     private Set<CartItem> cartItems;
     private long userId;
 
-    public CartContext() {
+    public Cart() {
         cartItems = new HashSet<>();
     }
 
@@ -33,7 +33,7 @@ public class CartContext {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CartContext cart = (CartContext) o;
+        Cart cart = (Cart) o;
         return userId == cart.userId && Objects.equals(cartItems, cart.cartItems);
     }
 

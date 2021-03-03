@@ -8,15 +8,13 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDAO;
+import com.epam.esm.persistence.TagDAO;
 import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification_builder.impl.CertificateSpecificationBuilder;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.impl.CertificateDtoMapper;
-import com.epam.esm.service.entitydtomapper.impl.TagMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.exception.NotSupportedException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +32,7 @@ import java.util.stream.Collectors;
 public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDAO certificateDAO;
-    private final TagService tagService;
+    private final TagDAO tagDAO;
     private final CertificateDtoMapper certificateDtoMapper;
     private final CertificateSpecificationBuilder specificationBuilder;
     private final PaginationValidator paginationValidator;
@@ -42,12 +40,12 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     public CertificateServiceImpl(CertificateDAO certificateDAO,
                                   CertificateDtoMapper certificateDtoMapper,
-                                  TagService tagService,
+                                  TagDAO tagDAO,
                                   CertificateSpecificationBuilder specificationBuilder,
                                   PaginationValidator paginationValidator) {
         this.certificateDAO = certificateDAO;
         this.certificateDtoMapper = certificateDtoMapper;
-        this.tagService = tagService;
+        this.tagDAO = tagDAO;
         this.specificationBuilder = specificationBuilder;
         this.paginationValidator = paginationValidator;
     }
@@ -57,7 +55,7 @@ public class CertificateServiceImpl implements CertificateService {
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<Certificate> certificates = certificateDAO.findAll(specifications, (int)pageInfo.getOffset(),(int) pageInfo.getLimit());
+        List<Certificate> certificates = certificateDAO.findAll(specifications, (int) pageInfo.getOffset(), (int) pageInfo.getLimit());
         return getListCertificateDto(certificates);
     }
 
@@ -67,15 +65,16 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDTO.setCreateDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
         certificateDTO.setUpdateLastDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
 
-        for (TagDTO t : certificateDTO.getTags()) {
-            t.setId(tagService.create(t).getId());
-        }
-        long id = certificateDAO.create(certificateDtoMapper.changeToEntity(certificateDTO));
-        certificateDTO.setId(id);
+        Set<Tag> tags = prepareTags(certificateDTO.getTags());
+        Certificate certificate = certificateDtoMapper.changeToEntity(certificateDTO);
+        certificate.setTags(tags);
 
+        long id = certificateDAO.create(certificate);
+        certificateDTO.setId(id);
         return certificateDTO;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CertificateDTO findById(Long id) {
         Certificate certificate = certificateDAO.find(id).orElseThrow(() ->
@@ -94,9 +93,10 @@ public class CertificateServiceImpl implements CertificateService {
         return false;
     }
 
+    @Transactional
     @Override
-    public CertificateDTO update(CertificateUpdateDto certificateUpdateDto) {
-        Certificate certificate = certificateDAO.find(certificateUpdateDto.getId().get()).orElseThrow(() ->
+    public CertificateDTO update(CertificateUpdateDto certificateUpdateDto, Long id) {
+        Certificate certificate = certificateDAO.find(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + certificateUpdateDto.getId().get()));
 
         if (certificateUpdateDto.getName().isPresent()) {
@@ -111,7 +111,6 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateUpdateDto.getDuration().isPresent()) {
             certificate.setDuration(certificateUpdateDto.getDuration().get());
         }
-
         if (certificateUpdateDto.getTags().isPresent()) {
             certificate.setTags(prepareTags(certificateUpdateDto.getTags().get()));
         }
@@ -123,15 +122,20 @@ public class CertificateServiceImpl implements CertificateService {
 
     private Set<Tag> prepareTags(Set<TagDTO> tagDTOS) {
         Set<Tag> tags = new HashSet<>();
-        TagMapper tagMapper = new TagMapper();
         tagDTOS.forEach((tagDTO -> {
-            tagService.create(tagDTO);
-            tags.add(tagMapper.changeToEntity(tagDTO));
+            Tag tag = new Tag(tagDTO.getName());
+            Optional<Tag> tagFromDB = tagDAO.find(tagDTO.getName());
+            if (tagFromDB.isPresent()) {
+                tag = tagFromDB.get();
+            } else {
+                tag.setId(tagDAO.create(tag));
+            }
+            tags.add(tag);
         }));
         return tags;
     }
 
-
+    @Transactional
     @Override
     public long getCount() {
         return certificateDAO.getCount();
@@ -146,6 +150,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateDTO update(CertificateDTO certificateDTO) {
-        throw new NotSupportedException(ExceptionCode.NOT_SUPPORTED_OPERATION.getErrorCode());
+        throw new UnsupportedOperationException();
     }
 }

@@ -43,11 +43,5 @@ subprojects {
     test {
         useJUnitPlatform()
     }
-
-//    configurations {
-//        compileOnly {
-//            extendsFrom annotationProcessor
-//        }
-//    }
 }
 
