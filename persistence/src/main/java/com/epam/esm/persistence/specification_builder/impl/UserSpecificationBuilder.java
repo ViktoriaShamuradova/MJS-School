@@ -1,8 +1,8 @@
 package com.epam.esm.persistence.specification_builder.impl;
 
 import com.epam.esm.criteria_info.UserCriteriaInfo;
+import com.epam.esm.persistence.specification.DefaultSpecification;
 import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification.factory.FactoryUserSpecification;
 import com.epam.esm.persistence.specification_builder.SpecificationBuilder;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +28,16 @@ public class UserSpecificationBuilder implements SpecificationBuilder<UserCriter
 
     private void addSpecificationName(String name) {
         if (name == null) return;
-        specifications.add(FactoryUserSpecification.getSpecificationByName(name));
+        specifications.add(DefaultSpecification.getSpecificationForEqualsByField(Field.NAME, name));
     }
 
     private void addSpecificationSurname(String surname) {
         if (surname == null) return;
-        specifications.add(FactoryUserSpecification.getSpecificationBySurname(surname));
+        specifications.add(DefaultSpecification.getSpecificationForEqualsByField(Field.SURNAME, surname));
+    }
+
+    private static class Field {
+        private final static String NAME = "name";
+        private final static String SURNAME = "surname";
     }
 }

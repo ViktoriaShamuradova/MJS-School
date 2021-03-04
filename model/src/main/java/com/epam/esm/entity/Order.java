@@ -112,6 +112,6 @@ public class Order extends Entity<Long>{
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, totalSum, count, createDate, orderItems);
+        return Objects.hash(user, totalSum, count, createDate);
     }
 }

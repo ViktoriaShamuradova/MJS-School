@@ -1,8 +1,8 @@
 package com.epam.esm.persistence.specification_builder.impl;
 
 import com.epam.esm.criteria_info.TagCriteriaInfo;
+import com.epam.esm.persistence.specification.DefaultSpecification;
 import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification.factory.FactoryTagSpecification;
 import com.epam.esm.persistence.specification_builder.SpecificationBuilder;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,10 @@ public class TagSpecificationBuilder implements SpecificationBuilder<TagCriteria
 
     private void addSpecificationName(String name) {
         if (name == null) return;
-        specifications.add(FactoryTagSpecification.getSpecificationByName(name));
+        specifications.add(DefaultSpecification.getSpecificationForEqualsByField(Field.NAME, name));
+    }
+
+    private static class Field {
+        private final static String NAME = "name";
     }
 }

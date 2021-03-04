@@ -83,6 +83,6 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(certificate, count, order, priceOfCertificate);
+        return Objects.hash(certificate, count, priceOfCertificate);
     }
 }

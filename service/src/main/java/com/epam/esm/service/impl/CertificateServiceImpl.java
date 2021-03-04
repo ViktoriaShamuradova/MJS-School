@@ -68,7 +68,7 @@ public class CertificateServiceImpl implements CertificateService {
         Set<Tag> tags = prepareTags(certificateDTO.getTags());
         Certificate certificate = certificateDtoMapper.changeToEntity(certificateDTO);
         certificate.setTags(tags);
-
+        certificate.setId(null);
         long id = certificateDAO.create(certificate);
         certificateDTO.setId(id);
         return certificateDTO;
