@@ -7,11 +7,9 @@ import com.epam.esm.service.UserService;
 import com.epam.esm.util.UserHateoasAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +32,7 @@ public class UserController {
 
     /**
      * a method which realizes REST's READ operation of all resources
+     *
      * @param pageInfo         - object witch contains information about pagination
      * @param userCriteriaInfo - object with information about user to search
      * @return a responseEntity with status code and collection of User, which represents a resource "user" from database
@@ -47,6 +46,7 @@ public class UserController {
 
     /**
      * a method which realizes REST's READ operation of a specific resource with name stored in a request path
+     *
      * @param id an identification requested resource
      * @return a responseEntity with status code and object user, which represents a resource "user" from database
      * with links
@@ -57,5 +57,6 @@ public class UserController {
         userAssembler.appendAsForMainEntity(userDTO);
         return ResponseEntity.ok(userDTO);
     }
+
 }
 

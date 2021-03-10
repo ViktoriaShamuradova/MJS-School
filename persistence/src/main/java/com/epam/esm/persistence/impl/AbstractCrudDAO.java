@@ -1,6 +1,7 @@
 package com.epam.esm.persistence.impl;
 
-import com.epam.esm.entity.Certificate;
+import com.epam.esm.criteria_info.CriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.entity.Entity;
 import com.epam.esm.persistence.CrudDAO;
 import com.epam.esm.persistence.specification.SearchSpecification;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractCrudDAO<T extends Entity<ID>, ID> implements CrudDAO<T, ID> {
+public abstract class AbstractCrudDAO<T extends Entity<ID>, ID, CRITERIA extends CriteriaInfo>
+        implements CrudDAO<T, ID, CRITERIA> {
 
     protected final EntityManager entityManager;
 
@@ -36,7 +38,7 @@ public abstract class AbstractCrudDAO<T extends Entity<ID>, ID> implements CrudD
     }
 
     @Override
-    public abstract List<T> findAll(List<Specification> specifications, int offset, int limit);
+    public abstract List<T> findAll(PageInfo pageInfo, CRITERIA criteriaInfo);
 
     @Override
     public abstract Optional<T> find(ID id);

@@ -1,8 +1,11 @@
 package com.epam.esm.persistence.impl;
 
+import com.epam.esm.criteria_info.OrderCriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.entity.Order;
 import com.epam.esm.persistence.OrderDAO;
 import com.epam.esm.persistence.specification.Specification;
+import com.epam.esm.persistence.specification_builder.impl.OrderSpecificationBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -10,25 +13,29 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class OrderDAOImpl extends AbstractCrudDAO<Order, Long> implements OrderDAO {
+public class OrderDAOImpl extends AbstractCrudDAO<Order, Long, OrderCriteriaInfo> implements OrderDAO {
 
-    protected OrderDAOImpl(EntityManager entityManager) {
+    private final OrderSpecificationBuilder orderSpecificationBuilder;
+
+    protected OrderDAOImpl(EntityManager entityManager, OrderSpecificationBuilder specificationBuilder) {
         super(entityManager);
+        this.orderSpecificationBuilder=specificationBuilder;
     }
 
     @Override
-    public List<Order> findAll(List<Specification> specifications, int offset, int limit) {
+    public List<Order> findAll(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
+        List<Specification> specifications = orderSpecificationBuilder.build(criteriaInfo);
         return entityManager.createQuery(
                 buildCriteriaQuery(specifications, Order.class))
-                .setMaxResults(limit)
-                .setFirstResult(offset)
+                .setMaxResults(pageInfo.getLimit())
+                .setFirstResult(pageInfo.getOffset())
                 .getResultList();
     }
 
     @Override
     public Optional<Order> find(Long id) {
         Order order = entityManager.find(Order.class, id);
-        return order != null ? Optional.of(order) : Optional.empty();
+        return Optional.ofNullable(order);
     }
 
     @Override

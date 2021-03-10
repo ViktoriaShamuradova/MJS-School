@@ -22,14 +22,14 @@ public class PaginationPreparer {
         return preparedPage;
     }
 
-    private long calculatePageCount(long countOfEntity, long limit) {
+    private int calculatePageCount(long countOfEntity, int limit) {
         int pageCount = (int) Math.ceil(countOfEntity * 1.0 / limit);
         return pageCount == 0 ? FIRST_PAGE : pageCount;
     }
 
     public List<Link> preparePaginationLinks(Object invocationModel, PageInfo pageInfo) {
-        long currentPage = pageInfo.getCurrentPage();
-        long pageCount = pageInfo.getNumberOfPages();
+        int currentPage = pageInfo.getCurrentPage();
+        int pageCount = pageInfo.getNumberOfPages();
 
         List<Link> links = new ArrayList<>();
 

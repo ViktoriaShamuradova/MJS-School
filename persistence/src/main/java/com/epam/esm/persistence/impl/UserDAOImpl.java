@@ -1,10 +1,12 @@
 package com.epam.esm.persistence.impl;
 
+import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDAO;
 import com.epam.esm.persistence.specification.SearchSpecification;
 import com.epam.esm.persistence.specification.Specification;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.persistence.specification_builder.impl.UserSpecificationBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -21,24 +23,28 @@ import java.util.Optional;
  */
 
 @Repository
-public class UserDAOImpl implements UserDAO {
+public class UserDAOImpl extends AbstractCrudDAO<User, Long, UserCriteriaInfo> implements UserDAO {
 
-    private final EntityManager entityManager;
+    private final UserSpecificationBuilder specificationBuilder;
 
-    @Autowired
-    public UserDAOImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    protected UserDAOImpl(EntityManager entityManager, UserSpecificationBuilder specificationBuilder) {
+        super(entityManager);
+        this.specificationBuilder = specificationBuilder;
     }
 
     @Override
-    public  List<User> findAll(List<Specification> specifications, int offset, int limit) {
-        return entityManager.createQuery(buildCriteriaQuery(specifications)).setMaxResults(limit).setFirstResult(offset).getResultList();
+    public List<User> findAll(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
+        List<Specification> specifications = specificationBuilder.build(criteriaInfo);
+        return entityManager.createQuery(buildCriteriaQuery(specifications))
+                .setMaxResults(pageInfo.getLimit())
+                .setFirstResult(pageInfo.getOffset())
+                .getResultList();
     }
 
     @Override
     public Optional<User> find(Long id) {
         User user = entityManager.find(User.class, id);
-        return user != null ? Optional.of(user) : Optional.empty();
+        return Optional.ofNullable(user);
     }
 
     @Override

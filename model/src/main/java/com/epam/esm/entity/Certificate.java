@@ -1,7 +1,7 @@
 package com.epam.esm.entity;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
@@ -24,7 +24,7 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
     @Column(name = "last_update_date", columnDefinition = "TIMESTAMP")
     private Instant updateLastDate;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade= {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "certificates_tags",
             joinColumns = @JoinColumn(name = "id_certificate"),
             inverseJoinColumns = @JoinColumn(name = "id_tag"))
@@ -33,7 +33,9 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
     public Certificate(long id) {
         super(id);
     }
-    public Certificate(){}
+
+    public Certificate() {
+    }
 
     public Instant getCreateDate() {
         return createDate;
@@ -54,6 +56,7 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
     public Instant getUpdateLastDate() {
         return updateLastDate;
     }
+
     public void setUpdateLastDate(Instant updateLastDate) {
         this.updateLastDate = updateLastDate;
     }

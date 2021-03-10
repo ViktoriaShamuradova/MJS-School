@@ -9,8 +9,6 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification_builder.impl.CertificateSpecificationBuilder;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.entitydtomapper.impl.CertificateDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -34,19 +32,16 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateDAO certificateDAO;
     private final TagDAO tagDAO;
     private final CertificateDtoMapper certificateDtoMapper;
-    private final CertificateSpecificationBuilder specificationBuilder;
     private final PaginationValidator paginationValidator;
 
     @Autowired
     public CertificateServiceImpl(CertificateDAO certificateDAO,
                                   CertificateDtoMapper certificateDtoMapper,
                                   TagDAO tagDAO,
-                                  CertificateSpecificationBuilder specificationBuilder,
                                   PaginationValidator paginationValidator) {
         this.certificateDAO = certificateDAO;
         this.certificateDtoMapper = certificateDtoMapper;
         this.tagDAO = tagDAO;
-        this.specificationBuilder = specificationBuilder;
         this.paginationValidator = paginationValidator;
     }
 
@@ -54,8 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional(readOnly = true)
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
-        List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<Certificate> certificates = certificateDAO.findAll(specifications, (int) pageInfo.getOffset(), (int) pageInfo.getLimit());
+        List<Certificate> certificates = certificateDAO.findAll(pageInfo, criteriaInfo);
         return getListCertificateDto(certificates);
     }
 
@@ -69,8 +63,8 @@ public class CertificateServiceImpl implements CertificateService {
         Certificate certificate = certificateDtoMapper.changeToEntity(certificateDTO);
         certificate.setTags(tags);
         certificate.setId(null);
-        long id = certificateDAO.create(certificate);
-        certificateDTO.setId(id);
+
+        certificateDTO.setId(certificateDAO.create(certificate));
         return certificateDTO;
     }
 

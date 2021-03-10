@@ -3,7 +3,7 @@ package com.epam.esm.entity;
 import javax.persistence.*;
 
 @MappedSuperclass
-public class Entity<ID> {
+public abstract class Entity<ID> {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

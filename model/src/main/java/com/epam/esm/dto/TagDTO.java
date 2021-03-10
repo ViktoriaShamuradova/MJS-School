@@ -8,6 +8,11 @@ public class TagDTO extends RepresentationModel<TagDTO> {
 
     private String name;
 
+    public TagDTO(){}
+    public TagDTO(String name){
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

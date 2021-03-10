@@ -1,8 +1,11 @@
 package com.epam.esm.persistence.impl;
 
+import com.epam.esm.criteria_info.CertificateCriteriaInfo;
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.specification.Specification;
+import com.epam.esm.persistence.specification_builder.impl.CertificateSpecificationBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -15,10 +18,13 @@ import java.util.Optional;
  * class which makes queries CRUD operations on a certificate to the database
  */
 @Repository
-public class CertificateDAOImpl extends AbstractCrudDAO<Certificate, Long> implements CertificateDAO {
+public class CertificateDAOImpl extends AbstractCrudDAO<Certificate, Long, CertificateCriteriaInfo> implements CertificateDAO {
 
-    protected CertificateDAOImpl(EntityManager entityManager) {
+    private final CertificateSpecificationBuilder specificationBuilder;
+
+    protected CertificateDAOImpl(EntityManager entityManager, CertificateSpecificationBuilder specificationBuilder) {
         super(entityManager);
+        this.specificationBuilder = specificationBuilder;
     }
 
     @Override
@@ -30,15 +36,17 @@ public class CertificateDAOImpl extends AbstractCrudDAO<Certificate, Long> imple
     }
 
     @Override
-    public List<Certificate> findAll(List<Specification> specifications, int offset, int limit) {
+    public List<Certificate> findAll(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
+        List<Specification> specifications = specificationBuilder.build(criteriaInfo);
         return entityManager.createQuery(buildCriteriaQuery(specifications, Certificate.class))
-                .setMaxResults(limit)
-                .setFirstResult(offset)
+                .setMaxResults(pageInfo.getLimit())
+                .setFirstResult(pageInfo.getOffset())
                 .getResultList();
     }
+
     @Override
     public Optional<Certificate> find(Long id) {
         Certificate certificate = entityManager.find(Certificate.class, id);
-        return certificate != null ? Optional.of(certificate) : Optional.empty();
+        return Optional.ofNullable(certificate);
     }
 }

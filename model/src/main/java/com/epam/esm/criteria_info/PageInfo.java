@@ -6,52 +6,52 @@ import javax.validation.constraints.Positive;
 
 public class PageInfo {
     @Min(1)
-    private long currentPage;
+    private int currentPage;
     @Min(1)
     @Max(10)
-    private long limit;
+    private int limit;
     @Positive
-    private long numberOfPages;
+    private int numberOfPages;
 
     private int offset;
 
     public PageInfo() {
     }
 
-    public PageInfo(long currentPage, long limit, long numberOfPages) {
+    public PageInfo(int currentPage, int limit, int numberOfPages) {
         this.currentPage = currentPage;
         this.limit = limit;
         this.numberOfPages = numberOfPages;
     }
 
     @Positive
-    public long getCurrentPage() {
+    public int getCurrentPage() {
         return currentPage;
     }
 
-    public void setCurrentPage(long currentPage) {
+    public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }
 
-    public long getOffset() {
+    public int getOffset() {
         return (currentPage * limit) - limit;
     }
 
     @Positive
-    public long getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public void setLimit(long limit) {
+    public void setLimit(int limit) {
         this.limit = limit;
     }
 
     @Positive
-    public long getNumberOfPages() {
+    public int getNumberOfPages() {
         return numberOfPages;
     }
 
-    public void setNumberOfPages(long numberOfPages) {
+    public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
 

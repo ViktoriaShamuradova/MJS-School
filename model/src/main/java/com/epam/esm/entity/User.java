@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @javax.persistence.Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User extends com.epam.esm.entity.Entity<Long>{
 
     @Column(name = "name")

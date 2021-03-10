@@ -9,7 +9,7 @@ import java.util.Set;
 
 @javax.persistence.Entity
 @Table(name = "orders")
-public class Order extends Entity<Long>{
+public class Order extends Entity<Long> {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
@@ -20,7 +20,8 @@ public class Order extends Entity<Long>{
     private Integer count;
     @Column(name = "create_date", columnDefinition = "TIMESTAMP")
     private Instant createDate;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order",
+            orphanRemoval = true)
     private Set<OrderItem> orderItems;
 
     public Order() {

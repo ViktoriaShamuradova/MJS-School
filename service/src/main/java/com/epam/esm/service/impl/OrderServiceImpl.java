@@ -8,8 +8,6 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderItem;
 import com.epam.esm.persistence.OrderDAO;
-import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification_builder.impl.OrderSpecificationBuilder;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.entitydtomapper.impl.OrderDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -28,17 +26,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDAO orderDAO;
     private final OrderDtoMapper orderDtoMapper;
     private final PaginationValidator paginationValidator;
-    private final OrderSpecificationBuilder orderSpecificationBuilder;
 
     @Autowired
     OrderServiceImpl(OrderDAO orderDAO, OrderDtoMapper orderDtoMapper,
-                     PaginationValidator paginationValidator,
-                     OrderSpecificationBuilder orderSpecificationBuilder) {
+                     PaginationValidator paginationValidator) {
 
         this.orderDAO = orderDAO;
         this.orderDtoMapper = orderDtoMapper;
         this.paginationValidator = paginationValidator;
-        this.orderSpecificationBuilder = orderSpecificationBuilder;
     }
 
     @Override
@@ -57,15 +52,13 @@ public class OrderServiceImpl implements OrderService {
             order.add(new OrderItem(cartItem));
         }
         order.setId(orderDAO.create(order));
-
         return orderDtoMapper.changeToDto(order);
     }
 
     @Override
     public List<OrderDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
-        List<Specification> specifications = orderSpecificationBuilder.build(criteriaInfo);
-        List<Order> orders = orderDAO.findAll(specifications,(int) pageInfo.getOffset(), (int)pageInfo.getLimit());
+        List<Order> orders = orderDAO.findAll(pageInfo, criteriaInfo);
         return getListOrderDto(orders);
     }
 

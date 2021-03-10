@@ -5,8 +5,6 @@ import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDAO;
-import com.epam.esm.persistence.specification.Specification;
-import com.epam.esm.persistence.specification_builder.impl.UserSpecificationBuilder;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.entitydtomapper.impl.UserMapper;
 import com.epam.esm.service.exception.ExceptionCode;
@@ -25,18 +23,15 @@ public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
     private final UserMapper mapper;
     private final PaginationValidator paginationValidator;
-    private final UserSpecificationBuilder specificationBuilder;
 
 
     @Autowired
     public UserServiceImpl(UserDAO userDAO,
                            UserMapper userMapper,
-                           PaginationValidator paginationValidator,
-                           UserSpecificationBuilder specificationBuilder) {
+                           PaginationValidator paginationValidator) {
         this.mapper = userMapper;
         this.userDAO = userDAO;
         this.paginationValidator = paginationValidator;
-        this.specificationBuilder = specificationBuilder;
     }
 
     @Override
@@ -61,11 +56,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserDTO> find(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
-        List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<User> users = userDAO.findAll(specifications,(int) pageInfo.getOffset(),(int) pageInfo.getLimit());
+        List<User> users = userDAO.findAll(pageInfo, criteriaInfo);
         return getListUserDto(users);
     }
 
+    @Transactional
     @Override
     public UserDTO create(UserDTO user) {
         throw new UnsupportedOperationException();

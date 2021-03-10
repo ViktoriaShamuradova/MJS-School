@@ -5,10 +5,9 @@ import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.persistence.specification_builder.impl.TagSpecificationBuilder;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.entitydtomapper.impl.TagMapper;;
+import com.epam.esm.service.entitydtomapper.impl.TagMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.validate.PaginationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +17,27 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 public class TagServiceImpl implements TagService {
 
     private final TagDAO tagDAO;
     private final TagMapper mapper;
     private final PaginationValidator paginationValidator;
-    private final TagSpecificationBuilder specificationBuilder;
 
     @Autowired
     public TagServiceImpl(TagDAO tagDAO, TagMapper mapper,
-                          PaginationValidator paginationValidator,
-                          TagSpecificationBuilder specificationBuilder) {
+                          PaginationValidator paginationValidator) {
         this.mapper = mapper;
         this.tagDAO = tagDAO;
         this.paginationValidator = paginationValidator;
-        this.specificationBuilder = specificationBuilder;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
-        List<Specification> specifications = specificationBuilder.build(criteriaInfo);
-        List<Tag> tags = tagDAO.findAll(specifications,(int) pageInfo.getOffset(), (int)pageInfo.getLimit());
+        List<Tag> tags = tagDAO.findAll(pageInfo, criteriaInfo);
         return getListTagDto(tags);
     }
 
