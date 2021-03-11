@@ -1,13 +1,20 @@
 package com.epam.esm.entity;
 
 import com.epam.esm.dto.CartItem;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @javax.persistence.Entity
 @Table(name = "order_items")
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"certificate", "order"})
+@Getter
+@Setter
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -20,10 +27,6 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
     private Order order;
     @Column(name = "price_certificate")
     private BigDecimal priceOfCertificate;
-
-    public OrderItem() {
-        super();
-    }
 
     public OrderItem(Certificate certificate, int count, Order order, BigDecimal priceOfCertificate) {
         super();
@@ -41,48 +44,4 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         priceOfCertificate = cartItem.getPriceOfCertificate();
     }
 
-    public Certificate getCertificate() {
-        return certificate;
-    }
-
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public BigDecimal getPriceOfCertificate() {
-        return priceOfCertificate;
-    }
-
-    public void setPriceOfCertificate(BigDecimal priceOfCertificate) {
-        this.priceOfCertificate = priceOfCertificate;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderItem orderItem = (OrderItem) o;
-        return count == orderItem.count && Objects.equals(certificate, orderItem.certificate) && Objects.equals(order, orderItem.order) && Objects.equals(priceOfCertificate, orderItem.priceOfCertificate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(certificate, count, priceOfCertificate);
-    }
-}
+  }

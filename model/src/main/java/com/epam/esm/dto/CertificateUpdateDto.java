@@ -1,11 +1,18 @@
 package com.epam.esm.dto;
 
+import lombok.*;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Data
 @SuppressWarnings("FieldMayBeFinal")
 public class CertificateUpdateDto {
 
@@ -25,28 +32,4 @@ public class CertificateUpdateDto {
 
     private JsonNullable<Set<TagDTO>> tags = JsonNullable.undefined();
 
-    public JsonNullable<String> getName() {
-        return name;
-    }
-
-
-    public JsonNullable<String> getDescription() {
-        return description;
-    }
-
-    public JsonNullable<Integer> getDuration() {
-        return duration;
-    }
-
-    public JsonNullable<Set<TagDTO>> getTags() {
-        return tags;
-    }
-
-    public JsonNullable<BigDecimal> getPrice() {
-        return price;
-    }
-
-    public JsonNullable<Long> getId() {
-        return id;
-    }
 }

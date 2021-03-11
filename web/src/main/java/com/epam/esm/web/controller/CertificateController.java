@@ -6,7 +6,7 @@ import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.CertificateHateoasAssembler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
@@ -21,16 +21,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/certificates")
+@RequiredArgsConstructor
 public class CertificateController {
 
     private final CertificateService certificateService;
     private final CertificateHateoasAssembler certificateAssembler;
-
-    @Autowired
-    public CertificateController(CertificateService certificateService, CertificateHateoasAssembler certificateAssembler) {
-        this.certificateService = certificateService;
-        this.certificateAssembler = certificateAssembler;
-    }
 
     /**
      * a method which realizes REST's READ operation of all resources
@@ -42,7 +37,8 @@ public class CertificateController {
     @GetMapping()
     public ResponseEntity<CollectionModel<CertificateDTO>> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
-        return ResponseEntity.ok(certificateAssembler.toHateoasCollectionOfEntities(certificates));
+        long count = certificateService.getCount();
+        return ResponseEntity.ok(certificateAssembler.toHateoasCollectionOfEntities(certificates, pageInfo, count));
     }
 
     /**

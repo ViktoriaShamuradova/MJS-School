@@ -6,7 +6,7 @@ import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.OrderHateoasAssembler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
     private final OrderHateoasAssembler orderAssembler;
-
-    @Autowired
-    public OrderController(OrderService orderService,
-                           OrderHateoasAssembler orderAssembler) {
-        this.orderService = orderService;
-        this.orderAssembler = orderAssembler;
-    }
 
     /**
      * a method which realizes REST's CREATE operation
@@ -56,7 +50,8 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<CollectionModel<OrderDto>> find(PageInfo pageInfo, OrderCriteriaInfo orderCriteriaInfo) {
         List<OrderDto> orders = orderService.find(pageInfo, orderCriteriaInfo);
-        return ResponseEntity.ok(orderAssembler.toHateoasCollectionOfEntities(orders));
+        long count = orderService.getCount();
+        return ResponseEntity.ok(orderAssembler.toHateoasCollectionOfEntities(orders, pageInfo, count));
     }
 
     /**

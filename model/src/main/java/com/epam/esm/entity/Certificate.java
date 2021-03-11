@@ -1,14 +1,20 @@
 package com.epam.esm.entity;
 
+import lombok.*;
+
 import javax.persistence.Entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "certificates")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"tags"})
 public class Certificate extends com.epam.esm.entity.Entity<Long> {
 
     @Column(name = "name")
@@ -34,76 +40,4 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
         super(id);
     }
 
-    public Certificate() {
-    }
-
-    public Instant getCreateDate() {
-        return createDate;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public void setCreateDate(Instant createDate) {
-        this.createDate = createDate;
-    }
-
-    public Instant getUpdateLastDate() {
-        return updateLastDate;
-    }
-
-    public void setUpdateLastDate(Instant updateLastDate) {
-        this.updateLastDate = updateLastDate;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Certificate that = (Certificate) o;
-        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(description, that.description) && Objects.equals(duration, that.duration) && Objects.equals(createDate, that.createDate) && Objects.equals(updateLastDate, that.updateLastDate) && Objects.equals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, price, description, duration, createDate, updateLastDate);
-    }
 }

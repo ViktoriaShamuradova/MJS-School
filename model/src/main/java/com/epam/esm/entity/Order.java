@@ -1,14 +1,22 @@
 package com.epam.esm.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @javax.persistence.Entity
 @Table(name = "orders")
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItems", "user"})
 public class Order extends Entity<Long> {
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -24,11 +32,6 @@ public class Order extends Entity<Long> {
             orphanRemoval = true)
     private Set<OrderItem> orderItems;
 
-    public Order() {
-        super();
-        createDate = Instant.now();
-    }
-
     public Order(long userId) {
         super();
         this.user = new User();
@@ -36,45 +39,6 @@ public class Order extends Entity<Long> {
         createDate = Instant.now();
     }
 
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public BigDecimal getTotalSum() {
-        return totalSum;
-    }
-
-    public void setTotalSum(BigDecimal totalSum) {
-        this.totalSum = totalSum;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer totalCount) {
-        this.count = totalCount;
-    }
-
-    public Instant getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Instant createDate) {
-        this.createDate = createDate;
-    }
 
     public void add(OrderItem orderItem) {
         if (orderItems == null) {
@@ -103,16 +67,4 @@ public class Order extends Entity<Long> {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate) && Objects.equals(orderItems, order.orderItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(user, totalSum, count, createDate);
-    }
 }

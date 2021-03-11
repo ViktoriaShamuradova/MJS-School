@@ -10,29 +10,20 @@ import com.epam.esm.service.entitydtomapper.impl.UserMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.validate.PaginationValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
     private final UserMapper mapper;
     private final PaginationValidator paginationValidator;
-
-
-    @Autowired
-    public UserServiceImpl(UserDAO userDAO,
-                           UserMapper userMapper,
-                           PaginationValidator paginationValidator) {
-        this.mapper = userMapper;
-        this.userDAO = userDAO;
-        this.paginationValidator = paginationValidator;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -66,6 +57,7 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException();
     }
 
+    @Transactional
     @Override
     public long getCount() {
         return userDAO.getCount();

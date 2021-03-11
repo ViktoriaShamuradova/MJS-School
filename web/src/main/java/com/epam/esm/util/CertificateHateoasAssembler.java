@@ -1,14 +1,16 @@
 package com.epam.esm.util;
 
+import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.web.controller.CertificateController;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -17,14 +19,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * a class which assemble links for object CertificateDto
  */
 @Component
+@RequiredArgsConstructor
 public class CertificateHateoasAssembler {
 
     private final TagHateoasAssembler tagAssembler;
-
-    @Autowired
-    public CertificateHateoasAssembler(TagHateoasAssembler tagAssembler) {
-        this.tagAssembler = tagAssembler;
-    }
 
     private void appendSelfReference(CertificateDTO dto) {
         dto.add(linkTo(methodOn(CertificateController.class).find(dto.getId())).withSelfRel());
@@ -34,12 +32,23 @@ public class CertificateHateoasAssembler {
         dto.getTags().forEach(tagAssembler::appendSelfReference);
     }
 
-    public CollectionModel<CertificateDTO> toHateoasCollectionOfEntities(List<CertificateDTO> certificates) {
+    public CollectionModel<CertificateDTO> toHateoasCollectionOfEntities(List<CertificateDTO> certificates,
+                                                                         PageInfo pageInfo, long entityCount) {
         certificates.forEach(this::appendSelfReference);
         Link selfLink = linkTo(CertificateController.class).withSelfRel();
         CollectionModel<CertificateDTO> collectionModel = CollectionModel.of(certificates, selfLink);
         appendGenericCertificateHateoasActions(collectionModel);
+        addPageNavigation(collectionModel, pageInfo, entityCount);
         return collectionModel;
+    }
+
+    private void addPageNavigation(RepresentationModel dto, PageInfo pageInfo, long entityCount) {
+        PageNavigationLinkGenerator pageUrlGenerator= new PageNavigationLinkGenerator(pageInfo, entityCount, "/springboot-rest/certificates");
+        Map<String, Link> links = pageUrlGenerator.getLinks();
+
+        for(Map.Entry<String, Link> entry : links.entrySet()) {
+            dto.add(entry.getValue().withRel(entry.getKey()));
+        }
     }
 
     public void appendGenericCertificateHateoasActions(RepresentationModel dto) {

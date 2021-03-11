@@ -9,6 +9,8 @@ import com.epam.esm.persistence.specification_builder.impl.OrderSpecificationBui
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ public class OrderDAOImpl extends AbstractCrudDAO<Order, Long, OrderCriteriaInfo
 
     protected OrderDAOImpl(EntityManager entityManager, OrderSpecificationBuilder specificationBuilder) {
         super(entityManager);
-        this.orderSpecificationBuilder=specificationBuilder;
+        this.orderSpecificationBuilder = specificationBuilder;
     }
 
     @Override
@@ -36,6 +38,14 @@ public class OrderDAOImpl extends AbstractCrudDAO<Order, Long, OrderCriteriaInfo
     public Optional<Order> find(Long id) {
         Order order = entityManager.find(Order.class, id);
         return Optional.ofNullable(order);
+    }
+
+    @Override
+    public long getCount() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(Order.class)));
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 
     @Override

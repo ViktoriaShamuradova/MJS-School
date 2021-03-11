@@ -5,33 +5,24 @@ import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.persistence.specification_builder.impl.TagSpecificationBuilder;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.entitydtomapper.impl.TagMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.validate.PaginationValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@RequiredArgsConstructor
 @Service
 public class TagServiceImpl implements TagService {
 
     private final TagDAO tagDAO;
     private final TagMapper mapper;
     private final PaginationValidator paginationValidator;
-
-    @Autowired
-    public TagServiceImpl(TagDAO tagDAO, TagMapper mapper,
-                          PaginationValidator paginationValidator) {
-        this.mapper = mapper;
-        this.tagDAO = tagDAO;
-        this.paginationValidator = paginationValidator;
-    }
 
     @Override
     @Transactional(readOnly = true)

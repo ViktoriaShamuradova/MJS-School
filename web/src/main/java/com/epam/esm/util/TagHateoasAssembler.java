@@ -10,6 +10,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -25,11 +26,13 @@ public class TagHateoasAssembler {
         dto.add(linkTo(methodOn(TagController.class).delete(dto.getName())).withRel("DELETE: delete a current tag"));
     }
 
-    public CollectionModel<TagDTO> toHateoasCollectionOfEntities(List<TagDTO> tags) {
+    public CollectionModel<TagDTO> toHateoasCollectionOfEntities(List<TagDTO> tags,
+                                                                 PageInfo pageInfo, long entityCount) {
         tags.forEach(this::appendSelfReference);
         Link selfLink = linkTo(TagController.class).withSelfRel();
         CollectionModel<TagDTO> collectionModel = CollectionModel.of(tags, selfLink);
         appendGenericTagHateoasActions(collectionModel);
+        addPageNavigation(collectionModel, pageInfo, entityCount);
         return collectionModel;
     }
 
@@ -42,5 +45,14 @@ public class TagHateoasAssembler {
     public void appendAsForMainEntity(TagDTO tag) {
         appendSelfReference(tag);
         appendGenericTagHateoasActions(tag);
+    }
+
+    private void addPageNavigation(RepresentationModel dto, PageInfo pageInfo, long entityCount) {
+        PageNavigationLinkGenerator pageUrlGenerator = new PageNavigationLinkGenerator(pageInfo, entityCount, "/springboot-rest/tags");
+        Map<String, Link> links = pageUrlGenerator.getLinks();
+
+        for (Map.Entry<String, Link> entry : links.entrySet()) {
+            dto.add(entry.getValue().withRel(entry.getKey()));
+        }
     }
 }

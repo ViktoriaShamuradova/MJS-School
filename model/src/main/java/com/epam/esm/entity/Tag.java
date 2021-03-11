@@ -1,11 +1,16 @@
 package com.epam.esm.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Set;
 
 @javax.persistence.Entity
 @Table(name = "tags")
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = {"certificates"})
+@Getter
+@Setter
 public class Tag extends com.epam.esm.entity.Entity<Long>{
 
     @Column(name = "name", unique=true)
@@ -23,41 +28,9 @@ public class Tag extends com.epam.esm.entity.Entity<Long>{
         this.name = name;
     }
 
-    public Tag() {
-        super();
-    }
-
     public Tag(Long id, String name) {
         super(id);
         this.name = name;
     }
 
-    public Set<Certificate> getCertificates() {
-        return certificates;
-    }
-
-    public void setCertificates(Set<Certificate> certificates) {
-        this.certificates = certificates;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
-        return Objects.equals(name, tag.name) && Objects.equals(certificates, tag.certificates);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
 }

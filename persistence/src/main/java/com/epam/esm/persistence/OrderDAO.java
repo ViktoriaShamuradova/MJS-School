@@ -6,4 +6,5 @@ import com.epam.esm.entity.Order;
 
 public interface OrderDAO extends CrudDAO<Order, Long, OrderCriteriaInfo> {
 
+    long getCount();
 }

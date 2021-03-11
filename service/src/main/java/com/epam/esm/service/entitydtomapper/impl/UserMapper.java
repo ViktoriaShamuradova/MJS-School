@@ -12,7 +12,7 @@ public class UserMapper implements DtoMapper<User, UserDTO> {
     public User changeToEntity(UserDTO user) {
         User u = new User();
         u.setId(user.getId());
-        u.setLastUpdateDate(user.getUpdateLastDate());
+        u.setLastUpdateDate(user.getLastUpdateDate());
         u.setName(user.getName());
         u.setSurname(user.getSurname());
         u.setCreateDate(user.getCreateDate());
@@ -23,7 +23,7 @@ public class UserMapper implements DtoMapper<User, UserDTO> {
     public UserDTO changeToDto(User user) {
         UserDTO u = new UserDTO();
         u.setId(user.getId());
-        u.setLastUpdateDate(user.getUpdateLastDate());
+        u.setLastUpdateDate(user.getLastUpdateDate());
         u.setName(user.getName());
         u.setSurname(user.getSurname());
         u.setCreateDate(user.getCreateDate());

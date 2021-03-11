@@ -7,4 +7,6 @@ import com.epam.esm.dto.OrderDto;
 
 public interface OrderService extends CrudService<OrderDto, Long, OrderCriteriaInfo> {
     OrderDto create(Cart cart);
+
+    long getCount();
 }

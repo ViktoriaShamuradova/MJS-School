@@ -13,28 +13,21 @@ import com.epam.esm.service.entitydtomapper.impl.OrderDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.validate.PaginationValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDAO orderDAO;
     private final OrderDtoMapper orderDtoMapper;
     private final PaginationValidator paginationValidator;
-
-    @Autowired
-    OrderServiceImpl(OrderDAO orderDAO, OrderDtoMapper orderDtoMapper,
-                     PaginationValidator paginationValidator) {
-
-        this.orderDAO = orderDAO;
-        this.orderDtoMapper = orderDtoMapper;
-        this.paginationValidator = paginationValidator;
-    }
 
     @Override
     public OrderDto findById(Long id) {
@@ -48,11 +41,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto create(Cart cart) {
         Order order = new Order(cart.getUserId());
+        order.setCreateDate(Instant.now());
         for (CartItem cartItem : cart.getCartItems()) {
             order.add(new OrderItem(cartItem));
         }
         order.setId(orderDAO.create(order));
         return orderDtoMapper.changeToDto(order);
+    }
+
+    @Override
+    public long getCount() {
+        return orderDAO.getCount();
     }
 
     @Override

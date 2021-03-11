@@ -14,7 +14,7 @@ import com.epam.esm.service.entitydtomapper.impl.CertificateDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.validate.PaginationValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
@@ -33,17 +34,6 @@ public class CertificateServiceImpl implements CertificateService {
     private final TagDAO tagDAO;
     private final CertificateDtoMapper certificateDtoMapper;
     private final PaginationValidator paginationValidator;
-
-    @Autowired
-    public CertificateServiceImpl(CertificateDAO certificateDAO,
-                                  CertificateDtoMapper certificateDtoMapper,
-                                  TagDAO tagDAO,
-                                  PaginationValidator paginationValidator) {
-        this.certificateDAO = certificateDAO;
-        this.certificateDtoMapper = certificateDtoMapper;
-        this.tagDAO = tagDAO;
-        this.paginationValidator = paginationValidator;
-    }
 
     @Override
     @Transactional(readOnly = true)

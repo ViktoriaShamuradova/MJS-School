@@ -5,7 +5,7 @@ import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.TagHateoasAssembler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
@@ -19,19 +19,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/tags")
+@RequiredArgsConstructor
 public class TagController {
 
     private final TagService tagService;
     private final TagHateoasAssembler tagAssembler;
 
-    @Autowired
-    public TagController(TagService tagService, TagHateoasAssembler tagAssembler) {
-        this.tagAssembler = tagAssembler;
-        this.tagService = tagService;
-    }
-
     /**
      * a method which realizes REST's READ operation of all resources
+     *
      * @param pageInfo     - map witch contains information about pagination
      * @param criteriaInfo - object with information about tag to search
      * @return a collection of TagDTO with links, which represents a resource "tag" from database with links
@@ -39,7 +35,8 @@ public class TagController {
     @GetMapping
     public ResponseEntity<CollectionModel<TagDTO>> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
         List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
-        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags));
+        long count = tagService.getCount();
+        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags, pageInfo, count));
     }
 
     /**
@@ -80,7 +77,7 @@ public class TagController {
      */
     @GetMapping("/most-used")
     public ResponseEntity<CollectionModel<TagDTO>> findMostUsedTag() {
-        List<TagDTO> tags =  tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
-        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags));
+        List<TagDTO> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
+        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags, new PageInfo(), tags.size()));
     }
 }
