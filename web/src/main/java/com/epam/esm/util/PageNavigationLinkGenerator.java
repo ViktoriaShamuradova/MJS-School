@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class PageNavigationLinkGenerator {
     private PageInfo pageInfo;
-    private Map<String, Link> links;
+    private Map<NavigatorPage, Link> links;
     private long entityCount;
     private String path;
 
@@ -27,7 +27,7 @@ public class PageNavigationLinkGenerator {
     private PageNavigationLinkGenerator() {
     }
 
-    Map<String, Link> getLinks() {
+    Map<NavigatorPage, Link> getLinks() {
         pageInfo.setNumberOfPages(calculatePageCount(entityCount, pageInfo.getLimit()));
 
         int currentPage = pageInfo.getCurrentPage();
@@ -45,7 +45,7 @@ public class PageNavigationLinkGenerator {
         if (numberOfPages != 1 && currentPage != numberOfPages) {
             pageInfo.setCurrentPage(numberOfPages);
             Link link = buildLink();
-            links.put(NavigatorConstant.LAST_PAGE, link);
+            links.put(NavigatorPage.LAST_PAGE, link);
         }
     }
 
@@ -53,7 +53,7 @@ public class PageNavigationLinkGenerator {
         if (currentPage != 1) {
             pageInfo.setCurrentPage(currentPage - 1);
             Link link = buildLink();
-            links.put(NavigatorConstant.PREVIOUS_PAGE, link);
+            links.put(NavigatorPage.PREVIOUS_PAGE, link);
         }
     }
 
@@ -61,7 +61,7 @@ public class PageNavigationLinkGenerator {
         if (currentPage != numberOfPages) {
             pageInfo.setCurrentPage(currentPage + 1);
             Link link = buildLink();
-            links.put(NavigatorConstant.NEXT_PAGE, link);
+            links.put(NavigatorPage.NEXT_PAGE, link);
         }
     }
 
@@ -69,7 +69,7 @@ public class PageNavigationLinkGenerator {
         if (numberOfPages != 1 && currentPage != 1) {
             pageInfo.setCurrentPage(1);
             Link link = buildLink();
-            links.put(NavigatorConstant.FIRST_PAGE, link);
+            links.put(NavigatorPage.FIRST_PAGE, link);
         }
     }
 
@@ -106,12 +106,5 @@ public class PageNavigationLinkGenerator {
         public static final String SCHEME = "http";
         public static final int PORT = 3333;
         public static final String HOST = "localhost";
-    }
-
-    private static class NavigatorConstant {
-        public static final String FIRST_PAGE = "first page";
-        public static final String LAST_PAGE = "last page";
-        public static final String NEXT_PAGE = "next page";
-        public static final String PREVIOUS_PAGE = "previous page";
     }
 }

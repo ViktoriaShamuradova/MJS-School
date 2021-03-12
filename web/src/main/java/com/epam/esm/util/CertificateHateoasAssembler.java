@@ -44,10 +44,10 @@ public class CertificateHateoasAssembler {
 
     private void addPageNavigation(RepresentationModel dto, PageInfo pageInfo, long entityCount) {
         PageNavigationLinkGenerator pageUrlGenerator= new PageNavigationLinkGenerator(pageInfo, entityCount, "/springboot-rest/certificates");
-        Map<String, Link> links = pageUrlGenerator.getLinks();
+        Map<NavigatorPage, Link> links = pageUrlGenerator.getLinks();
 
-        for(Map.Entry<String, Link> entry : links.entrySet()) {
-            dto.add(entry.getValue().withRel(entry.getKey()));
+        for(Map.Entry<NavigatorPage, Link> entry : links.entrySet()) {
+            dto.add(entry.getValue().withRel(entry.getKey().toString()));
         }
     }
 
