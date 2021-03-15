@@ -1,19 +1,26 @@
 package com.epam.esm.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 @javax.persistence.Entity
 @Table(name = "tags")
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"certificates"})
-@Getter
-@Setter
-public class Tag extends com.epam.esm.entity.Entity<Long>{
+@Data
+public class Tag extends com.epam.esm.entity.Entity<Long> {
 
-    @Column(name = "name", unique=true)
+    @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -32,5 +39,4 @@ public class Tag extends com.epam.esm.entity.Entity<Long>{
         super(id);
         this.name = name;
     }
-
 }

@@ -15,8 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"orders"})
-@Getter
-@Setter
+@Data
 public class User extends com.epam.esm.entity.Entity<Long> {
 
     @Column(name = "name")

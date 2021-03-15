@@ -1,14 +1,13 @@
 package com.epam.esm.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode()
+@Data
 public class Cart {
 
     private Set<CartItem> cartItems;
@@ -17,5 +16,4 @@ public class Cart {
     public Cart() {
         cartItems = new HashSet<>();
     }
-
 }

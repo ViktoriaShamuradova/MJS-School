@@ -1,16 +1,14 @@
 package com.epam.esm.dto;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = true)
 public class OrderItemDto  extends RepresentationModel<OrderDto> {
 

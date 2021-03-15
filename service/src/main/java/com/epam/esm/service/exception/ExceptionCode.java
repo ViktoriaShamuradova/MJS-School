@@ -22,5 +22,4 @@ public enum ExceptionCode {
     public String getErrorCode() {
         return errorCode;
     }
-
 }

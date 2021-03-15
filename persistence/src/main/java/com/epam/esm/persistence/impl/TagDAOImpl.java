@@ -85,5 +85,4 @@ public class TagDAOImpl extends AbstractCrudDAO<Tag, Long, TagCriteriaInfo> impl
     public void update(Tag tag) {
         throw new UnsupportedOperationException();
     }
-
 }

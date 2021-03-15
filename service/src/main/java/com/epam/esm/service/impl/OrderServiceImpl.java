@@ -49,11 +49,13 @@ public class OrderServiceImpl implements OrderService {
         return orderDtoMapper.changeToDto(order);
     }
 
+    @Transactional
     @Override
     public long getCount() {
         return orderDAO.getCount();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
         paginationValidator.validate(pageInfo);
@@ -67,16 +69,19 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public OrderDto create(OrderDto orderReadDto) {
         throw new UnsupportedOperationException();
     }
 
+    @Transactional
     @Override
     public boolean delete(Long aLong) {
         throw new UnsupportedOperationException();
     }
 
+    @Transactional
     @Override
     public OrderDto update(OrderDto orderReadDto) {
         throw new UnsupportedOperationException();

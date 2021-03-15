@@ -16,5 +16,4 @@ public interface CrudDAO<T, ID, CRITERIA> {
     Optional<T> find(ID id);
 
     void delete(T t);
-
 }

@@ -1,17 +1,24 @@
 package com.epam.esm.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "certificates")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"tags"})
@@ -39,5 +46,4 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
     public Certificate(long id) {
         super(id);
     }
-
 }

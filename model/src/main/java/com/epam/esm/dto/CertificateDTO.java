@@ -2,7 +2,8 @@ package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
@@ -13,8 +14,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = true, exclude = {"tags"})
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 

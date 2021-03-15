@@ -10,5 +10,4 @@ public class ResourceAlreadyExistsException extends ServiceException {
     public ResourceAlreadyExistsException(String errorCode) {
         super(errorCode);
     }
-
 }

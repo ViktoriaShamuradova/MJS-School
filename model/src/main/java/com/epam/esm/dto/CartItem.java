@@ -1,16 +1,16 @@
 package com.epam.esm.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@EqualsAndHashCode
 public class CartItem {
 
     private long idCertificate;

@@ -73,7 +73,6 @@ public class TagServiceImpl implements TagService {
         return false;
     }
 
-
     @Override
     @Transactional
     public List<TagDTO> getMostUsedTagOfUserWithHighestCostOfOrders() {

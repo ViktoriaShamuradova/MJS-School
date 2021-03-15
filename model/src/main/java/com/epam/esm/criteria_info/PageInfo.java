@@ -1,6 +1,7 @@
 package com.epam.esm.criteria_info;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 
-@Getter
-@Setter
-@EqualsAndHashCode()
+@Data
 @AllArgsConstructor
 public class PageInfo {
     @Min(1)
@@ -52,5 +51,4 @@ public class PageInfo {
     public int getNumberOfPages() {
         return numberOfPages;
     }
-
 }

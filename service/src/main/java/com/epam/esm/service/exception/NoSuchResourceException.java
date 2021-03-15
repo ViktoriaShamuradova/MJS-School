@@ -9,5 +9,4 @@ public class NoSuchResourceException extends ServiceException {
     public NoSuchResourceException(String errorCode) {
         super(errorCode);
     }
-
 }

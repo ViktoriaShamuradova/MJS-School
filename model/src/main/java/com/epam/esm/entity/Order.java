@@ -1,11 +1,16 @@
 package com.epam.esm.entity;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
@@ -14,10 +19,9 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "orders")
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = true, exclude = {"orderItems", "user"})
-public class Order extends Entity<Long> {
+public class Order extends com.epam.esm.entity.Entity<Long> {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
@@ -38,7 +42,6 @@ public class Order extends Entity<Long> {
         user.setId(userId);
         createDate = Instant.now();
     }
-
 
     public void add(OrderItem orderItem) {
         if (orderItems == null) {
@@ -66,5 +69,4 @@ public class Order extends Entity<Long> {
             totalSum = totalSum.add(item.getPriceOfCertificate().multiply(BigDecimal.valueOf(item.getCount())));
         }
     }
-
 }

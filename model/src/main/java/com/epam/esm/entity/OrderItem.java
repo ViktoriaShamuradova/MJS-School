@@ -1,20 +1,24 @@
 package com.epam.esm.entity;
 
 import com.epam.esm.dto.CartItem;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @javax.persistence.Entity
 @Table(name = "order_items")
+@Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"certificate", "order"})
-@Getter
-@Setter
+
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -43,5 +47,4 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         count = cartItem.getCount();
         priceOfCertificate = cartItem.getPriceOfCertificate();
     }
-
-  }
+}

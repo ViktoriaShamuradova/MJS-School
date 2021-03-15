@@ -9,6 +9,5 @@ public interface CertificateService extends CrudService<CertificateDTO, Long, Ce
     CertificateDTO update(CertificateUpdateDto certificateUpdateDto, Long id);
 
     long getCount();
-
 }
 

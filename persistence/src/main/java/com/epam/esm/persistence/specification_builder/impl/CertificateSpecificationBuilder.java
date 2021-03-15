@@ -102,7 +102,6 @@ public class CertificateSpecificationBuilder implements SpecificationBuilder<Cer
                     -> criteriaBuilder.or(criteriaBuilder.like(root.get(Field.NAME), "%" + partOfNameOrDescription + "%"),
                     criteriaBuilder.like(root.get(Field.DESCRIPTION), "%" + partOfNameOrDescription + "%"));
         }
-
     }
 }
 
