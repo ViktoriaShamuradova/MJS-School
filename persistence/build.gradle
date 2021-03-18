@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':model')
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+}
+
+jar {
+    enabled = true
+}
