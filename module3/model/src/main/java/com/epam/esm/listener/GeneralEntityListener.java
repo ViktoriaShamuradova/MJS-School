@@ -1,14 +1,12 @@
 package com.epam.esm.listener;
 
 import com.epam.esm.entity.Entity;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
-@Slf4j
 public class GeneralEntityListener {
 
     @PreUpdate
