@@ -7,9 +7,11 @@ plugins {
 repositories {
     mavenCentral()
 }
+
 bootJar {
     mainClass = 'com.epam.esm.Application'
 }
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
@@ -19,7 +21,7 @@ subprojects {
 
     group = 'com.epam.esm'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '1.14'
 
 
     repositories {

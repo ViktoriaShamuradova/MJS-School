@@ -11,10 +11,10 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @Data
 public class UserCriteriaInfo extends CriteriaInfo {
-    @NotBlank(message = "name must not be blank")
+
     @Pattern(regexp = "[A-Za-zА-Яа-яЁё \\-]{1,45}", message = "name should contain from 1 to 45 characters")
     private String name;
-    @NotBlank(message = "name must not be blank")
+
     @Pattern(regexp = "[A-Za-zА-Яа-яЁё \\-]{1,45}", message = "surname should contain from 1 to 45 characters")
     private String surname;
 }

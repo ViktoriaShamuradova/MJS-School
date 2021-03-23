@@ -1,5 +1,7 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.Role;
+import com.epam.esm.Status;
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.UserDTO;
@@ -9,15 +11,19 @@ import com.epam.esm.service.UserService;
 import com.epam.esm.service.entitydtomapper.impl.UserMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
+import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
@@ -50,8 +56,21 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDTO create(UserDTO user) {
-        throw new UnsupportedOperationException();
+    public UserDTO create(UserDTO userDTO) {
+        userDAO.findByEmail(userDTO.getUsername()).orElseThrow(() ->
+                new ResourceAlreadyExistsException(ExceptionCode.USER_ALREADY_EXIST.getErrorCode(),
+                        userDTO.getUsername()));
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setSurname(userDTO.getSurname());
+        user.setPassword(userDTO.getPassword());
+        user.setRole(Role.USER);
+        user.setStatus(Status.ACTIVE);
+        user.setCreateDate(Instant.now());
+        user.setLastUpdateDate(Instant.now());
+
+        userDAO.create(user);
+        return userDTO;
     }
 
     @Transactional
@@ -65,5 +84,12 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(mapper::changeToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userDAO.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User doesn't exists"));
+        return UserDTO.fromUser(user);
     }
 }

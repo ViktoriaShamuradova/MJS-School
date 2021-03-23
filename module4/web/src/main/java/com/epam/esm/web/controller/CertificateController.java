@@ -11,6 +11,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,7 @@ public class CertificateController {
      * @return a collection of CertificatesDTO, which represents a resource "certificates" from database with links
      */
     @GetMapping()
+    @PreAuthorize("hasAuthority('read')")
     public ResponseEntity<CollectionModel<CertificateDTO>> find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
         long count = certificateService.getCount();
@@ -60,6 +62,7 @@ public class CertificateController {
      * with links
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('write')")
     public ResponseEntity<CertificateDTO> create(@RequestBody @Valid CertificateDTO certificateDTO) {
         CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
         certificateAssembler.appendAsForMainEntity(certificateDTOCreated);
@@ -73,6 +76,7 @@ public class CertificateController {
      * @return an object which represents Http response of DELETE operation
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('write')")
     public ResponseEntity<RepresentationModel> delete(@PathVariable @Min(1) long id) {
         RepresentationModel representationModel = new RepresentationModel();
         certificateAssembler.appendGenericCertificateHateoasActions(representationModel);
@@ -91,6 +95,7 @@ public class CertificateController {
      * @return an object which represents Http response of certificate with links
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('write')")
     public ResponseEntity<CertificateDTO> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
         CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
         certificateAssembler.appendAsForMainEntity(certificate);
@@ -104,6 +109,7 @@ public class CertificateController {
      * @return an ResponseEntity with CertificateDTO with links
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('read')")
     public ResponseEntity<CertificateDTO> find(@PathVariable("id")
                                                    @Min(1) long id) {
         CertificateDTO certificate = certificateService.findById(id);
