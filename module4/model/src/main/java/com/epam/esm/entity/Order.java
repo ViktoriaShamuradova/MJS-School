@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @javax.persistence.Entity
@@ -71,5 +72,18 @@ public class Order extends com.epam.esm.entity.Entity<Long> {
             count = count + item.getCount();
             totalSum = totalSum.add(item.getPriceOfCertificate().multiply(BigDecimal.valueOf(item.getCount())));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, totalSum, count, createDate);
     }
 }

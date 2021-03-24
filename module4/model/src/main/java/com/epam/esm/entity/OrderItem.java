@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @javax.persistence.Entity
 @Table(name = "order_items")
@@ -47,5 +48,18 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         this.certificate = new Certificate();
         certificate.setId(cartItem.getIdCertificate());
         count = cartItem.getCount();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return count == orderItem.count && Objects.equals(certificate, orderItem.certificate) && Objects.equals(priceOfCertificate, orderItem.priceOfCertificate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(certificate, count, priceOfCertificate);
     }
 }

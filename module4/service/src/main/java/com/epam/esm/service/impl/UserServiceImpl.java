@@ -86,10 +86,12 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDAO.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User doesn't exists"));
+        System.out.println(user.getRole().getAuthorities().size());
         return UserDTO.fromUser(user);
     }
 }

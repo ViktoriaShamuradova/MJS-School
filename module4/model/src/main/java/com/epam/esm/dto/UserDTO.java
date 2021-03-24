@@ -42,6 +42,7 @@ public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails
     private String password;
 
     private String username;
+
     @Null(message = "user authorities cannot be defined by users")
     private List<SimpleGrantedAuthority> authorities;
 
@@ -86,6 +87,7 @@ public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails
     }
 
     public static UserDetails fromUser(User user) {
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(),
                 user.getStatus().equals(Status.ACTIVE),

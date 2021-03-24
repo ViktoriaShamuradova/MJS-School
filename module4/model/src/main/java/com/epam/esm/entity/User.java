@@ -10,12 +10,14 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @javax.persistence.Entity
 @Table(name = "users")
@@ -60,5 +62,32 @@ public class User extends com.epam.esm.entity.Entity<Long> {
         }
         orders.add(order);
         order.setUser(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(createDate, user.createDate) && Objects.equals(lastUpdateDate, user.lastUpdateDate) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role && status == user.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, surname, createDate, lastUpdateDate, email, password, role, status);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", createDate=" + createDate +
+                ", lastUpdateDate=" + lastUpdateDate +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", status=" + status +
+                '}';
     }
 }
