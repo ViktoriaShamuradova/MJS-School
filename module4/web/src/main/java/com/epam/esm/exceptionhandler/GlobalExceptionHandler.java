@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,6 +38,22 @@ public class GlobalExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(e.getErrorCode());
         exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getErrorCode(), new Object[]{e.getMessage()},
+                request.getLocale())
+        );
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthenticationException(AuthenticationException e,
+                                                                           HttpServletRequest request) {
+
+        String localizedMessage = resourceBundle.getMessage(
+                e.getMessage(), new Object[]{}, request.getLocale());
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setErrorCode(e.getMessage());
+
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getMessage(), new Object[]{request.getServletPath()},
                 request.getLocale())
         );
         return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);

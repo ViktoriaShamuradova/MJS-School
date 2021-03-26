@@ -22,15 +22,13 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, exclude = {"tags"})
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
-    @Positive
-    @Min(1)
     private long id;
 
     @Pattern(regexp = "[0-9A-Za-zА-Яа-яЁё ]{1,45}", message = "certificate name must contain from 1 to 45 " +
             "characters without punctuation marks")
     private String name;
 
-    @Pattern(regexp = "[-,.:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "description must contain " +
+    @Pattern(regexp = "[-,.:!? 0-9A-Za-zА-Яа-яЁё]{1,100}", message = "description must contain " +
             "from 1 to 100 " +
             "characters with punctuation marks")
     private String description;
