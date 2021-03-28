@@ -34,6 +34,13 @@ public class UserDAOImpl extends AbstractCrudDAO<User, Long, UserCriteriaInfo> i
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        Query namedQuery = entityManager.createNamedQuery("User.findByEmail");
+        namedQuery.setParameter("email", email);
+        return Optional.ofNullable((User) namedQuery.getSingleResult());
+    }
+
+    @Override
     public List<User> findAll(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
         List<Specification> specifications = specificationBuilder.build(criteriaInfo);
         return entityManager.createQuery(buildCriteriaQuery(specifications))
