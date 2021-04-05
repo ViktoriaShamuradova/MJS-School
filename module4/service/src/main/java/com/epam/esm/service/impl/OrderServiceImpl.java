@@ -11,7 +11,7 @@ import com.epam.esm.entity.OrderItem;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.OrderDAO;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.entitydtomapper.impl.OrderDtoMapper;
+import com.epam.esm.service.modelmapper.OrderMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDAO orderDAO;
-    private final OrderDtoMapper orderDtoMapper;
+    private final OrderMapper mapper;
     private final CertificateDAO certificateDAO;
 
     @Override
@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderDAO.find(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_ORDER_FOUND.getErrorCode(), "id= " + id));
 
-        return orderDtoMapper.changeToDto(order);
+        return mapper.toDTO(order);
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
             order.add(orderItem);
         }
         order.setId(orderDAO.create(order));
-        return orderDtoMapper.changeToDto(order);
+        return mapper.toDTO(order);
     }
 
     @Transactional
@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
 
     private List<OrderDto> getListOrderDto(List<Order> orders) {
         return orders.stream()
-                .map(orderDtoMapper::changeToDto)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 

@@ -9,8 +9,9 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.TagDAO;
+import com.epam.esm.persistence.specification.Specification;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.entitydtomapper.impl.CertificateDtoMapper;
+import com.epam.esm.service.modelmapper.CertificateMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,16 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDAO certificateDAO;
     private final TagDAO tagDAO;
-    private final CertificateDtoMapper certificateDtoMapper;
+    private final CertificateMapper mapper;
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public CertificateDTO findById(Long id) {
+        Certificate certificate = certificateDAO.find(id).orElseThrow(() ->
+                new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + id));
+        return mapper.toDTO(certificate);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -47,20 +57,12 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDTO.setUpdateLastDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
 
         Set<Tag> tags = prepareTags(certificateDTO.getTags());
-        Certificate certificate = certificateDtoMapper.changeToEntity(certificateDTO);
+        Certificate certificate = mapper.toEntity(certificateDTO);
         certificate.setTags(tags);
         certificate.setId(null);
 
         certificateDTO.setId(certificateDAO.create(certificate));
         return certificateDTO;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public CertificateDTO findById(Long id) {
-        Certificate certificate = certificateDAO.find(id).orElseThrow(() ->
-                new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + id));
-        return certificateDtoMapper.changeToDto(certificate);
     }
 
     @Transactional
@@ -98,7 +100,7 @@ public class CertificateServiceImpl implements CertificateService {
         certificate.setUpdateLastDate(Instant.now());
 
         certificateDAO.update(certificate);
-        return certificateDtoMapper.changeToDto(certificate);
+        return mapper.toDTO(certificate);
     }
 
     private Set<Tag> prepareTags(Set<TagDTO> tagDTOS) {
@@ -125,7 +127,7 @@ public class CertificateServiceImpl implements CertificateService {
     private List<CertificateDTO> getListCertificateDto(List<Certificate> certificates) {
         return certificates
                 .stream()
-                .map(certificateDtoMapper::changeToDto)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -133,4 +135,6 @@ public class CertificateServiceImpl implements CertificateService {
     public CertificateDTO update(CertificateDTO certificateDTO) {
         throw new UnsupportedOperationException();
     }
+
+
 }

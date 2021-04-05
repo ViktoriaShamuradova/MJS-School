@@ -74,16 +74,4 @@ public class Order extends com.epam.esm.entity.Entity<Long> {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(user, order.user) && Objects.equals(totalSum, order.totalSum) && Objects.equals(count, order.count) && Objects.equals(createDate, order.createDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(user, totalSum, count, createDate);
-    }
 }

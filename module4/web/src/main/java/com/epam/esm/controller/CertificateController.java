@@ -1,4 +1,4 @@
-package com.epam.esm.web.controller;
+package com.epam.esm.controller;
 
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
@@ -7,6 +7,7 @@ import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.CertificateHateoasAssembler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
@@ -41,12 +42,11 @@ public class CertificateController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo     - object witch contains information about pagination
      * @param criteriaInfo - object with information about certificate to search
      * @return a collection of CertificatesDTO, which represents a resource "certificates" from database with links
      */
     @GetMapping()
-    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('certificate:read')")
     public ResponseEntity<CollectionModel<CertificateDTO>> find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
         long count = certificateService.getCount();
@@ -62,7 +62,7 @@ public class CertificateController {
      * with links
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('write')")
+    @PreAuthorize("hasAuthority('certificate:write')")
     public ResponseEntity<CertificateDTO> create(@RequestBody @Valid CertificateDTO certificateDTO) {
         CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
         certificateAssembler.appendAsForMainEntity(certificateDTOCreated);
@@ -76,7 +76,7 @@ public class CertificateController {
      * @return an object which represents Http response of DELETE operation
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('write')")
+    @PreAuthorize("hasAuthority('certificate:write')")
     public ResponseEntity<RepresentationModel> delete(@PathVariable @Min(1) long id) {
         RepresentationModel representationModel = new RepresentationModel();
         certificateAssembler.appendGenericCertificateHateoasActions(representationModel);
@@ -95,7 +95,7 @@ public class CertificateController {
      * @return an object which represents Http response of certificate with links
      */
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAuthority('write')")
+    @PreAuthorize("hasAuthority('certificate:write')")
     public ResponseEntity<CertificateDTO> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
         CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
         certificateAssembler.appendAsForMainEntity(certificate);
@@ -109,7 +109,7 @@ public class CertificateController {
      * @return an ResponseEntity with CertificateDTO with links
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('certificate:read')")
     public ResponseEntity<CertificateDTO> find(@PathVariable("id")
                                                    @Min(1) long id) {
         CertificateDTO certificate = certificateService.findById(id);

@@ -2,7 +2,7 @@ package com.epam.esm.util;
 
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.web.controller.OrderController;
+import com.epam.esm.controller.OrderController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;

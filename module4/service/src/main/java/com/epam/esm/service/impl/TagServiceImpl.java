@@ -6,8 +6,8 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.entitydtomapper.impl.TagMapper;
 import com.epam.esm.service.exception.NoSuchResourceException;
+import com.epam.esm.service.modelmapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +34,9 @@ public class TagServiceImpl implements TagService {
     public TagDTO create(TagDTO tag) {
         Optional<Tag> tagOptional = tagDAO.find(tag.getName());
         if (tagOptional.isPresent()) {
-            return mapper.changeToDto(tagOptional.get());
+            return mapper.toDTO(tagOptional.get());
         } else {
-            Long id = tagDAO.create(mapper.changeToEntity(tag));
+            Long id = tagDAO.create(mapper.toEntity(tag));
             return tag;
         }
     }
@@ -44,7 +44,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public TagDTO findById(Long id) {
-        return mapper.changeToDto(tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
+        return mapper.toDTO(tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public TagDTO find(String name) {
-        return mapper.changeToDto(tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name)));
+        return mapper.toDTO(tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name)));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TagServiceImpl implements TagService {
     private List<TagDTO> getListTagDto(List<Tag> tags) {
         return tags
                 .stream()
-                .map(mapper::changeToDto)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

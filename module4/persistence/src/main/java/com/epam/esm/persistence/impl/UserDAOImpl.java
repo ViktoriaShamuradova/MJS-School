@@ -10,6 +10,7 @@ import com.epam.esm.persistence.specification_builder.impl.UserSpecificationBuil
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -35,9 +36,15 @@ public class UserDAOImpl extends AbstractCrudDAO<User, Long, UserCriteriaInfo> i
 
     @Override
     public Optional<User> findByEmail(String email) {
+        User user = null;
         Query namedQuery = entityManager.createNamedQuery("User.findByEmail");
         namedQuery.setParameter("email", email);
-        return Optional.ofNullable((User) namedQuery.getSingleResult());
+        try {
+            user = (User) namedQuery.getSingleResult();
+        } catch (NoResultException ex) {
+
+        }
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -49,12 +56,6 @@ public class UserDAOImpl extends AbstractCrudDAO<User, Long, UserCriteriaInfo> i
                 .getResultList();
     }
 
-    @Override
-    public Optional<User> findByEmail(String email) {
-        Query namedQuery = entityManager.createNamedQuery("User.findByEmail");
-        namedQuery.setParameter("email", email);
-        return Optional.ofNullable((User) namedQuery.getSingleResult());
-    }
 
     @Override
     public Optional<User> find(Long id) {

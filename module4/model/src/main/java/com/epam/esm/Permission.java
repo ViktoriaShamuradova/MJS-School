@@ -1,8 +1,17 @@
 package com.epam.esm;
 
 public enum Permission {
-    READ("read"),
-    WRITE("write");
+    CERTIFICATE_READ("certificate:read"),
+    CERTIFICATE_WRITE("certificate:write"),
+
+    ORDER_READ("order:read"),
+    ORDER_CREATE("order:create"),
+    ORDER_WRITE("order:write"),
+
+    USER_READ("user:read"),
+
+    TAG_READ("tad:read"),
+    TAG_WRITE("tag:write");
 
     private final String permission;
 

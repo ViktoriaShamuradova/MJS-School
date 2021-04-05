@@ -27,12 +27,12 @@ public class CertificateUpdateDto {
     private JsonNullable<Long> id = JsonNullable.undefined();
 
     @NotNull
-    @Pattern(regexp = "[-,.:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "part of description or name must contain " +
+    @Pattern(regexp = "[-, .:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "part of description or name must contain " +
             "from 1 to 100 " +
             "characters with punctuation marks")
     private JsonNullable<String> name = JsonNullable.undefined();
 
-    @Pattern(regexp = "[-,.:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "description must contain " +
+    @Pattern(regexp = "[-, .:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "description must contain " +
             "from 1 to 100 " +
             "characters with punctuation marks")
     private JsonNullable<String> description = JsonNullable.undefined();

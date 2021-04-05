@@ -1,6 +1,6 @@
-package com.epam.esm.configuration;
+package com.epam.esm.security.configuration;
 
-import com.epam.esm.security.JwtTokenFilter;
+import com.epam.esm.security.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,9 +29,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtTokenFilter, BasicAuthenticationFilter.class);
-    }
+                .authorizeRequests()
+                .antMatchers("/registration", "/login").permitAll()
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);//BasicAuthenticationFilter
 
+
+    }
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

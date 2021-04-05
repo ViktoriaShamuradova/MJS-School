@@ -12,7 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
@@ -38,15 +40,19 @@ public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails
     private Instant lastUpdateDate;
 
     @NotBlank(message = "password must not be empty")
+    @Pattern(regexp = "[A-Za-zА-Яа-яЁё0-9!?@#$%^&*()\\-_+:;,.]{6,256}", message = "password can contain latin and " +
+            "cyrillic characters, punctuation marks and special characters '@#$%^&*()'. Length must be between " +
+            "6 and 256 characters")
     private String password;
 
+    @NotNull(message = "username must be filled")
+    @Email(message = "username should be valid. Example, xxxxxxx@xxxxx.domain")
     private String username;
     private Role role;
     @Null(message = "user authorities cannot be defined by users")
     private List<SimpleGrantedAuthority> authorities;
     @Null
     private boolean isActive;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -88,4 +94,6 @@ public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails
                 user.getRole().getAuthorities()
         );
     }
+
+
 }

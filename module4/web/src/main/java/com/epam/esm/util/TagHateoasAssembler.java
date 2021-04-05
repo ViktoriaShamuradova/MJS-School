@@ -3,7 +3,7 @@ package com.epam.esm.util;
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.web.controller.TagController;
+import com.epam.esm.controller.TagController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;

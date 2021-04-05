@@ -1,4 +1,4 @@
-package com.epam.esm.web.controller;
+package com.epam.esm.controller;
 
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
 import com.epam.esm.criteria_info.PageInfo;
@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class OrderController {
      * with links
      */
     @PostMapping()
+    @PreAuthorize("hasAuthority('order:create')")
     public ResponseEntity<OrderDto> create(@RequestBody @Valid Cart cart) {
         OrderDto order = orderService.create(cart);
         orderAssembler.appendAsForMainEntity(order);
@@ -57,6 +59,7 @@ public class OrderController {
      * @return a collection of OrderDTO, which represents a resource "order" from database
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('order:read')")
     public ResponseEntity<CollectionModel<OrderDto>> find(@Valid PageInfo pageInfo, @Valid OrderCriteriaInfo orderCriteriaInfo) {
         List<OrderDto> orders = orderService.find(pageInfo, orderCriteriaInfo);
         long count = orderService.getCount();
@@ -70,6 +73,7 @@ public class OrderController {
      * @return an ResponseEntity with OrderDTO wich contains links
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('order:read')")
     public ResponseEntity<OrderDto> find(@PathVariable @Min(1) long id) {
         OrderDto order = orderService.findById(id);
         orderAssembler.appendAsForMainEntity(order);

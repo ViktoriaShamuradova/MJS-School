@@ -3,12 +3,13 @@ package com.epam.esm.exceptionhandler;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import com.epam.esm.service.exception.ValidationException;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,18 +23,14 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Data
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     private final MessageSource resourceBundle;
-
     private final static String DEFAULT_ERROR_CODE = "50100";
 
-    @Autowired
-    public GlobalExceptionHandler(@Qualifier("messageSource") MessageSource resourceBundle) {
-        this.resourceBundle = resourceBundle;
-    }
-
-    @ExceptionHandler({ResourceAlreadyExistsException.class})
+    @ExceptionHandler(value = ResourceAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleException(ResourceAlreadyExistsException e, HttpServletRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(e.getErrorCode());
@@ -43,21 +40,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ExceptionResponse> handleAuthenticationException(AuthenticationException e,
-                                                                           HttpServletRequest request) {
 
-        String localizedMessage = resourceBundle.getMessage(
-                e.getMessage(), new Object[]{}, request.getLocale());
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse();
-        exceptionResponse.setErrorCode(e.getMessage());
-
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getMessage(), new Object[]{request.getServletPath()},
-                request.getLocale())
-        );
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
-    }
 
     @ExceptionHandler({NoSuchResourceException.class})
     public ResponseEntity<ExceptionResponse> handleException(NoSuchResourceException e, HttpServletRequest request) {
@@ -80,6 +63,7 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ExceptionResponse> handleException(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();

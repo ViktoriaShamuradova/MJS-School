@@ -1,10 +1,11 @@
-package com.epam.esm.security;
+package com.epam.esm.security.filter;
 
 import com.epam.esm.security.exception.InvalidTokenException;
+import com.epam.esm.security.exception.TokenExpiredException;
 import com.epam.esm.service.UserService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
@@ -16,10 +17,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +35,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
     @Value("${jwt.expiration}")
-    private long validityInMillis;
+    private long validityInSeconds;
     @Value("${jwt.header}")
     private String authorizationHeader;
 
@@ -41,22 +46,26 @@ public class JwtTokenProvider {
 
     public String createToken(String username) {
         Instant instant = Instant.now();
-        Instant validity = instant.plusMillis(validityInMillis);
+        Instant expiration = instant.plus(validityInSeconds, ChronoUnit.MINUTES);
 
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(Date.from(instant))
-                .setExpiration(Date.from(validity))
+                .setExpiration(Date.from(expiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public boolean validateToken(String token) throws InvalidTokenException {
+    public boolean validateToken(String token) throws AuthenticationException {
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new java.util.Date());
+        } catch (ExpiredJwtException expEx) {
+            throw new TokenExpiredException("40003");
         } catch (SignatureException e) {
-            throw new InvalidTokenException("40004"); // don't trust this JWT!
+            throw new InvalidTokenException("40004");
         }
     }
 
@@ -75,7 +84,10 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(authorizationHeader);
+        String bearer = request.getHeader(authorizationHeader);
+        if (hasText(bearer) && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
-
 }

@@ -1,4 +1,4 @@
-package com.epam.esm.web.controller;
+package com.epam.esm.controller;
 
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
@@ -40,7 +40,7 @@ public class UserController {
      * with links
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<CollectionModel<UserDTO>> find(@Valid PageInfo pageInfo, @Valid UserCriteriaInfo userCriteriaInfo) {
         List<UserDTO> users = userService.find(pageInfo, userCriteriaInfo);
         long count = userService.getCount();
@@ -55,7 +55,7 @@ public class UserController {
      * with links
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserDTO> find(@PathVariable @Min(1) long id) {
         UserDTO userDTO = userService.findById(id);
         userAssembler.appendAsForMainEntity(userDTO);

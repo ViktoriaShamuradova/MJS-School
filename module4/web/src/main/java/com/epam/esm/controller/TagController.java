@@ -1,4 +1,4 @@
-package com.epam.esm.web.controller;
+package com.epam.esm.controller;
 
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,7 @@ public class TagController {
      * @param criteriaInfo - object with information about tag to search
      * @return a collection of TagDTO with links, which represents a resource "tag" from database with links
      */
+    @PreAuthorize("hasAuthority('tag:read')")
     @GetMapping
     public ResponseEntity<CollectionModel<TagDTO>> find(@Valid PageInfo pageInfo, @Valid TagCriteriaInfo criteriaInfo) {
         List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
@@ -57,6 +59,7 @@ public class TagController {
      *            in the data source
      * @return an object which represents Http response of CREATE operation
      */
+    @PreAuthorize("hasAuthority('tag:write')")
     @PostMapping
     public ResponseEntity<TagDTO> create(@RequestBody @Valid TagDTO tag) {
         TagDTO tagNew = tagService.create(tag);
@@ -70,6 +73,7 @@ public class TagController {
      * @param tagName an identification number of a resource which should be deleted
      * @return an object which represents Http response of DELETE operation
      */
+    @PreAuthorize("hasAuthority('tag:write')")
     @DeleteMapping("/{tagName}")
     public ResponseEntity<RepresentationModel> delete(@PathVariable @NotBlank @Size(max = 45) String tagName) {
         RepresentationModel representationModel = new RepresentationModel();
@@ -86,6 +90,7 @@ public class TagController {
      *
      * @return a collection of Tag, which represents a resource "tags" from data base
      */
+    @PreAuthorize("hasAuthority('tag:read')")
     @GetMapping("/most-used")
     public ResponseEntity<CollectionModel<TagDTO>> findMostUsedTag() {
         List<TagDTO> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();

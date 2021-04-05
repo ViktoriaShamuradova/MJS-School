@@ -1,6 +1,7 @@
 package com.epam.esm.util;
 
 import com.epam.esm.criteria_info.PageInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
@@ -100,7 +101,7 @@ public class PageNavigationLinkGenerator {
 
     private static class UrlConstant {
         public static final String SCHEME = "http";
-        public static final int PORT = 3333;
+        public static final int PORT = 4444;
         public static final String HOST = "localhost";
     }
 }

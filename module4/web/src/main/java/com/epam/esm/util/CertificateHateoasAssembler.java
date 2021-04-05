@@ -2,7 +2,7 @@ package com.epam.esm.util;
 
 import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.web.controller.CertificateController;
+import com.epam.esm.controller.CertificateController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;

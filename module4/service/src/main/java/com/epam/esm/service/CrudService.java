@@ -6,7 +6,6 @@ import com.epam.esm.criteria_info.PageInfo;
 import java.util.List;
 
 public interface CrudService<T, ID, CRITERIA extends CriteriaInfo> {
-    List<T> find(PageInfo pageInfo, CRITERIA criteriaInfo);
 
     T create(T t);
 
@@ -15,4 +14,6 @@ public interface CrudService<T, ID, CRITERIA extends CriteriaInfo> {
     boolean delete(ID id);
 
     T update(T t);
+
+    List<T> find(PageInfo pageInfo, CRITERIA criteriaInfo);
 }

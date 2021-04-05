@@ -14,14 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @javax.persistence.Entity
 @Table(name = "order_items")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"certificate", "order"})
 @EntityListeners(GeneralEntityListener.class)
+@EqualsAndHashCode(callSuper = true, exclude = {"order", "certificate"})
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -50,16 +49,4 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         count = cartItem.getCount();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderItem orderItem = (OrderItem) o;
-        return count == orderItem.count && Objects.equals(certificate, orderItem.certificate) && Objects.equals(priceOfCertificate, orderItem.priceOfCertificate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(certificate, count, priceOfCertificate);
-    }
 }
