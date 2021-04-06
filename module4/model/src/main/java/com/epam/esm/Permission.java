@@ -10,7 +10,7 @@ public enum Permission {
 
     USER_READ("user:read"),
 
-    TAG_READ("tad:read"),
+    TAG_READ("tag:read"),
     TAG_WRITE("tag:write");
 
     private final String permission;

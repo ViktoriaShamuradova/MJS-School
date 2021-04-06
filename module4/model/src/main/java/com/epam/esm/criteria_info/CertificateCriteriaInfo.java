@@ -16,10 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 public class CertificateCriteriaInfo extends CriteriaInfo {
 
-    @Pattern(regexp = "(asc|desc|ASC|DESC)", message = "sorting way can be: asc(ASC), or desc(DESC)")
-    private String byDateSortingWay;
-    @Pattern(regexp = "(asc|desc|ASC|DESC)", message = "sorting way can be: asc(ASC), or desc(DESC)")
-    private String byNameSortingWay;
+//    @Pattern(regexp = "(asc|desc|ASC|DESC)", message = "sorting way can be: asc(ASC), or desc(DESC)")
+//    private String byDateSortingWay;
+//    @Pattern(regexp = "(asc|desc|ASC|DESC)", message = "sorting way can be: asc(ASC), or desc(DESC)")
+//    private String byNameSortingWay;
+
+    private String orderBy;
 
     private List <@Pattern(regexp = "[:\\-0-9A-Za-zА-Яа-яЁё ]{1,256}", message = "tag name must contain " +
             "from 1 to 256 characters without punctuation marks")String> tagNames;

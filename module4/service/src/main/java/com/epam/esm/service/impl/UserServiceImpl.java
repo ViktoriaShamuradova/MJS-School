@@ -8,12 +8,14 @@ import com.epam.esm.dto.RegistrationUserDto;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDAO;
+import com.epam.esm.persistence.dataspecification.UserSpecification;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import com.epam.esm.service.modelmapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
-        return mapper.toDTO(userDAO.find(id).orElseThrow(()
+        return mapper.toDTO(userDAO.findById(id).orElseThrow(()
                 -> new NoSuchResourceException(
                 ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= " + id)));
     }
@@ -52,8 +54,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     public List<UserDTO> find(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
-        List<User> users = userDAO.findAll(pageInfo, criteriaInfo);
-        return getListUserDto(users);
+        UserSpecification userSpecification = new UserSpecification(criteriaInfo);
+        return userDAO.findAll(userSpecification, PageRequest.of(pageInfo.getCurrentPage(),
+                pageInfo.getLimit()))
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Transactional
@@ -80,14 +87,14 @@ public class UserServiceImpl implements UserService {
         registerUser.setLastUpdateDate(Instant.now());
         registerUser.setEmail(registrationUserDto.getEmail());
 
-        userDAO.create(registerUser);
+        userDAO.save(registerUser);
         return mapper.toDTO(registerUser);
     }
 
     @Transactional
     @Override
     public long getCount() {
-        return userDAO.getCount();
+        return userDAO.count();
     }
 
     private List<UserDTO> getListUserDto(List<User> users) {

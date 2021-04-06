@@ -11,7 +11,7 @@ public final class DefaultSpecification {
 
     public static Specification getSpecificationForEqualsJoinTableField(String fieldName, String joinFieldName, Object value) {
         return (SearchSpecification) (criteriaBuilder, root) ->
-                criteriaBuilder.equal(criteriaBuilder.upper(root.join(fieldName).get(joinFieldName)), value);
+                criteriaBuilder.equal((root.join(fieldName).get(joinFieldName)), value);
     }
 
     public static Specification getSpecificationForSortAsc(String fieldName) {

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,9 +26,18 @@ public class CertificateHateoasAssembler {
     private final TagHateoasAssembler tagAssembler;
 
     private void appendSelfReference(CertificateDTO dto) {
-        dto.add(linkTo(methodOn(CertificateController.class).find(dto.getId())).withSelfRel());
-        dto.add(linkTo(methodOn(CertificateController.class).update(dto.getId(), null)).withRel("PATCH: update a current certificate"));
-        dto.add(linkTo(methodOn(CertificateController.class).delete(dto.getId())).withRel("DELETE: delete a current certificate"));
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .find(dto.getId()))
+                .withSelfRel()
+                .withType(HttpMethod.GET.name()));
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .update(dto.getId(), null))
+                .withRel("update a current certificate")
+                .withType(HttpMethod.PATCH.name()));
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .delete(dto.getId()))
+                .withRel("delete a current certificate")
+                .withType(HttpMethod.DELETE.name()));
 
         dto.getTags().forEach(tagAssembler::appendSelfReference);
     }
@@ -52,8 +62,8 @@ public class CertificateHateoasAssembler {
     }
 
     public void appendGenericCertificateHateoasActions(RepresentationModel dto) {
-        dto.add(linkTo(CertificateController.class).withRel("GET: get all certificates"));
-        dto.add(linkTo(CertificateController.class).withRel("POST: create certificate"));
+        dto.add(linkTo(CertificateController.class).withRel("get all certificates").withType(HttpMethod.GET.name()));
+        dto.add(linkTo(CertificateController.class).withRel("create certificate").withType(HttpMethod.POST.name()));
     }
 
     public void appendAsForMainEntity(CertificateDTO certificate) {

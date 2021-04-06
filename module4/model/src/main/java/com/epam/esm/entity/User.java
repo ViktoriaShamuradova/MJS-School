@@ -50,10 +50,6 @@ public class User extends com.epam.esm.entity.Entity<Long> {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    public User(long id) {
-        super(id);
-    }
-
     public void addOrder(Order order) {
         if (orders == null) {
             orders = new ArrayList<>();

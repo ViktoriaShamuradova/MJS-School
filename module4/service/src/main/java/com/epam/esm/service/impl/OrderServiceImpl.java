@@ -10,11 +10,13 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderItem;
 import com.epam.esm.persistence.CertificateDAO;
 import com.epam.esm.persistence.OrderDAO;
+import com.epam.esm.persistence.dataspecification.OrderSpecification;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.modelmapper.OrderMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
+import com.epam.esm.service.modelmapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findById(Long id) {
-        Order order = orderDAO.find(id).orElseThrow(() ->
+        Order order = orderDAO.findById(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_ORDER_FOUND.getErrorCode(), "id= " + id));
 
         return mapper.toDTO(order);
@@ -44,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(cart.getUserId());
         order.setCreateDate(Instant.now());
         for (CartItem cartItem : cart.getCartItems()) {
-            Certificate certificate = certificateDAO.find(cartItem.getIdCertificate()).orElseThrow(() ->
+            Certificate certificate = certificateDAO.findById(cartItem.getIdCertificate()).orElseThrow(() ->
                     new NoSuchResourceException(ExceptionCode
                             .NO_SUCH_CERTIFICATE_FOUND
                             .getErrorCode(), "id= " + cartItem.getIdCertificate()));
@@ -52,25 +54,23 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setPriceOfCertificate(certificate.getPrice());
             order.add(orderItem);
         }
-        order.setId(orderDAO.create(order));
+        orderDAO.save(order);
         return mapper.toDTO(order);
     }
 
     @Transactional
     @Override
     public long getCount() {
-        return orderDAO.getCount();
+        return orderDAO.count();
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
-        List<Order> orders = orderDAO.findAll(pageInfo, criteriaInfo);
-        return getListOrderDto(orders);
-    }
-
-    private List<OrderDto> getListOrderDto(List<Order> orders) {
-        return orders.stream()
+        OrderSpecification orderSpecification = new OrderSpecification(criteriaInfo);
+        return orderDAO.findAll(orderSpecification, PageRequest.of(pageInfo.getCurrentPage(),
+                pageInfo.getLimit()))
+                .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }

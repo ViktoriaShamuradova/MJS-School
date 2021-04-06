@@ -21,8 +21,7 @@ public class CertificateSpecificationBuilder implements SpecificationBuilder<Cer
     public List<Specification> build(CertificateCriteriaInfo criteriaInfo) {
         specifications = new ArrayList<>();
 
-        addSpecificationDateSortingWay(criteriaInfo.getByDateSortingWay());
-        addSpecificationNameSortingWay(criteriaInfo.getByNameSortingWay());
+        addSpecificationDateSortingWay(criteriaInfo.getOrderBy());
         addSpecificationTagNames(criteriaInfo.getTagNames());
         addSpecificationPartOfNameOrDescription(criteriaInfo.getPartOfNameOrDescription());
         addSpecificationName(criteriaInfo.getName());

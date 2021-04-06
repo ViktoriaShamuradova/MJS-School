@@ -7,7 +7,6 @@ import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.CertificateHateoasAssembler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
@@ -47,7 +46,7 @@ public class CertificateController {
      */
     @GetMapping()
     @PreAuthorize("hasAuthority('certificate:read')")
-    public ResponseEntity<CollectionModel<CertificateDTO>> find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
+    public ResponseEntity<CollectionModel<CertificateDTO>>  find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
         long count = certificateService.getCount();
         return ResponseEntity.ok(certificateAssembler.toHateoasCollectionOfEntities(certificates, pageInfo, count));

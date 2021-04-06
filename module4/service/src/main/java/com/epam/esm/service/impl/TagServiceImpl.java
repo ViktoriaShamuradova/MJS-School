@@ -5,14 +5,20 @@ import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDAO;
+import com.epam.esm.persistence.dataspecification.TagSpecification;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.TagMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -25,18 +31,24 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
-        List<Tag> tags = tagDAO.findAll(pageInfo, criteriaInfo);
-        return getListTagDto(tags);
+        TagSpecification tagSpecification = new TagSpecification(criteriaInfo);
+        return tagDAO.findAll(tagSpecification, PageRequest.of(pageInfo.getCurrentPage(),
+                pageInfo.getLimit()))
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public TagDTO create(TagDTO tag) {
-        Optional<Tag> tagOptional = tagDAO.find(tag.getName());
+        TagCriteriaInfo tagCriteriaInfo = new TagCriteriaInfo();
+        tagCriteriaInfo.setName(tag.getName());
+        Optional<Tag> tagOptional = tagDAO.findOne(new TagSpecification(tagCriteriaInfo));
         if (tagOptional.isPresent()) {
             return mapper.toDTO(tagOptional.get());
         } else {
-            Long id = tagDAO.create(mapper.toEntity(tag));
+            tagDAO.save(mapper.toEntity(tag));
             return tag;
         }
     }
@@ -44,25 +56,30 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public TagDTO findById(Long id) {
-        return mapper.toDTO(tagDAO.find(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
+        return mapper.toDTO(tagDAO.findById(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
     }
 
     @Override
     @Transactional
     public long getCount() {
-        return tagDAO.getCount();
+        return tagDAO.count();
     }
 
     @Override
     @Transactional(readOnly = true)
     public TagDTO find(String name) {
-        return mapper.toDTO(tagDAO.find(name).orElseThrow(() -> new NoSuchResourceException("name= " + name)));
+        TagCriteriaInfo tagCriteriaInfo = new TagCriteriaInfo();
+        tagCriteriaInfo.setName(name);
+
+        return mapper.toDTO(tagDAO.findOne(new TagSpecification(tagCriteriaInfo)).orElseThrow(() -> new NoSuchResourceException("name= " + name)));
     }
 
     @Override
     @Transactional
     public boolean delete(String name) {
-        Optional<Tag> tag = tagDAO.find(name);
+        TagCriteriaInfo tagCriteriaInfo = new TagCriteriaInfo();
+        tagCriteriaInfo.setName(name);
+        Optional<Tag> tag = tagDAO.findOne(new TagSpecification(tagCriteriaInfo));
         if (tag.isPresent()) {
             tagDAO.delete(tag.get());
             return true;

@@ -1,8 +1,8 @@
 package com.epam.esm.persistence;
 
-import com.epam.esm.criteria_info.CertificateCriteriaInfo;
 import com.epam.esm.entity.Certificate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface CertificateDAO extends CrudDAO<Certificate, Long, CertificateCriteriaInfo> {
-    long getCount();
+public interface CertificateDAO extends JpaRepository<Certificate, Long>, JpaSpecificationExecutor<Certificate> {
 }

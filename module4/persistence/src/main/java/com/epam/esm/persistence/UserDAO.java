@@ -1,13 +1,12 @@
 package com.epam.esm.persistence;
 
-import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface UserDAO extends CrudDAO<User, Long, UserCriteriaInfo>{
-
-    long getCount();
+public interface UserDAO extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByEmail(String email);
 }
