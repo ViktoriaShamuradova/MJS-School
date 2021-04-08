@@ -20,9 +20,11 @@ public class UserSpecification implements Specification<User> {
     public UserSpecification(UserCriteriaInfo criteriaInfo) {
         this.criteriaInfo = criteriaInfo;
     }
-    private Specification<User> nameEquals(String name) {
+
+    public static Specification<User> nameEquals(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.NAME), name);
     }
+
     public static Specification<User> surnameEquals(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.SURNAME), name);
     }
@@ -32,16 +34,7 @@ public class UserSpecification implements Specification<User> {
         addPredicateName(root, query, criteriaBuilder);
         addPredicateSurname(root, query, criteriaBuilder);
 
-        return finalPredicate(root, criteriaBuilder);
-    }
-
-    private Predicate finalPredicate(Root<User> root, CriteriaBuilder criteriaBuilder) {
-        if (conditions.isEmpty()) return null;
-        Predicate finalPredicate = criteriaBuilder.and(conditions.get(0));
-        for (int i = 1; i < conditions.size(); i++) {
-            finalPredicate = criteriaBuilder.and(conditions.get(i));
-        }
-        return finalPredicate;
+        return finalPredicate(criteriaBuilder);
     }
 
     private void addPredicateSurname(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -52,5 +45,9 @@ public class UserSpecification implements Specification<User> {
     private void addPredicateName(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         if (criteriaInfo.getName() == null) return;
         conditions.add(nameEquals(criteriaInfo.getName()).toPredicate(root, query, criteriaBuilder));
+    }
+
+    private Predicate finalPredicate(CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.and(conditions.toArray(new Predicate[0]));
     }
 }

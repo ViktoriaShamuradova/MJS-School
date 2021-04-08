@@ -21,7 +21,7 @@ public class TagSpecification implements Specification<Tag> {
         this.criteriaInfo = criteriaInfo;
     }
 
-    private Specification<Tag> nameEquals(String name) {
+    public static Specification<Tag> nameEquals(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Tag_.NAME), name);
     }
 

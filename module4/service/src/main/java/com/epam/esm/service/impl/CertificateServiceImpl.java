@@ -9,16 +9,14 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.metamodel.Certificate_;
-import com.epam.esm.persistence.CertificateDAO;
-import com.epam.esm.persistence.TagDAO;
-import com.epam.esm.persistence.dataspecification.CertificateSpecification;
+import com.epam.esm.persistence.CertificateDao;
 import com.epam.esm.persistence.dataspecification.TagSpecification;
+import com.epam.esm.persistence.repository.TagRepository;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
-    private final CertificateDAO certificateDAO;
-    private final TagDAO tagDAO;
+    private final CertificateDao certificateDAO;
+    private final TagRepository tagDAO;
     private final CertificateMapper mapper;
 
 
@@ -52,11 +50,9 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional(readOnly = true)
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
-        CertificateSpecification certificateSpecification = new CertificateSpecification(criteriaInfo);
         Sort sort = createSort(criteriaInfo);
 
-        return certificateDAO.findAll(certificateSpecification, PageRequest.of(pageInfo.getCurrentPage(),
-                pageInfo.getLimit(), sort))
+        return certificateDAO.findAll(criteriaInfo, pageInfo, sort)
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
@@ -133,7 +129,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional
     @Override
     public long getCount() {
-        return certificateDAO.count();
+        return certificateDAO.getCount();
     }
 
     @Override

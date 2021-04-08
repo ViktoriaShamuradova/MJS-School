@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CertificateSpecification implements Specification<Certificate> {
 
@@ -22,19 +23,29 @@ public class CertificateSpecification implements Specification<Certificate> {
         this.criteriaInfo = criteriaInfo;
     }
 
-    private Specification<Certificate> nameEquals(String name) {
+    public static Specification<Certificate> nameEquals(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Certificate_.NAME), name);
     }
 
-    private Specification<Certificate> nameOrDescriptionLike(String name) {
+    public static Specification<Certificate> nameOrDescriptionLike(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.or(criteriaBuilder.like(root.get(Certificate_.NAME), "%" + name + "%"),
                 criteriaBuilder.like(root.get(Certificate_.DESCRIPTION), "%" + name + "%"));
     }
 
-    private Specification<Certificate> tagNamesEqual(String name) {
+    public static Specification<Certificate> tagNameEqual(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal((root.join(Certificate_.TAGS).get(Tag_.NAME)), name.trim());
     }
 
+    public static Specification<Certificate> tagNamesEqual(List<String> tagNames) {
+        return (root, query, criteriaBuilder) -> {
+
+            List<Predicate> predicates = tagNames.stream()
+                    .map(name -> tagNameEqual(name).toPredicate(root, query, criteriaBuilder))
+                    .collect(Collectors.toList());
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 
     @Override
     public Predicate toPredicate(Root<Certificate> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -42,28 +53,17 @@ public class CertificateSpecification implements Specification<Certificate> {
         addPredicateNameOrDescription(root, query, criteriaBuilder);
         addPredicateTagNames(root, query, criteriaBuilder);
 
-        return finalPredicate(root, criteriaBuilder);
+        return finalPredicate(criteriaBuilder);
     }
 
-    private Predicate finalPredicate(Root<Certificate> root, CriteriaBuilder criteriaBuilder) {
-        if (conditions.size() == 1) {
-            return conditions.get(0);
-        }
-        if (conditions.isEmpty()) return null;
-
-        Predicate finalPredicate = criteriaBuilder.and(conditions.get(0));
-        for (int i = 1; i < conditions.size(); i++) {
-            finalPredicate = criteriaBuilder.and(conditions.get(i));
-        }
-        return finalPredicate;
+    private Predicate finalPredicate(CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.and(conditions.toArray(new Predicate[0]));
     }
 
     private void addPredicateTagNames(Root<Certificate> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         if (criteriaInfo.getTagNames() == null || criteriaInfo.getTagNames().isEmpty()) return;
-        List<String> tagNames = criteriaInfo.getTagNames();
-        for (String tagName : tagNames) {
-            conditions.add(tagNamesEqual(tagName).toPredicate(root, query, criteriaBuilder));
-        }
+        conditions.add(tagNamesEqual(criteriaInfo.getTagNames()).toPredicate(root, query, criteriaBuilder));
+
     }
 
     private void addPredicateNameOrDescription(Root<Certificate> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

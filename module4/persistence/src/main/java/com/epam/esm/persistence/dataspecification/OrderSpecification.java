@@ -23,12 +23,12 @@ public class OrderSpecification implements Specification<Order> {
         this.criteriaInfo = criteriaInfo;
     }
 
-    private Specification<Order> idUserEquals(Long idUser) {
+    public static Specification<Order> idUserEquals(Long idUser) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal((root.join(Order_.USER).get(User_.ID)), idUser);
     }
 
-    private Specification<Order> totalSumEquals(BigDecimal totalSum) {
+    public static Specification<Order> totalSumEquals(BigDecimal totalSum) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal((root.get(Order_.TOTAL_SUM)), totalSum);
     }
@@ -39,16 +39,11 @@ public class OrderSpecification implements Specification<Order> {
         addPredicateIdUser(root, query, criteriaBuilder);
         addPredicateTotalSum(root, query, criteriaBuilder);
 
-        return finalPredicate(root, criteriaBuilder);
+        return finalPredicate(criteriaBuilder);
     }
 
-    private Predicate finalPredicate(Root<Order> root, CriteriaBuilder criteriaBuilder) {
-        if (conditions.isEmpty()) return null;
-        Predicate finalPredicate = criteriaBuilder.and(conditions.get(0));
-        for (int i = 1; i < conditions.size(); i++) {
-            finalPredicate = criteriaBuilder.and(conditions.get(i));
-        }
-        return finalPredicate;
+    private Predicate finalPredicate(CriteriaBuilder criteriaBuilder) {
+        return criteriaBuilder.and(conditions.toArray(new Predicate[0]));
     }
 
     private void addPredicateTotalSum(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -60,6 +55,4 @@ public class OrderSpecification implements Specification<Order> {
         if (criteriaInfo.getIdUser() == null) return;
         conditions.add(idUserEquals(criteriaInfo.getIdUser()).toPredicate(root, query, criteriaBuilder));
     }
-
-
 }

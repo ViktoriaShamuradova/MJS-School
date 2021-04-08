@@ -8,15 +8,14 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderItem;
-import com.epam.esm.persistence.CertificateDAO;
-import com.epam.esm.persistence.OrderDAO;
+import com.epam.esm.persistence.OrderDao;
+import com.epam.esm.persistence.repository.CertificateRepository;
 import com.epam.esm.persistence.dataspecification.OrderSpecification;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderDAO orderDAO;
+    private final OrderDao orderDAO;
     private final OrderMapper mapper;
-    private final CertificateDAO certificateDAO;
+    private final CertificateRepository certificateDAO;
 
     @Override
     public OrderDto findById(Long id) {
@@ -61,15 +60,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public long getCount() {
-        return orderDAO.count();
+        return orderDAO.getCount();
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
         OrderSpecification orderSpecification = new OrderSpecification(criteriaInfo);
-        return orderDAO.findAll(orderSpecification, PageRequest.of(pageInfo.getCurrentPage(),
-                pageInfo.getLimit()))
+        return orderDAO.findAll(criteriaInfo, pageInfo)
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
