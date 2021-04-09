@@ -28,12 +28,6 @@ subprojects {
         mavenCentral()
     }
 
-//    dependencyManagement {
-//        imports {
-//            mavenBom("org.springframework.boot:spring-boot-dependencies:2.4.2")
-//        }
-//    }
-
     dependencies {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'

@@ -2,7 +2,6 @@ package com.epam.esm.security.filter;
 
 import com.epam.esm.security.exception.InvalidTokenException;
 import com.epam.esm.security.exception.TokenExpiredException;
-import com.epam.esm.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +30,7 @@ import static org.springframework.util.StringUtils.hasText;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -70,7 +70,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
                 userDetails.getAuthorities());
     }

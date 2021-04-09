@@ -35,6 +35,10 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderHateoasAssembler orderAssembler;
 
+    public static final String AUTHORITY_READ = "hasAuthority('order:read')";
+    public static final String AUTHORITY_WRITE = "hasAuthority('order:write')";
+
+
     /**
      * a method which realizes REST's CREATE operation
      *
@@ -44,7 +48,7 @@ public class OrderController {
      * with links
      */
     @PostMapping()
-    @PreAuthorize("hasAuthority('order:create')")
+    @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<OrderDto> create(@RequestBody @Valid Cart cart) {
         OrderDto order = orderService.create(cart);
         orderAssembler.appendAsForMainEntity(order);
@@ -59,7 +63,7 @@ public class OrderController {
      * @return a collection of OrderDTO, which represents a resource "order" from database
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('order:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<CollectionModel<OrderDto>> find(@Valid PageInfo pageInfo, @Valid OrderCriteriaInfo orderCriteriaInfo) {
         List<OrderDto> orders = orderService.find(pageInfo, orderCriteriaInfo);
         long count = orderService.getCount();
@@ -73,7 +77,7 @@ public class OrderController {
      * @return an ResponseEntity with OrderDTO wich contains links
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('order:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<OrderDto> find(@PathVariable @Min(1) long id) {
         OrderDto order = orderService.findById(id);
         orderAssembler.appendAsForMainEntity(order);

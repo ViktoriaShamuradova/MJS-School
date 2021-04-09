@@ -14,8 +14,6 @@ import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import com.epam.esm.service.modelmapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDTO register(RegistrationUserDto registrationUserDto) {
+    public UserDTO create(RegistrationUserDto registrationUserDto) {
         Optional<User> user = userDAO.findByEmail(registrationUserDto.getEmail());
         if (user.isPresent()) {
             throw new ResourceAlreadyExistsException(ExceptionCode.USER_ALREADY_EXIST.getErrorCode(),
@@ -91,11 +89,4 @@ public class UserServiceImpl implements UserService {
         return userDAO.getCount();
     }
 
-    @Transactional
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userDAO.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("User doesn't exists " + email));
-        return UserDTO.fromUser(user);
-    }
 }

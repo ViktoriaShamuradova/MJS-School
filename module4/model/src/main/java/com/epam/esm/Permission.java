@@ -5,7 +5,6 @@ public enum Permission {
     CERTIFICATE_WRITE("certificate:write"),
 
     ORDER_READ("order:read"),
-    ORDER_CREATE("order:create"),
     ORDER_WRITE("order:write"),
 
     USER_READ("user:read"),

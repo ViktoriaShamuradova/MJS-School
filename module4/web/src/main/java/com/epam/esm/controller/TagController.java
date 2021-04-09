@@ -37,6 +37,9 @@ public class TagController {
     private final TagService tagService;
     private final TagHateoasAssembler tagAssembler;
 
+    public static final String AUTHORITY_READ = "hasAuthority('tag:read')";
+    public static final String AUTHORITY_WRITE = "hasAuthority('tag:write')";
+
     /**
      * a method which realizes REST's READ operation of all resources
      *
@@ -44,7 +47,7 @@ public class TagController {
      * @param criteriaInfo - object with information about tag to search
      * @return a collection of TagDTO with links, which represents a resource "tag" from database with links
      */
-    @PreAuthorize("hasAuthority('tag:read')")
+    @PreAuthorize(AUTHORITY_READ)
     @GetMapping
     public ResponseEntity<CollectionModel<TagDTO>> find(@Valid PageInfo pageInfo, @Valid TagCriteriaInfo criteriaInfo) {
         List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
@@ -59,7 +62,7 @@ public class TagController {
      *            in the data source
      * @return an object which represents Http response of CREATE operation
      */
-    @PreAuthorize("hasAuthority('tag:write')")
+    @PreAuthorize(AUTHORITY_WRITE)
     @PostMapping
     public ResponseEntity<TagDTO> create(@RequestBody @Valid TagDTO tag) {
         TagDTO tagNew = tagService.create(tag);
@@ -73,7 +76,7 @@ public class TagController {
      * @param tagName an identification number of a resource which should be deleted
      * @return an object which represents Http response of DELETE operation
      */
-    @PreAuthorize("hasAuthority('tag:write')")
+    @PreAuthorize(AUTHORITY_WRITE)
     @DeleteMapping("/{tagName}")
     public ResponseEntity<RepresentationModel> delete(@PathVariable @NotBlank @Size(max = 45) String tagName) {
         RepresentationModel representationModel = new RepresentationModel();
@@ -90,7 +93,7 @@ public class TagController {
      *
      * @return a collection of Tag, which represents a resource "tags" from data base
      */
-    @PreAuthorize("hasAuthority('tag:read')")
+    @PreAuthorize(AUTHORITY_READ)
     @GetMapping("/most-used")
     public ResponseEntity<CollectionModel<TagDTO>> findMostUsedTag() {
         List<TagDTO> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();

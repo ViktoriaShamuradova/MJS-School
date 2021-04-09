@@ -38,6 +38,9 @@ public class CertificateController {
     private final CertificateService certificateService;
     private final CertificateHateoasAssembler certificateAssembler;
 
+    public static final String AUTHORITY_READ = "hasAuthority('certificate:read')";
+    public static final String AUTHORITY_WRITE = "hasAuthority('certificate:write')";
+
     /**
      * a method which realizes REST's READ operation of all resources
      *
@@ -45,7 +48,7 @@ public class CertificateController {
      * @return a collection of CertificatesDTO, which represents a resource "certificates" from database with links
      */
     @GetMapping()
-    @PreAuthorize("hasAuthority('certificate:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<CollectionModel<CertificateDTO>>  find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
         List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
         long count = certificateService.getCount();
@@ -61,7 +64,7 @@ public class CertificateController {
      * with links
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('certificate:write')")
+    @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<CertificateDTO> create(@RequestBody @Valid CertificateDTO certificateDTO) {
         CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
         certificateAssembler.appendAsForMainEntity(certificateDTOCreated);
@@ -75,7 +78,7 @@ public class CertificateController {
      * @return an object which represents Http response of DELETE operation
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('certificate:write')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<RepresentationModel> delete(@PathVariable @Min(1) long id) {
         RepresentationModel representationModel = new RepresentationModel();
         certificateAssembler.appendGenericCertificateHateoasActions(representationModel);
@@ -94,7 +97,7 @@ public class CertificateController {
      * @return an object which represents Http response of certificate with links
      */
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAuthority('certificate:write')")
+    @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<CertificateDTO> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
         CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
         certificateAssembler.appendAsForMainEntity(certificate);
@@ -108,7 +111,7 @@ public class CertificateController {
      * @return an ResponseEntity with CertificateDTO with links
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('certificate:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<CertificateDTO> find(@PathVariable("id")
                                                    @Min(1) long id) {
         CertificateDTO certificate = certificateService.findById(id);

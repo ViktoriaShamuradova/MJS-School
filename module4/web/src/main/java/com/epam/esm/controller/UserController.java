@@ -31,6 +31,8 @@ public class UserController {
     private final UserService userService;
     private final UserHateoasAssembler userAssembler;
 
+    public static final String AUTHORITY_READ = "hasAuthority('user:read')";
+
     /**
      * a method which realizes REST's READ operation of all resources
      *
@@ -40,7 +42,7 @@ public class UserController {
      * with links
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<CollectionModel<UserDTO>> find(@Valid PageInfo pageInfo, @Valid UserCriteriaInfo userCriteriaInfo) {
         List<UserDTO> users = userService.find(pageInfo, userCriteriaInfo);
         long count = userService.getCount();
@@ -55,7 +57,7 @@ public class UserController {
      * with links
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('user:read')")
+    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<UserDTO> find(@PathVariable @Min(1) long id) {
         UserDTO userDTO = userService.findById(id);
         userAssembler.appendAsForMainEntity(userDTO);

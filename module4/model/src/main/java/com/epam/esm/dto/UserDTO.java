@@ -2,15 +2,11 @@ package com.epam.esm.dto;
 
 import com.epam.esm.Role;
 import com.epam.esm.Status;
-import com.epam.esm.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -18,14 +14,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
 
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails {
+public class UserDTO extends RepresentationModel<UserDTO> {
 
     private Long id;
     @NotBlank(message = "name must not be blank")
@@ -48,52 +42,10 @@ public class UserDTO extends RepresentationModel<UserDTO> implements UserDetails
     @NotNull(message = "username must be filled")
     @Email(message = "username should be valid. Example, xxxxxxx@xxxxx.domain")
     private String username;
+    @Null
     private Role role;
-    @Null(message = "user authorities cannot be defined by users")
-    private List<SimpleGrantedAuthority> authorities;
+    @Null
+    private Status status;
     @Null
     private boolean isActive;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return isActive;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return isActive;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return isActive;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isActive;
-    }
-
-    public static UserDetails fromUser(User user) {
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getRole().getAuthorities()
-        );
-    }
-
-
 }
