@@ -1,14 +1,12 @@
 package com.epam.esm.persistence.impl;
 
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.persistence.CertificateDao;
 import com.epam.esm.persistence.dataspecification.CertificateSpecification;
 import com.epam.esm.persistence.repository.CertificateRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,9 +20,9 @@ public class CertificateDaoImpl implements CertificateDao {
     private final CertificateRepository certificateRepository;
 
     @Override
-    public List<Certificate> findAll(CertificateCriteriaInfo criteriaInfo, PageInfo pageInfo, Sort sort) {
+    public List<Certificate> findAll(CertificateCriteriaInfo criteriaInfo, Pageable pageable) {
         CertificateSpecification specification = new CertificateSpecification(criteriaInfo);
-        return certificateRepository.findAll(specification, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit(), sort))
+        return certificateRepository.findAll(specification, pageable)
                 .stream()
                 .collect(Collectors.toList());
     }

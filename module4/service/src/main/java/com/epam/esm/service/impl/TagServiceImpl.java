@@ -9,6 +9,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.TagMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional(readOnly = true)
     public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
-        return tagDAO.findAll(criteriaInfo, pageInfo)
+        return tagDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());

@@ -1,13 +1,12 @@
 package com.epam.esm.persistence.impl;
 
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDao;
 import com.epam.esm.persistence.dataspecification.UserSpecification;
 import com.epam.esm.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,9 +20,9 @@ public class UserDaoImpl implements UserDao {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> findAll(UserCriteriaInfo criteriaInfo, PageInfo pageInfo) {
+    public List<User> findAll(UserCriteriaInfo criteriaInfo, Pageable pageable) {
         UserSpecification specification = new UserSpecification(criteriaInfo);
-        return userRepository.findAll(specification, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
+        return userRepository.findAll(specification, pageable)
                 .stream()
                 .collect(Collectors.toList());
     }

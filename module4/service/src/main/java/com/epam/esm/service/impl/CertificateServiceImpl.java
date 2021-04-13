@@ -17,6 +17,7 @@ import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,8 +52,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional(readOnly = true)
     public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
         Sort sort = createSort(criteriaInfo);
-
-        return certificateDAO.findAll(criteriaInfo, pageInfo, sort)
+        return certificateDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage()-1, pageInfo.getLimit(), sort))
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());

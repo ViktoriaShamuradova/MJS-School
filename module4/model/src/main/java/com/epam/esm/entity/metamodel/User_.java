@@ -32,7 +32,7 @@ public class User_ {
     public static final String LAST_UPDATE_DATE = "lastUpdateDate";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
-    public static final String ROLE = "roel";
+    public static final String ROLE = "role";
     public static final String STATUS = "status";
     public static final String ORDERS = "orders";
     public static final String ID = "id";

@@ -1,13 +1,12 @@
 package com.epam.esm.persistence.impl;
 
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.entity.Order;
 import com.epam.esm.persistence.OrderDao;
 import com.epam.esm.persistence.dataspecification.OrderSpecification;
 import com.epam.esm.persistence.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,9 +35,9 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> findAll(OrderCriteriaInfo criteriaInfo, PageInfo pageInfo) {
+    public List<Order> findAll(OrderCriteriaInfo criteriaInfo, Pageable pageable) {
         OrderSpecification orderSpecification = new OrderSpecification(criteriaInfo);
-        return orderRepository.findAll(orderSpecification, PageRequest.of(pageInfo.getCurrentPage()-1, pageInfo.getLimit()))
+        return orderRepository.findAll(orderSpecification, pageable)
                 .stream()
                 .collect(Collectors.toList());
     }

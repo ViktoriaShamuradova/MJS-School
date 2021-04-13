@@ -20,7 +20,7 @@ public class RegistrationUserDto {
     @Email(message = "email should be valid. Example, xxxxxxx@xxxxx.domain")
     private String email;
     @NotBlank(message = "password must not be empty")
-    @Pattern(regexp = "[A-Za-zА-Яа-яЁё0-9!?@#$%^&*()\\-_+:;,.]{6,256}", message = "password can contain latin and " +
+    @Pattern(regexp = "[\\wА-Яа-яЁё0-9!?@#$%^&*()\\-_+:;,.]{6,256}", message = "password can contain latin and " +
             "cyrillic characters, punctuation marks and special characters '@#$%^&*()'. Length must be between " +
             "6 and 256 characters")
     private String password;

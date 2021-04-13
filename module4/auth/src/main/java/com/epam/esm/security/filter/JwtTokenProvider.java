@@ -61,7 +61,7 @@ public class JwtTokenProvider {
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(new java.util.Date());
+            return !claimsJws.getBody().getExpiration().before(Date.from(Instant.now()));
         } catch (ExpiredJwtException expEx) {
             throw new TokenExpiredException("40003");
         } catch (SignatureException e) {

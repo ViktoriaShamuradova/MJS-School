@@ -14,6 +14,7 @@ import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import com.epam.esm.service.modelmapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     public List<UserDTO> find(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
-        return userDAO.findAll(criteriaInfo, pageInfo)
+        return userDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
                 .stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());

@@ -1,13 +1,12 @@
 package com.epam.esm.persistence.impl;
 
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDao;
 import com.epam.esm.persistence.dataspecification.TagSpecification;
 import com.epam.esm.persistence.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public class TagDaoImpl implements TagDao {
 
 
     @Override
-    public List<Tag> findAll(TagCriteriaInfo criteriaInfo, PageInfo pageInfo) {
+    public List<Tag> findAll(TagCriteriaInfo criteriaInfo, Pageable pageable) {
         TagSpecification specification = new TagSpecification(criteriaInfo);
-        return tagRepository.findAll(specification, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
+        return tagRepository.findAll(specification, pageable)
                 .stream()
                 .collect(Collectors.toList());
     }
