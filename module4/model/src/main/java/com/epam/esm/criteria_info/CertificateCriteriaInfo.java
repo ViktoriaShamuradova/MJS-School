@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CertificateCriteriaInfo extends CriteriaInfo {
 
-    private String orderBy;
+    //private String orderBy;
 
     private List <@Pattern(regexp = "[:\\-0-9A-Za-zА-Яа-яЁё ]{1,256}", message = "tag name must contain " +
             "from 1 to 256 characters without punctuation marks")String> tagNames;

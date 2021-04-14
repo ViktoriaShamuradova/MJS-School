@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"tags"})
 @EqualsAndHashCode(callSuper = true, exclude = {"tags"})
 @EntityListeners(GeneralEntityListener.class)
 public class Certificate extends com.epam.esm.entity.Entity<Long> {

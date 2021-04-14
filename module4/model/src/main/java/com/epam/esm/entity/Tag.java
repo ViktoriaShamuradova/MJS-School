@@ -4,6 +4,7 @@ import com.epam.esm.listener.GeneralEntityListener;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"certificates"})
 @Data
+@ToString(exclude = {"certificates"})
 @EntityListeners(GeneralEntityListener.class)
 public class Tag extends com.epam.esm.entity.Entity<Long> {
 

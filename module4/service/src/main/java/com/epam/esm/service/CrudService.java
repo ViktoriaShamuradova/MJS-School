@@ -1,9 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.criteria_info.CriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CrudService<T, ID, CRITERIA extends CriteriaInfo> {
 
@@ -15,5 +14,6 @@ public interface CrudService<T, ID, CRITERIA extends CriteriaInfo> {
 
     T update(T t);
 
-    List<T> find(PageInfo pageInfo, CRITERIA criteriaInfo);
+    Page<T> find(Pageable pageable, CRITERIA criteriaInfo);
+
 }

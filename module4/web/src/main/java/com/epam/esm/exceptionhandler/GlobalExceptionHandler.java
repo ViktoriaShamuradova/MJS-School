@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(e.getErrorCode());
 
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getMessage(), new Object[]{request.getServletPath()},
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getErrorCode(), new Object[]{request.getServletPath()},
                 request.getLocale())
         );
         return new ResponseEntity<>(exceptionResponse, httpStatus);

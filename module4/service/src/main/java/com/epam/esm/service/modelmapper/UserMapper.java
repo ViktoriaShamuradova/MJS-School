@@ -18,6 +18,9 @@ public class UserMapper {
     }
 
     public UserDTO toDTO(User entity) {
-        return Objects.isNull(entity) ? null : modelMapper.map(entity, UserDTO.class);
+
+        UserDTO userDTO =  Objects.isNull(entity) ? null : modelMapper.map(entity, UserDTO.class);
+        userDTO.setUsername(entity.getEmail());
+        return userDTO;
     }
 }

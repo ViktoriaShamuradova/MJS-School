@@ -1,14 +1,12 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.metamodel.Certificate_;
 import com.epam.esm.persistence.CertificateDao;
 import com.epam.esm.persistence.dataspecification.TagSpecification;
 import com.epam.esm.persistence.repository.TagRepository;
@@ -17,19 +15,16 @@ import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -50,13 +45,11 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateDTO> find(PageInfo pageInfo, CertificateCriteriaInfo criteriaInfo) {
-        Sort sort = createSort(criteriaInfo);
-        return certificateDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage()-1, pageInfo.getLimit(), sort))
-                .stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<CertificateDTO>  find(Pageable pageable, CertificateCriteriaInfo criteriaInfo) {
+        Page<Certificate> all = certificateDAO.findAll(criteriaInfo, pageable);
+        return all.map(mapper::toDTO);
     }
+
 
     @Transactional
     @Override
@@ -126,45 +119,8 @@ public class CertificateServiceImpl implements CertificateService {
         return tags;
     }
 
-    @Transactional
-    @Override
-    public long getCount() {
-        return certificateDAO.getCount();
-    }
-
     @Override
     public CertificateDTO update(CertificateDTO certificateDTO) {
         throw new UnsupportedOperationException();
-    }
-
-    private Sort createSort(CertificateCriteriaInfo criteriaInfo) {
-        String orderBy = criteriaInfo.getOrderBy();
-        if (orderBy == null) {
-            return Sort.by(Certificate_.ID).ascending();
-        }
-        List<Sort.Order> orders = devideParts(orderBy);
-
-        return Sort.by(orders);
-    }
-
-    private List<Sort.Order> devideParts(String orderBy) {
-        List<Sort.Order> orders = new ArrayList<>();
-
-        if (orderBy.contains(",")) {
-            String[] parts = orderBy.split(",");
-            for (String part : parts) {
-                orders.add(oneSort(part));
-            }
-            return orders;
-        }
-        orders.add(oneSort(orderBy));
-        return orders;
-    }
-
-    private Sort.Order oneSort(String orderBy) {
-        if (orderBy.startsWith("-")) {
-            return new Sort.Order(Sort.Direction.DESC, orderBy.substring(1));
-        }
-        return new Sort.Order(Sort.Direction.ASC, orderBy.substring(1));
     }
 }

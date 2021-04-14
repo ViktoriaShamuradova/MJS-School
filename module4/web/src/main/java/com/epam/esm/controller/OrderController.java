@@ -1,13 +1,15 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.hateoas.OrderModelAssembler;
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.OrderHateoasAssembler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 /**
  * a class which performs GET, CREATE operations on a resource called "order"
@@ -33,7 +34,9 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderHateoasAssembler orderAssembler;
+
+    private final PagedResourcesAssembler<OrderDto> pagedResourcesAssembler;
+    private final OrderModelAssembler orderModelAssembler;
 
     public static final String AUTHORITY_READ = "hasAuthority('order:read')";
     public static final String AUTHORITY_WRITE = "hasAuthority('order:write')";
@@ -51,23 +54,23 @@ public class OrderController {
     @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<OrderDto> create(@RequestBody @Valid Cart cart) {
         OrderDto order = orderService.create(cart);
-        orderAssembler.appendAsForMainEntity(order);
+        orderModelAssembler.toModel(order);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo          - object witch contains information about pagination
+     * @param pageable          - object witch contains information about pagination
      * @param orderCriteriaInfo - object with information about order to search
      * @return a collection of OrderDTO, which represents a resource "order" from database
      */
     @GetMapping
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<CollectionModel<OrderDto>> find(@Valid PageInfo pageInfo, @Valid OrderCriteriaInfo orderCriteriaInfo) {
-        List<OrderDto> orders = orderService.find(pageInfo, orderCriteriaInfo);
-        long count = orderService.getCount();
-        return ResponseEntity.ok(orderAssembler.toHateoasCollectionOfEntities(orders, pageInfo, count));
+    public ResponseEntity<PagedModel<OrderDto>> find(Pageable pageable, @Valid OrderCriteriaInfo orderCriteriaInfo) {
+        Page<OrderDto> orders = orderService.find(pageable, orderCriteriaInfo);
+        PagedModel<OrderDto> pagedModel = pagedResourcesAssembler.toModel(orders, orderModelAssembler);
+        return ResponseEntity.ok(pagedModel);
     }
 
     /**
@@ -80,7 +83,7 @@ public class OrderController {
     @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<OrderDto> find(@PathVariable @Min(1) long id) {
         OrderDto order = orderService.findById(id);
-        orderAssembler.appendAsForMainEntity(order);
+        orderModelAssembler.toModel(order);
         return ResponseEntity.ok(order);
     }
 }

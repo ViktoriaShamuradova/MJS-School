@@ -2,7 +2,6 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.Role;
 import com.epam.esm.Status;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.RegistrationUserDto;
 import com.epam.esm.dto.UserDTO;
@@ -14,14 +13,13 @@ import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
 import com.epam.esm.service.modelmapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service("userServiceImpl")
@@ -48,15 +46,12 @@ public class UserServiceImpl implements UserService {
         throw new UnsupportedOperationException();
     }
 
-
     @Transactional(readOnly = true)
-    public List<UserDTO> find(PageInfo pageInfo, UserCriteriaInfo criteriaInfo) {
-        return userDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
-                .stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    @Override
+    public Page<UserDTO> find(Pageable pageable, UserCriteriaInfo criteriaInfo) {
+        Page<User> all = userDAO.findAll(criteriaInfo, pageable);
+        return  all.map(mapper::toDTO);
     }
-
     @Transactional
     @Override
     public UserDTO create(UserDTO userDTO) {
@@ -83,11 +78,4 @@ public class UserServiceImpl implements UserService {
 
         return mapper.toDTO(userDAO.save(registerUser));
     }
-
-    @Transactional
-    @Override
-    public long getCount() {
-        return userDAO.getCount();
-    }
-
 }

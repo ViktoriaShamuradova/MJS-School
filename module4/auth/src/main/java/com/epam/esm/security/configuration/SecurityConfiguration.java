@@ -21,6 +21,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
+
+    private int BCRYPT_ROUND = 12;
+
     private final JwtTokenFilter jwtTokenFilter;
 
     @Override
@@ -44,6 +47,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder(BCRYPT_ROUND);
     }
 }

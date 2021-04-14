@@ -17,19 +17,19 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {"orderReadItems"})
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItemDto"})
 public class OrderDto extends RepresentationModel<OrderDto> {
 
     @Positive
     @Min(1)
     private long id;
-    private Set<OrderItemDto> orderReadItems;
+    private Set<OrderItemDto> orderItemDto;
     @DecimalMin(value = "0.0", inclusive = false)
     @Digits(integer=5, fraction=2)
     private BigDecimal totalSum;
     @Min(1)
     @Max(100)
-    private int totalCount;
+    private int count;
     @Positive
     @Min(1)
     private long userId;

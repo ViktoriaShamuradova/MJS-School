@@ -1,12 +1,15 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.hateoas.TagDtoModelAssembler;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.TagHateoasAssembler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +38,10 @@ import java.util.List;
 public class TagController {
 
     private final TagService tagService;
-    private final TagHateoasAssembler tagAssembler;
+
+    private final PagedResourcesAssembler<TagDTO> pagedResourcesAssembler;
+    private final TagDtoModelAssembler tagModelAssembler;
+
 
     public static final String AUTHORITY_READ = "hasAuthority('tag:read')";
     public static final String AUTHORITY_WRITE = "hasAuthority('tag:write')";
@@ -43,17 +49,16 @@ public class TagController {
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo     - map witch contains information about pagination
+     * @param pageable     - map witch contains information about pagination
      * @param criteriaInfo - object with information about tag to search
-     * @return a collection of TagDTO with links, which represents a resource "tag" from database with links
+     * @return a pagedModel of TagDTO with links, which represents a resource "tag" from database with links
      */
     @PreAuthorize(AUTHORITY_READ)
     @GetMapping
-    public ResponseEntity<CollectionModel<TagDTO>> find(@Valid PageInfo pageInfo, @Valid TagCriteriaInfo criteriaInfo) {
-        List<TagDTO> tags = tagService.find(pageInfo, criteriaInfo);
-        long count = tagService.getCount();
-        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags, pageInfo, count));
-    }
+    public ResponseEntity<PagedModel<TagDTO>> find(Pageable pageable, @Valid TagCriteriaInfo criteriaInfo) {
+        Page<TagDTO> tags = tagService.find(pageable, criteriaInfo);
+        PagedModel<TagDTO> pagedModel = pagedResourcesAssembler.toModel(tags, tagModelAssembler);
+        return ResponseEntity.ok(pagedModel);    }
 
     /**
      * a method which realizes REST's CREATE operation
@@ -66,7 +71,7 @@ public class TagController {
     @PostMapping
     public ResponseEntity<TagDTO> create(@RequestBody @Valid TagDTO tag) {
         TagDTO tagNew = tagService.create(tag);
-        tagAssembler.appendAsForMainEntity(tagNew);
+        tagModelAssembler.toModel(tagNew);
         return new ResponseEntity<>(tagNew, HttpStatus.CREATED);
     }
 
@@ -80,7 +85,7 @@ public class TagController {
     @DeleteMapping("/{tagName}")
     public ResponseEntity<RepresentationModel> delete(@PathVariable @NotBlank @Size(max = 45) String tagName) {
         RepresentationModel representationModel = new RepresentationModel();
-        tagAssembler.appendGenericTagHateoasActions(representationModel);
+        tagModelAssembler.appendGenericTagHateoasActions(representationModel);
         if (tagService.delete(tagName)) {
             return new ResponseEntity<>(representationModel, HttpStatus.OK);
         } else {
@@ -91,12 +96,15 @@ public class TagController {
     /**
      * a method which find the most popular tag in user with the highest cost of all orders.
      *
-     * @return a collection of Tag, which represents a resource "tags" from data base
+     * @return a pagedModel of Tag, which represents a resource "tags" from data base
      */
     @PreAuthorize(AUTHORITY_READ)
     @GetMapping("/most-used")
-    public ResponseEntity<CollectionModel<TagDTO>> findMostUsedTag() {
+    public ResponseEntity<PagedModel<TagDTO> > findMostUsedTag() {
         List<TagDTO> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
-        return ResponseEntity.ok(tagAssembler.toHateoasCollectionOfEntities(tags, new PageInfo(), tags.size()));
+        Page<TagDTO> page = new PageImpl<>(tags);
+        PagedModel<TagDTO> pagedModel = pagedResourcesAssembler.toModel(page, tagModelAssembler);
+
+        return ResponseEntity.ok(pagedModel);
     }
 }

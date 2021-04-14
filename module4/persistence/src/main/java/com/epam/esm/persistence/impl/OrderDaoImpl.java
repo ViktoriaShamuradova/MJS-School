@@ -6,12 +6,11 @@ import com.epam.esm.persistence.OrderDao;
 import com.epam.esm.persistence.dataspecification.OrderSpecification;
 import com.epam.esm.persistence.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,15 +29,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public long getCount() {
-        return orderRepository.count();
-    }
-
-    @Override
-    public List<Order> findAll(OrderCriteriaInfo criteriaInfo, Pageable pageable) {
+    public Page<Order> findAll(OrderCriteriaInfo criteriaInfo, Pageable pageable) {
         OrderSpecification orderSpecification = new OrderSpecification(criteriaInfo);
-        return orderRepository.findAll(orderSpecification, pageable)
-                .stream()
-                .collect(Collectors.toList());
+        return orderRepository.findAll(orderSpecification, pageable);
     }
 }

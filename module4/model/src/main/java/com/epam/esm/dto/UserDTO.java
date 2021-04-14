@@ -46,6 +46,4 @@ public class UserDTO extends RepresentationModel<UserDTO> {
     private Role role;
     @Null
     private Status status;
-    @Null
-    private boolean isActive;
 }

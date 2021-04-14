@@ -1,0 +1,69 @@
+package com.epam.esm.hateoas;
+
+import com.epam.esm.controller.CertificateController;
+import com.epam.esm.controller.TagController;
+import com.epam.esm.criteria_info.TagCriteriaInfo;
+import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.TagDTO;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class CertificateModelAssembler extends RepresentationModelAssemblerSupport<CertificateDTO, CertificateDTO> {
+
+    public CertificateModelAssembler() {
+        super(CertificateController.class, CertificateDTO.class);
+    }
+
+    @Override
+    public CertificateDTO toModel(CertificateDTO dto) {
+        dto.setTags(toTagDTOs(dto.getTags()));
+        appendSelfReference(dto);
+        return dto;
+    }
+
+    private void appendSelfReference(CertificateDTO dto) {
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .find(dto.getId()))
+                .withRel("find by id")
+                .withType(HttpMethod.GET.name()));
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .update(dto.getId(), null))
+                .withRel("update a current certificate")
+                .withType(HttpMethod.PATCH.name()));
+        dto.add(linkTo(methodOn(CertificateController.class)
+                .delete(dto.getId()))
+                .withRel("delete a current certificate")
+                .withType(HttpMethod.DELETE.name()));
+    }
+
+    private Set<TagDTO> toTagDTOs(Set<TagDTO> tags) {//Set<TagDTO>
+        if (tags.isEmpty())
+            return Collections.emptySet();
+
+        return tags.stream()
+                .map(tag -> {
+                    TagDTO t = new TagDTO();
+                    t.setName(tag.getName());
+                    t.add(linkTo(
+                            methodOn(TagController.class)
+                                    .find(null, new TagCriteriaInfo(t.getName())))
+                            .withSelfRel());
+                    return t;
+                }).collect(Collectors.toSet());
+    }
+
+    public void appendGenericCertificateHateoasActions(RepresentationModel dto) {
+        dto.add(linkTo(CertificateController.class).withRel("get all certificates").withType(HttpMethod.GET.name()));
+        dto.add(linkTo(CertificateController.class).withRel("create certificate").withType(HttpMethod.POST.name()));
+    }
+}

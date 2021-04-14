@@ -1,13 +1,15 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.hateoas.CertificateModelAssembler;
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.util.CertificateHateoasAssembler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 /**
  * a class which performs CRUD operations on a resource called "certificate"
@@ -36,7 +37,9 @@ import java.util.List;
 public class CertificateController {
 
     private final CertificateService certificateService;
-    private final CertificateHateoasAssembler certificateAssembler;
+
+    private final CertificateModelAssembler certificateModelAssembler;
+    private final PagedResourcesAssembler<CertificateDTO> pagedResourcesAssembler;
 
     public static final String AUTHORITY_READ = "hasAuthority('certificate:read')";
     public static final String AUTHORITY_WRITE = "hasAuthority('certificate:write')";
@@ -45,14 +48,14 @@ public class CertificateController {
      * a method which realizes REST's READ operation of all resources
      *
      * @param criteriaInfo - object with information about certificate to search
-     * @return a collection of CertificatesDTO, which represents a resource "certificates" from database with links
+     * @return a pagedModel of CertificatesDTO, which represents a resource "certificates" from database with links
      */
     @GetMapping()
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<CollectionModel<CertificateDTO>>  find(@Valid PageInfo pageInfo, @Valid CertificateCriteriaInfo criteriaInfo) {
-        List<CertificateDTO> certificates = certificateService.find(pageInfo, criteriaInfo);
-        long count = certificateService.getCount();
-        return ResponseEntity.ok(certificateAssembler.toHateoasCollectionOfEntities(certificates, pageInfo, count));
+    public ResponseEntity<PagedModel<CertificateDTO> > find(Pageable pageable, @Valid CertificateCriteriaInfo criteriaInfo) {
+        Page<CertificateDTO> certificates = certificateService.find(pageable, criteriaInfo);
+        PagedModel<CertificateDTO> pagedModel = pagedResourcesAssembler.toModel(certificates, certificateModelAssembler);
+        return ResponseEntity.ok(pagedModel);
     }
 
     /**
@@ -67,7 +70,7 @@ public class CertificateController {
     @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<CertificateDTO> create(@RequestBody @Valid CertificateDTO certificateDTO) {
         CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
-        certificateAssembler.appendAsForMainEntity(certificateDTOCreated);
+        certificateModelAssembler.toModel(certificateDTOCreated);
         return new ResponseEntity<>(certificateDTOCreated, HttpStatus.CREATED);
     }
 
@@ -81,7 +84,7 @@ public class CertificateController {
     @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<RepresentationModel> delete(@PathVariable @Min(1) long id) {
         RepresentationModel representationModel = new RepresentationModel();
-        certificateAssembler.appendGenericCertificateHateoasActions(representationModel);
+        certificateModelAssembler.appendGenericCertificateHateoasActions(representationModel);
         if (certificateService.delete(id)) {
             return new ResponseEntity<>(representationModel, HttpStatus.OK);
         } else {
@@ -100,7 +103,7 @@ public class CertificateController {
     @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<CertificateDTO> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
         CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
-        certificateAssembler.appendAsForMainEntity(certificate);
+        certificateModelAssembler.toModel(certificate);
         return ResponseEntity.ok(certificate);
     }
 
@@ -115,7 +118,7 @@ public class CertificateController {
     public ResponseEntity<CertificateDTO> find(@PathVariable("id")
                                                    @Min(1) long id) {
         CertificateDTO certificate = certificateService.findById(id);
-        certificateAssembler.appendAsForMainEntity(certificate);
+        certificateModelAssembler.toModel(certificate);
         return ResponseEntity.ok(certificate);
     }
 }

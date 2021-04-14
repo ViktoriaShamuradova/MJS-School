@@ -5,6 +5,7 @@ import com.epam.esm.listener.GeneralEntityListener;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EntityListeners(GeneralEntityListener.class)
 @EqualsAndHashCode(callSuper = true, exclude = {"order", "certificate"})
+@ToString(exclude="order")
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)

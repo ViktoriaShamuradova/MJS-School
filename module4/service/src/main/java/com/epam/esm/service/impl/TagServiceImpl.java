@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
@@ -9,7 +8,9 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.TagMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +30,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TagDTO> find(PageInfo pageInfo, TagCriteriaInfo criteriaInfo) {
-        return tagDAO.findAll(criteriaInfo, PageRequest.of(pageInfo.getCurrentPage() - 1, pageInfo.getLimit()))
-                .stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<TagDTO> find(Pageable pageable, TagCriteriaInfo criteriaInfo) {
+       Page<Tag> all = tagDAO.findAll(criteriaInfo, pageable);
+       return all.map(mapper::toDTO);
     }
 
     @Override
@@ -54,12 +53,6 @@ public class TagServiceImpl implements TagService {
     @Transactional(readOnly = true)
     public TagDTO findById(Long id) {
         return mapper.toDTO(tagDAO.findById(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
-    }
-
-    @Override
-    @Transactional
-    public long getCount() {
-        return tagDAO.getCount();
     }
 
     @Override
@@ -97,7 +90,6 @@ public class TagServiceImpl implements TagService {
         }
         return getListTagDto(tags);
     }
-
     @Override
     public TagDTO update(TagDTO tag) {
         throw new UnsupportedOperationException();

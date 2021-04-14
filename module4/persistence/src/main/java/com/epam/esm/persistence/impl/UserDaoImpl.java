@@ -6,12 +6,11 @@ import com.epam.esm.persistence.UserDao;
 import com.epam.esm.persistence.dataspecification.UserSpecification;
 import com.epam.esm.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,11 +19,9 @@ public class UserDaoImpl implements UserDao {
     private final UserRepository userRepository;
 
     @Override
-    public List<User> findAll(UserCriteriaInfo criteriaInfo, Pageable pageable) {
+    public Page<User> findAll(UserCriteriaInfo criteriaInfo, Pageable pageable) {
         UserSpecification specification = new UserSpecification(criteriaInfo);
-        return userRepository.findAll(specification, pageable)
-                .stream()
-                .collect(Collectors.toList());
+        return userRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -40,10 +37,5 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User save(User registerUser) {
         return userRepository.save(registerUser);
-    }
-
-    @Override
-    public long getCount() {
-        return userRepository.count();
     }
 }

@@ -1,12 +1,15 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.criteria_info.PageInfo;
+import com.epam.esm.hateoas.UserDtoModelAssembler;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.UserHateoasAssembler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 /**
  * a class which performs GET operations on a resource called "user"
@@ -29,24 +31,26 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserHateoasAssembler userAssembler;
+
+    private final UserDtoModelAssembler userModelAssembler;
+    private final PagedResourcesAssembler<UserDTO> pagedResourcesAssembler;
 
     public static final String AUTHORITY_READ = "hasAuthority('user:read')";
 
     /**
      * a method which realizes REST's READ operation of all resources
      *
-     * @param pageInfo         - object witch contains information about pagination
+     * @param pageable         - object witch contains information about pagination
      * @param userCriteriaInfo - object with information about user to search
      * @return a responseEntity with status code and collection of User, which represents a resource "user" from database
      * with links
      */
     @GetMapping
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<CollectionModel<UserDTO>> find(@Valid PageInfo pageInfo, @Valid UserCriteriaInfo userCriteriaInfo) {
-        List<UserDTO> users = userService.find(pageInfo, userCriteriaInfo);
-        long count = userService.getCount();
-        return ResponseEntity.ok(userAssembler.toHateoasCollectionOfEntities(users, pageInfo, count));
+    public ResponseEntity<CollectionModel<UserDTO>> find(Pageable pageable, @Valid UserCriteriaInfo userCriteriaInfo) {
+        Page<UserDTO> users = userService.find(pageable, userCriteriaInfo);
+        PagedModel<UserDTO> pagedModel = pagedResourcesAssembler.toModel(users, userModelAssembler);
+        return ResponseEntity.ok(pagedModel);
     }
 
     /**
@@ -60,7 +64,7 @@ public class UserController {
     @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<UserDTO> find(@PathVariable @Min(1) long id) {
         UserDTO userDTO = userService.findById(id);
-        userAssembler.appendAsForMainEntity(userDTO);
+        userModelAssembler.toModel(userDTO);
         return ResponseEntity.ok(userDTO);
     }
 }
