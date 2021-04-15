@@ -21,9 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-
     private int BCRYPT_ROUND = 12;
-
     private final JwtTokenFilter jwtTokenFilter;
 
     @Override
@@ -37,8 +35,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .antMatchers("/registration", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);//BasicAuthenticationFilter
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
     }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

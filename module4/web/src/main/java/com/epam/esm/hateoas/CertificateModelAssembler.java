@@ -3,8 +3,8 @@ package com.epam.esm.hateoas;
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.TagDto;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.http.HttpMethod;
@@ -18,20 +18,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class CertificateModelAssembler extends RepresentationModelAssemblerSupport<CertificateDTO, CertificateDTO> {
+public class CertificateModelAssembler extends RepresentationModelAssemblerSupport<CertificateDto, CertificateDto> {
 
     public CertificateModelAssembler() {
-        super(CertificateController.class, CertificateDTO.class);
+        super(CertificateController.class, CertificateDto.class);
     }
 
     @Override
-    public CertificateDTO toModel(CertificateDTO dto) {
+    public CertificateDto toModel(CertificateDto dto) {
         dto.setTags(toTagDTOs(dto.getTags()));
         appendSelfReference(dto);
         return dto;
     }
 
-    private void appendSelfReference(CertificateDTO dto) {
+    private void appendSelfReference(CertificateDto dto) {
         dto.add(linkTo(methodOn(CertificateController.class)
                 .find(dto.getId()))
                 .withRel("find by id")
@@ -46,13 +46,13 @@ public class CertificateModelAssembler extends RepresentationModelAssemblerSuppo
                 .withType(HttpMethod.DELETE.name()));
     }
 
-    private Set<TagDTO> toTagDTOs(Set<TagDTO> tags) {//Set<TagDTO>
+    private Set<TagDto> toTagDTOs(Set<TagDto> tags) {//Set<TagDTO>
         if (tags.isEmpty())
             return Collections.emptySet();
 
         return tags.stream()
                 .map(tag -> {
-                    TagDTO t = new TagDTO();
+                    TagDto t = new TagDto();
                     t.setName(tag.getName());
                     t.add(linkTo(
                             methodOn(TagController.class)

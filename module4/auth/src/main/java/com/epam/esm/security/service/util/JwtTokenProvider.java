@@ -1,13 +1,11 @@
-package com.epam.esm.security.filter;
+package com.epam.esm.security.service.util;
 
+import com.epam.esm.security.exception.ExceptionMessageValue;
 import com.epam.esm.security.exception.InvalidTokenException;
-import com.epam.esm.security.exception.TokenExpiredException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,12 +21,15 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
+
+    private final String PREFIX_FOR_POSTMAN_AUTH = "Bearer ";
 
     private final UserDetailsService userDetailsService;
 
@@ -57,15 +58,15 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) throws AuthenticationException {
+        if(token ==null) return false;
         try {
             Jws<Claims> claimsJws = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(Date.from(Instant.now()));
-        } catch (ExpiredJwtException expEx) {
-            throw new TokenExpiredException("40003");
-        } catch (SignatureException e) {
-            throw new InvalidTokenException("40004");
+        } catch (RuntimeException e) {
+
+            throw new InvalidTokenException(ExceptionMessageValue.ACCESS_IS_DENIED.getMessage());
         }
     }
 
@@ -83,11 +84,11 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    public Optional<String> resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader(authorizationHeader);
-        if (hasText(bearer) && bearer.startsWith("Bearer ")) {
-            return bearer.substring(7);
+        if (hasText(bearer) && bearer.startsWith(PREFIX_FOR_POSTMAN_AUTH)) {
+            return Optional.of(bearer.substring(7));
         }
-        return null;
+        return Optional.empty();
     }
 }

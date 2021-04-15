@@ -1,5 +1,7 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.constant.Message;
+import com.epam.esm.constant.Regex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,30 +25,25 @@ public class CertificateUpdateDto {
 
     @NotNull
     @Positive
-    @Min(1)
+    @Min(Regex.MIN_ID)
     private JsonNullable<Long> id = JsonNullable.undefined();
 
     @NotNull
-    @Pattern(regexp = "[-, .:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "part of description or name must contain " +
-            "from 1 to 100 " +
-            "characters with punctuation marks")
+    @Pattern(regexp = Regex.CERTIFICATE_NAME, message =Message.CERTIFICATE_NAME )
     private JsonNullable<String> name = JsonNullable.undefined();
 
-    @Pattern(regexp = "[-, .:!?0-9A-Za-zА-Яа-яЁё]{1,100}", message = "description must contain " +
-            "from 1 to 100 " +
-            "characters with punctuation marks")
+    @Pattern(regexp = Regex.CERTIFICATE_DESCRIPTION, message = Message.CERTIFICATE_DESCRIPTION)
     private JsonNullable<String> description = JsonNullable.undefined();
 
     @NotNull
-    @Min(1)
-    @Max(100)
+    @Min(Regex.MIN_CERTIFICATE_DURATION)
+    @Max(Regex.MAX_CERTIFICATE_DURATION)
     private JsonNullable<Integer> duration = JsonNullable.undefined();
 
     @NotNull
-    @Digits(integer = 15, fraction = 2)
-    @DecimalMin(value = "0", message = "Enter certificate price")
+    @Digits(integer = Regex.CERTIFICATE_PRICE_INTEGER, fraction = Regex.CERTIFICATE_PRICE_FRACTION)
+    @DecimalMin(value = "0", message = Message.ENTER_PRICE)
     private JsonNullable<BigDecimal> price = JsonNullable.undefined();
 
-    private JsonNullable<Set<@Pattern(regexp = "[:\\-0-9A-Za-zА-Яа-яЁё ]{1,256}", message = "tag name must contain " +
-            "from 1 to 256 characters without punctuation marks")TagDTO>> tags = JsonNullable.undefined();
+    private JsonNullable<Set<@Pattern(regexp = Regex.TAG_NAME, message = Message.TAG_NAME) TagDto>> tags = JsonNullable.undefined();
 }

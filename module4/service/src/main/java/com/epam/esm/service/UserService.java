@@ -2,9 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.RegistrationUserDto;
-import com.epam.esm.dto.UserDTO;
+import com.epam.esm.dto.UserDto;
 
-public interface UserService extends CrudService<UserDTO, Long, UserCriteriaInfo> {
+public interface UserService extends CrudService<UserDto, Long, UserCriteriaInfo> {
 
-    UserDTO create(RegistrationUserDto registrationUserDto);
+    UserDto create(RegistrationUserDto registrationUserDto);
 }

@@ -1,6 +1,6 @@
 package com.epam.esm.service.modelmapper;
 
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,11 +14,11 @@ public class TagMapper {
 
     private final ModelMapper modelMapper;
 
-    public Tag toEntity(TagDTO dto) {
+    public Tag toEntity(TagDto dto) {
         return Objects.isNull(dto) ? null : modelMapper.map(dto, Tag.class);
     }
 
-    public TagDTO toDTO(Tag entity) {
-        return Objects.isNull(entity) ? null : modelMapper.map(entity, TagDTO.class);
+    public TagDto toDTO(Tag entity) {
+        return Objects.isNull(entity) ? null : modelMapper.map(entity, TagDto.class);
     }
 }

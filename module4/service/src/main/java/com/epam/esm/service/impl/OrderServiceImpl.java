@@ -9,6 +9,7 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderItem;
 import com.epam.esm.persistence.CertificateDao;
 import com.epam.esm.persistence.OrderDao;
+import com.epam.esm.persistence.UserDao;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
@@ -19,13 +20,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
 @RequiredArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDAO;
+    private final UserDao userDao;
     private final OrderMapper mapper;
     private final CertificateDao certificateDao;
 
@@ -41,7 +41,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto create(Cart cart) {
         Order order = new Order(cart.getUserId());
-        order.setCreateDate(Instant.now());
+        userDao.findById(cart.getUserId()).orElseThrow(()->
+                new NoSuchResourceException(ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= "+cart.getUserId()));
         for (CartItem cartItem : cart.getCartItems()) {
             Certificate certificate = certificateDao.findById(cartItem.getIdCertificate()).orElseThrow(() ->
                     new NoSuchResourceException(ExceptionCode
@@ -52,7 +53,6 @@ public class OrderServiceImpl implements OrderService {
             order.add(orderItem);
         }
         orderDAO.save(order);
-        System.out.println(mapper.toDTO(order));
         return mapper.toDTO(order);
     }
 

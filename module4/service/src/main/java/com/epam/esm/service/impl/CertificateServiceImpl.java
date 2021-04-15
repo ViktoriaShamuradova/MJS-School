@@ -2,9 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.CertificateUpdateDto;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.CertificateDao;
@@ -30,30 +30,30 @@ import java.util.Set;
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
-    private final CertificateDao certificateDAO;
+    private final CertificateDao certificateDao;
     private final TagRepository tagDAO;
     private final CertificateMapper mapper;
 
 
     @Transactional(readOnly = true)
     @Override
-    public CertificateDTO findById(Long id) {
-        Certificate certificate = certificateDAO.findById(id).orElseThrow(() ->
+    public CertificateDto findById(Long id) {
+        Certificate certificate = certificateDao.findById(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + id));
         return mapper.toDTO(certificate);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CertificateDTO>  find(Pageable pageable, CertificateCriteriaInfo criteriaInfo) {
-        Page<Certificate> all = certificateDAO.findAll(criteriaInfo, pageable);
+    public Page<CertificateDto>  find(Pageable pageable, CertificateCriteriaInfo criteriaInfo) {
+        Page<Certificate> all = certificateDao.findAll(criteriaInfo, pageable);
         return all.map(mapper::toDTO);
     }
 
 
     @Transactional
     @Override
-    public CertificateDTO create(CertificateDTO certificateDTO) {
+    public CertificateDto create(CertificateDto certificateDTO) {
         certificateDTO.setCreateDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
         certificateDTO.setUpdateLastDate(Instant.now().truncatedTo(ChronoUnit.MICROS));
 
@@ -62,15 +62,15 @@ public class CertificateServiceImpl implements CertificateService {
         certificate.setTags(tags);
         certificate.setId(null);
 
-        return mapper.toDTO(certificateDAO.save(certificate));
+        return mapper.toDTO(certificateDao.save(certificate));
     }
 
     @Transactional
     @Override
     public boolean delete(Long id) {
-        Optional<Certificate> certificate = certificateDAO.findById(id);
+        Optional<Certificate> certificate = certificateDao.findById(id);
         if (certificate.isPresent()) {
-            certificateDAO.delete(certificate.get());
+            certificateDao.delete(certificate.get());
             return true;
         }
         return false;
@@ -78,8 +78,8 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Transactional
     @Override
-    public CertificateDTO update(CertificateUpdateDto certificateUpdateDto, Long id) {
-        Certificate certificate = certificateDAO.findById(id).orElseThrow(() ->
+    public CertificateDto update(CertificateUpdateDto certificateUpdateDto, Long id) {
+        Certificate certificate = certificateDao.findById(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + certificateUpdateDto.getId().get()));
 
         if (certificateUpdateDto.getName().isPresent()) {
@@ -99,10 +99,10 @@ public class CertificateServiceImpl implements CertificateService {
         }
         certificate.setUpdateLastDate(Instant.now());
 
-        return mapper.toDTO(certificateDAO.save(certificate));
+        return mapper.toDTO(certificateDao.save(certificate));
     }
 
-    private Set<Tag> prepareTags(Set<TagDTO> tagDTOS) {
+    private Set<Tag> prepareTags(Set<TagDto> tagDTOS) {
         Set<Tag> tags = new HashSet<>();
         tagDTOS.forEach((tagDTO -> {
             Tag tag = new Tag(tagDTO.getName());
@@ -120,7 +120,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public CertificateDTO update(CertificateDTO certificateDTO) {
+    public CertificateDto update(CertificateDto certificateDTO) {
         throw new UnsupportedOperationException();
     }
 }

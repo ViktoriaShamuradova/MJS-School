@@ -1,5 +1,6 @@
 package com.epam.esm.exceptionhandler;
 
+import com.epam.esm.security.exception.InvalidTokenException;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
@@ -23,6 +24,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -31,7 +33,6 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     private final MessageSource resourceBundle;
-
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleAuthenticationException(BadCredentialsException e,
@@ -67,7 +68,6 @@ public class GlobalExceptionHandler {
 
         return createResponseEntity(e, request, HttpStatus.BAD_REQUEST);
     }
-
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException e,
@@ -123,10 +123,9 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(exceptionCode.getErrorCode());
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(exceptionCode.getErrorCode(), new Object[]{request.getServletPath()},
-                request.getLocale())
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(exceptionCode.getErrorCode(), new Object[]{},
+                Locale.ENGLISH)
         );
         return new ResponseEntity<>(exceptionResponse, httpStatus);
     }
-
 }

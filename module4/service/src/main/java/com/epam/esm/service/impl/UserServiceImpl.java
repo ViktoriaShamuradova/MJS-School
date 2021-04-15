@@ -4,7 +4,7 @@ import com.epam.esm.Role;
 import com.epam.esm.Status;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
 import com.epam.esm.dto.RegistrationUserDto;
-import com.epam.esm.dto.UserDTO;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDao;
 import com.epam.esm.service.UserService;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDTO findById(Long id) {
+    public UserDto findById(Long id) {
         return mapper.toDTO(userDAO.findById(id).orElseThrow(()
                 -> new NoSuchResourceException(
                 ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= " + id)));
@@ -42,25 +42,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(UserDTO user) {
+    public UserDto update(UserDto user) {
         throw new UnsupportedOperationException();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Page<UserDTO> find(Pageable pageable, UserCriteriaInfo criteriaInfo) {
+    public Page<UserDto> find(Pageable pageable, UserCriteriaInfo criteriaInfo) {
         Page<User> all = userDAO.findAll(criteriaInfo, pageable);
         return  all.map(mapper::toDTO);
     }
     @Transactional
     @Override
-    public UserDTO create(UserDTO userDTO) {
+    public UserDto create(UserDto userDTO) {
         throw new UnsupportedOperationException();
     }
 
     @Transactional
     @Override
-    public UserDTO create(RegistrationUserDto registrationUserDto) {
+    public UserDto create(RegistrationUserDto registrationUserDto) {
         Optional<User> user = userDAO.findByEmail(registrationUserDto.getEmail());
         if (user.isPresent()) {
             throw new ResourceAlreadyExistsException(ExceptionCode.USER_ALREADY_EXIST.getErrorCode(),

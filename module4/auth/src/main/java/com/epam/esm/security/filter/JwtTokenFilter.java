@@ -1,8 +1,10 @@
 package com.epam.esm.security.filter;
 
+import com.epam.esm.security.exception.ExceptionMessageValue;
 import com.epam.esm.security.exception.InvalidTokenException;
+import com.epam.esm.security.exception.SpringSecurityExceptionHandler;
+import com.epam.esm.security.service.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -10,31 +12,35 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final SpringSecurityExceptionHandler exceptionHandler;
 
-    @SneakyThrows
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Optional<String> token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+            if (token.isPresent() && jwtTokenProvider.validateToken(token.get())) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(token.get());
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
         } catch (AuthenticationException e) {
             SecurityContextHolder.clearContext();
-            logger.info("JWT token is expired or invalid");
-            throw new InvalidTokenException("40300");
+            exceptionHandler.commence((HttpServletRequest) request, (HttpServletResponse) response,
+                    new InvalidTokenException(ExceptionMessageValue.ACCESS_IS_DENIED.getMessage()));
         }
         chain.doFilter(request, response);
     }

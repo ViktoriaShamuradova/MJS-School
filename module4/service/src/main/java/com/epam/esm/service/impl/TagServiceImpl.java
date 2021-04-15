@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDao;
 import com.epam.esm.service.TagService;
@@ -9,7 +9,6 @@ import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +29,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TagDTO> find(Pageable pageable, TagCriteriaInfo criteriaInfo) {
+    public Page<TagDto> find(Pageable pageable, TagCriteriaInfo criteriaInfo) {
        Page<Tag> all = tagDAO.findAll(criteriaInfo, pageable);
        return all.map(mapper::toDTO);
     }
 
     @Override
     @Transactional
-    public TagDTO create(TagDTO tag) {
+    public TagDto create(TagDto tag) {
         TagCriteriaInfo tagCriteriaInfo = new TagCriteriaInfo();
         tagCriteriaInfo.setName(tag.getName());
         Optional<Tag> tagOptional = tagDAO.find(tagCriteriaInfo);
@@ -51,13 +50,13 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public TagDTO findById(Long id) {
+    public TagDto findById(Long id) {
         return mapper.toDTO(tagDAO.findById(id).orElseThrow(() -> new NoSuchResourceException("id= " + id)));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TagDTO find(String name) {
+    public TagDto find(String name) {
         TagCriteriaInfo tagCriteriaInfo = new TagCriteriaInfo();
         tagCriteriaInfo.setName(name);
 
@@ -79,7 +78,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public List<TagDTO> getMostUsedTagOfUserWithHighestCostOfOrders() {
+    public List<TagDto> getMostUsedTagOfUserWithHighestCostOfOrders() {
         Map<Tag, Integer> tagsWithCount = tagDAO.getTagsOfUserWithHighestCostOfOrders();
         List<Tag> tags = new ArrayList<>();
         int maxValueInMap = Collections.max(tagsWithCount.values());
@@ -91,7 +90,7 @@ public class TagServiceImpl implements TagService {
         return getListTagDto(tags);
     }
     @Override
-    public TagDTO update(TagDTO tag) {
+    public TagDto update(TagDto tag) {
         throw new UnsupportedOperationException();
     }
 
@@ -100,7 +99,7 @@ public class TagServiceImpl implements TagService {
         throw new UnsupportedOperationException();
     }
 
-    private List<TagDTO> getListTagDto(List<Tag> tags) {
+    private List<TagDto> getListTagDto(List<Tag> tags) {
         return tags
                 .stream()
                 .map(mapper::toDTO)

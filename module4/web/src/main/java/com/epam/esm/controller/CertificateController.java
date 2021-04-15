@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.hateoas.CertificateModelAssembler;
 import com.epam.esm.criteria_info.CertificateCriteriaInfo;
-import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.CertificateUpdateDto;
 import com.epam.esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class CertificateController {
     private final CertificateService certificateService;
 
     private final CertificateModelAssembler certificateModelAssembler;
-    private final PagedResourcesAssembler<CertificateDTO> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<CertificateDto> pagedResourcesAssembler;
 
     public static final String AUTHORITY_READ = "hasAuthority('certificate:read')";
     public static final String AUTHORITY_WRITE = "hasAuthority('certificate:write')";
@@ -52,9 +52,9 @@ public class CertificateController {
      */
     @GetMapping()
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<PagedModel<CertificateDTO> > find(Pageable pageable, @Valid CertificateCriteriaInfo criteriaInfo) {
-        Page<CertificateDTO> certificates = certificateService.find(pageable, criteriaInfo);
-        PagedModel<CertificateDTO> pagedModel = pagedResourcesAssembler.toModel(certificates, certificateModelAssembler);
+    public ResponseEntity<PagedModel<CertificateDto> > find(Pageable pageable, @Valid CertificateCriteriaInfo criteriaInfo) {
+        Page<CertificateDto> certificates = certificateService.find(pageable, criteriaInfo);
+        PagedModel<CertificateDto> pagedModel = pagedResourcesAssembler.toModel(certificates, certificateModelAssembler);
         return ResponseEntity.ok(pagedModel);
     }
 
@@ -68,8 +68,8 @@ public class CertificateController {
      */
     @PostMapping
     @PreAuthorize(AUTHORITY_WRITE)
-    public ResponseEntity<CertificateDTO> create(@RequestBody @Valid CertificateDTO certificateDTO) {
-        CertificateDTO certificateDTOCreated = certificateService.create(certificateDTO);
+    public ResponseEntity<CertificateDto> create(@RequestBody @Valid CertificateDto certificateDTO) {
+        CertificateDto certificateDTOCreated = certificateService.create(certificateDTO);
         certificateModelAssembler.toModel(certificateDTOCreated);
         return new ResponseEntity<>(certificateDTOCreated, HttpStatus.CREATED);
     }
@@ -101,8 +101,8 @@ public class CertificateController {
      */
     @PatchMapping("/{id}")
     @PreAuthorize(AUTHORITY_WRITE)
-    public ResponseEntity<CertificateDTO> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
-        CertificateDTO certificate = certificateService.update(certificateUpdateDto, id);
+    public ResponseEntity<CertificateDto> update(@PathVariable("id") @Min(1)  Long id, @Valid @RequestBody CertificateUpdateDto certificateUpdateDto) {
+        CertificateDto certificate = certificateService.update(certificateUpdateDto, id);
         certificateModelAssembler.toModel(certificate);
         return ResponseEntity.ok(certificate);
     }
@@ -115,9 +115,9 @@ public class CertificateController {
      */
     @GetMapping("/{id}")
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<CertificateDTO> find(@PathVariable("id")
+    public ResponseEntity<CertificateDto> find(@PathVariable("id")
                                                    @Min(1) long id) {
-        CertificateDTO certificate = certificateService.findById(id);
+        CertificateDto certificate = certificateService.findById(id);
         certificateModelAssembler.toModel(certificate);
         return ResponseEntity.ok(certificate);
     }

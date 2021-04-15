@@ -1,5 +1,6 @@
 package com.epam.esm.criteria_info;
 
+import com.epam.esm.constant.Regex;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,6 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 public class CriteriaInfo {
     @Positive
-    @Min(1)
+    @Min(Regex.MIN_ID)
     private Long id;
 }

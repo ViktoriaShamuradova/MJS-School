@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.hateoas.UserDtoModelAssembler;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
-import com.epam.esm.dto.UserDTO;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,7 @@ public class UserController {
     private final UserService userService;
 
     private final UserDtoModelAssembler userModelAssembler;
-    private final PagedResourcesAssembler<UserDTO> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<UserDto> pagedResourcesAssembler;
 
     public static final String AUTHORITY_READ = "hasAuthority('user:read')";
 
@@ -47,9 +47,9 @@ public class UserController {
      */
     @GetMapping
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<CollectionModel<UserDTO>> find(Pageable pageable, @Valid UserCriteriaInfo userCriteriaInfo) {
-        Page<UserDTO> users = userService.find(pageable, userCriteriaInfo);
-        PagedModel<UserDTO> pagedModel = pagedResourcesAssembler.toModel(users, userModelAssembler);
+    public ResponseEntity<CollectionModel<UserDto>> find(Pageable pageable, @Valid UserCriteriaInfo userCriteriaInfo) {
+        Page<UserDto> users = userService.find(pageable, userCriteriaInfo);
+        PagedModel<UserDto> pagedModel = pagedResourcesAssembler.toModel(users, userModelAssembler);
         return ResponseEntity.ok(pagedModel);
     }
 
@@ -62,8 +62,8 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @PreAuthorize(AUTHORITY_READ)
-    public ResponseEntity<UserDTO> find(@PathVariable @Min(1) long id) {
-        UserDTO userDTO = userService.findById(id);
+    public ResponseEntity<UserDto> find(@PathVariable @Min(1) long id) {
+        UserDto userDTO = userService.findById(id);
         userModelAssembler.toModel(userDTO);
         return ResponseEntity.ok(userDTO);
     }

@@ -72,5 +72,4 @@ public class Order extends com.epam.esm.entity.Entity<Long> {
             totalSum = totalSum.add(item.getPriceOfCertificate().multiply(BigDecimal.valueOf(item.getCount())));
         }
     }
-
 }

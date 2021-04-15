@@ -2,7 +2,7 @@ package com.epam.esm.hateoas;
 
 import com.epam.esm.controller.TagController;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.http.HttpMethod;
@@ -12,20 +12,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class TagDtoModelAssembler extends RepresentationModelAssemblerSupport<TagDTO, TagDTO> {
+public class TagDtoModelAssembler extends RepresentationModelAssemblerSupport<TagDto, TagDto> {
 
     public TagDtoModelAssembler() {
-        super(TagController.class, TagDTO.class);
+        super(TagController.class, TagDto.class);
     }
 
 
     @Override
-    public TagDTO toModel(TagDTO dto) {
+    public TagDto toModel(TagDto dto) {
         appendSelfReference(dto);
         return dto;
     }
 
-    private void appendSelfReference(TagDTO dto) {
+    private void appendSelfReference(TagDto dto) {
         dto.add(linkTo(methodOn(TagController.class)
                 .find(null, new TagCriteriaInfo(dto.getName())))
                 .withSelfRel()

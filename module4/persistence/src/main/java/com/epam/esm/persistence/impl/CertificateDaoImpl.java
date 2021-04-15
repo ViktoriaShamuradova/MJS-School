@@ -38,5 +38,4 @@ public class CertificateDaoImpl implements CertificateDao {
     public void delete(Certificate certificate) {
         certificateRepository.delete(certificate);
     }
-
 }

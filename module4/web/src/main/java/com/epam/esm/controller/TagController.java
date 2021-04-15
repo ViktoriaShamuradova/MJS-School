@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.hateoas.TagDtoModelAssembler;
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,7 +39,7 @@ public class TagController {
 
     private final TagService tagService;
 
-    private final PagedResourcesAssembler<TagDTO> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<TagDto> pagedResourcesAssembler;
     private final TagDtoModelAssembler tagModelAssembler;
 
 
@@ -55,9 +55,9 @@ public class TagController {
      */
     @PreAuthorize(AUTHORITY_READ)
     @GetMapping
-    public ResponseEntity<PagedModel<TagDTO>> find(Pageable pageable, @Valid TagCriteriaInfo criteriaInfo) {
-        Page<TagDTO> tags = tagService.find(pageable, criteriaInfo);
-        PagedModel<TagDTO> pagedModel = pagedResourcesAssembler.toModel(tags, tagModelAssembler);
+    public ResponseEntity<PagedModel<TagDto>> find(Pageable pageable, @Valid TagCriteriaInfo criteriaInfo) {
+        Page<TagDto> tags = tagService.find(pageable, criteriaInfo);
+        PagedModel<TagDto> pagedModel = pagedResourcesAssembler.toModel(tags, tagModelAssembler);
         return ResponseEntity.ok(pagedModel);    }
 
     /**
@@ -69,8 +69,8 @@ public class TagController {
      */
     @PreAuthorize(AUTHORITY_WRITE)
     @PostMapping
-    public ResponseEntity<TagDTO> create(@RequestBody @Valid TagDTO tag) {
-        TagDTO tagNew = tagService.create(tag);
+    public ResponseEntity<TagDto> create(@RequestBody @Valid TagDto tag) {
+        TagDto tagNew = tagService.create(tag);
         tagModelAssembler.toModel(tagNew);
         return new ResponseEntity<>(tagNew, HttpStatus.CREATED);
     }
@@ -100,10 +100,10 @@ public class TagController {
      */
     @PreAuthorize(AUTHORITY_READ)
     @GetMapping("/most-used")
-    public ResponseEntity<PagedModel<TagDTO> > findMostUsedTag() {
-        List<TagDTO> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
-        Page<TagDTO> page = new PageImpl<>(tags);
-        PagedModel<TagDTO> pagedModel = pagedResourcesAssembler.toModel(page, tagModelAssembler);
+    public ResponseEntity<PagedModel<TagDto> > findMostUsedTag() {
+        List<TagDto> tags = tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
+        Page<TagDto> page = new PageImpl<>(tags);
+        PagedModel<TagDto> pagedModel = pagedResourcesAssembler.toModel(page, tagModelAssembler);
 
         return ResponseEntity.ok(pagedModel);
     }

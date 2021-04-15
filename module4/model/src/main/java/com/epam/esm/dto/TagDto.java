@@ -1,5 +1,7 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.constant.Message;
+import com.epam.esm.constant.Regex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,9 +14,8 @@ import javax.validation.constraints.Pattern;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDTO extends RepresentationModel<TagDTO> {
+public class TagDto extends RepresentationModel<TagDto> {
 
-    @Pattern(regexp = "[0-9A-Za-zА-Яа-яЁё ]{1,45}", message = "tag name must contain from 1 to 45 " +
-            "characters without punctuation marks")
+    @Pattern(regexp = Regex.TAG_NAME, message = Message.TAG_NAME)
     private String name;
 }

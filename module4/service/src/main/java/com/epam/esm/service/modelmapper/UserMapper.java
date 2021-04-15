@@ -1,6 +1,6 @@
 package com.epam.esm.service.modelmapper;
 
-import com.epam.esm.dto.UserDTO;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,13 +13,13 @@ import java.util.Objects;
 public class UserMapper {
     private final ModelMapper modelMapper;
 
-    public User toEntity(UserDTO dto) {
+    public User toEntity(UserDto dto) {
         return Objects.isNull(dto) ? null : modelMapper.map(dto, User.class);
     }
 
-    public UserDTO toDTO(User entity) {
+    public UserDto toDTO(User entity) {
 
-        UserDTO userDTO =  Objects.isNull(entity) ? null : modelMapper.map(entity, UserDTO.class);
+        UserDto userDTO =  Objects.isNull(entity) ? null : modelMapper.map(entity, UserDto.class);
         userDTO.setUsername(entity.getEmail());
         return userDTO;
     }
