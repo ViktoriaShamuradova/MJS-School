@@ -1,27 +1,34 @@
 package com.epam.esm.service.modelmapper.impl;
 
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.service.modelmapper.AbstractModelMapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.modelmapper.ModelMapper;
 
 @Component
 public class CertificateMapper extends AbstractModelMapper<CertificateDto, Certificate, Long> {
 
-    public CertificateMapper(ModelMapper modelMapper) {
-        super(modelMapper);
-    }
+    private final TagMapper tagMapper;
 
-    @Override
-    public Certificate toEntity(CertificateDto dto) {
-        return Objects.isNull(dto) ? null : super.getModelMapper().map(dto, Certificate.class);
+    public CertificateMapper(TagMapper tagMapper, ModelMapper modelMapper) {
+        super(Certificate.class, CertificateDto.class, modelMapper);
+        this.tagMapper = tagMapper;
     }
 
     @Override
     public CertificateDto toDTO(Certificate entity) {
-        return Objects.isNull(entity) ? null : super.getModelMapper().map(entity, CertificateDto.class);
+        CertificateDto certificateDto = Objects.isNull(entity) ? null : super.getMapper().map(entity, CertificateDto.class);
+        Set<TagDto> tags = entity.getTags()
+                .stream()
+                .map(tagMapper::toDTO)
+                .collect(Collectors.toSet());
+        certificateDto.setTags(tags);
+        return certificateDto;
     }
 }

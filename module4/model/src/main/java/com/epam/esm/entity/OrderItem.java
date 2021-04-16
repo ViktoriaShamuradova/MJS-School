@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EntityListeners(GeneralEntityListener.class)
 @EqualsAndHashCode(callSuper = true, exclude = {"order", "certificate"})
-@ToString(exclude="order")
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -51,4 +50,13 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         count = cartItem.getCount();
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "certificate=" + certificate +
+                ", count=" + count +
+                ", orderId=" + order.getId() +
+                ", priceOfCertificate=" + priceOfCertificate +
+                '}';
+    }
 }

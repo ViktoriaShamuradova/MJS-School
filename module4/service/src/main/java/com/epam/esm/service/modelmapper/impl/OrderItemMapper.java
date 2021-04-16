@@ -12,17 +12,12 @@ import java.util.Objects;
 public class OrderItemMapper extends AbstractModelMapper<OrderItemDto, OrderItem, Long> {
 
     public OrderItemMapper(ModelMapper modelMapper) {
-        super(modelMapper);
-    }
-
-    @Override
-    public OrderItem toEntity(OrderItemDto dto) {
-        return Objects.isNull(dto) ? null : super.getModelMapper().map(dto, OrderItem.class);
+        super(OrderItem.class, OrderItemDto.class, modelMapper);
     }
 
     @Override
     public OrderItemDto toDTO(OrderItem entity) {
-        OrderItemDto orderItemDto = Objects.isNull(entity) ? null : super.getModelMapper().map(entity, OrderItemDto.class);
+        OrderItemDto orderItemDto = Objects.isNull(entity) ? null : super.getMapper().map(entity, OrderItemDto.class);
         orderItemDto.setIdCertificate(entity.getCertificate().getId());
         return orderItemDto;
     }

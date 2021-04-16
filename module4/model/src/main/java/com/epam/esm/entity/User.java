@@ -24,6 +24,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = {"orders"})
 @Data
 @EntityListeners(GeneralEntityListener.class)
+@ToString(exclude = "orders")
 @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email=:email")
 public class User extends com.epam.esm.entity.Entity<Long> {
 
@@ -56,19 +57,5 @@ public class User extends com.epam.esm.entity.Entity<Long> {
         }
         orders.add(order);
         order.setUser(this);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", createDate=" + createDate +
-                ", lastUpdateDate=" + lastUpdateDate +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", status=" + status +
-                '}';
     }
 }

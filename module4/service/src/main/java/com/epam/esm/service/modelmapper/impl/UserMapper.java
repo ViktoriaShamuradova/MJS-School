@@ -12,15 +12,11 @@ import java.util.Objects;
 public class UserMapper extends AbstractModelMapper<UserDto, User, Long> {
 
     public UserMapper(ModelMapper modelMapper) {
-        super(modelMapper);
-    }
-
-    public User toEntity(UserDto dto) {
-        return Objects.isNull(dto) ? null : super.getModelMapper().map(dto, User.class);
+        super(User.class, UserDto.class, modelMapper);
     }
 
     public UserDto toDTO(User entity) {
-        UserDto userDTO =  Objects.isNull(entity) ? null : super.getModelMapper().map(entity, UserDto.class);
+        UserDto userDTO =  Objects.isNull(entity) ? null : super.getMapper().map(entity, UserDto.class);
         userDTO.setUsername(entity.getEmail());
         return userDTO;
     }
