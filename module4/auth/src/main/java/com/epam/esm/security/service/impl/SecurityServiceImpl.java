@@ -1,7 +1,7 @@
 package com.epam.esm.security.service.impl;
 
 import com.epam.esm.security.model.AuthenticationRequest;
-import com.epam.esm.dto.AuthenticationResponse;
+import com.epam.esm.security.model.AuthenticationResponse;
 import com.epam.esm.security.service.SecurityService;
 import com.epam.esm.security.service.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;

@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -21,9 +20,8 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserDto extends RepresentationModel<UserDto> {
+public class UserDto extends EntityDto<Long, UserDto> {
 
-    private Long id;
     @NotBlank(message = Message.NOT_BE_BLANK)
     @Pattern(regexp = Regex.USER_NAME, message = Message.USER_NAME)
     private String name;

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -21,9 +20,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = {"tags"})
-public class CertificateDto extends RepresentationModel<CertificateDto> {
-
-    private long id;
+public class CertificateDto extends EntityDto<Long, CertificateDto>{
 
     @Pattern(regexp = Regex.CERTIFICATE_NAME, message = Message.CERTIFICATE_NAME)
     private String name;

@@ -3,15 +3,18 @@ package com.epam.esm.service.impl;
 import com.epam.esm.Role;
 import com.epam.esm.Status;
 import com.epam.esm.criteria_info.UserCriteriaInfo;
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.RegistrationUserDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.User;
 import com.epam.esm.persistence.UserDao;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
-import com.epam.esm.service.modelmapper.UserMapper;
+import com.epam.esm.service.modelmapper.GenericMapper;
+import com.epam.esm.service.modelmapper.impl.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +29,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDAO;
-    private final UserMapper mapper;
+    private final GenericMapper<UserDto, User, Long> mapper;
 
     @Override
     @Transactional(readOnly = true)

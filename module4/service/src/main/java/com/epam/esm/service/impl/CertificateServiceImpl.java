@@ -13,7 +13,8 @@ import com.epam.esm.persistence.repository.TagRepository;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.modelmapper.CertificateMapper;
+import com.epam.esm.service.modelmapper.GenericMapper;
+import com.epam.esm.service.modelmapper.impl.CertificateMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDao certificateDao;
     private final TagRepository tagDAO;
-    private final CertificateMapper mapper;
+    private final GenericMapper<CertificateDto, Certificate, Long> mapper;
 
 
     @Transactional(readOnly = true)

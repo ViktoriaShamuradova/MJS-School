@@ -1,11 +1,14 @@
-package com.epam.esm.dto;
+package com.epam.esm.security.model;
+
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
 public class AuthenticationResponse {
 
-    Map<KeyAuthResponse, Object> response;
+    private final Map<KeyAuthResponse, Object> response;
 
     public AuthenticationResponse(String username, String token){
         response = new HashMap<>();

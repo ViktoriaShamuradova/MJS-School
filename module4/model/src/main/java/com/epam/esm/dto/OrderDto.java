@@ -6,7 +6,6 @@ import com.epam.esm.constant.Regex;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -21,11 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = {"orderItemDto"})
-public class OrderDto extends RepresentationModel<OrderDto> {
+public class OrderDto extends EntityDto<Long, OrderDto>{
 
-    @Positive
-    @Min(Regex.MIN_ID)
-    private long id;
     private Set<OrderItemDto> orderItemDto;
     @DecimalMin(value = "0.0", inclusive = false)
     @Digits(integer= OrderConst.PRICE_INTEGER, fraction=OrderConst.PRICE_FRACTION)

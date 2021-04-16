@@ -28,6 +28,7 @@ public class TagSpecification implements Specification<Tag> {
     @Override
     public Predicate toPredicate(Root<Tag> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         addPredicateName(root, query, criteriaBuilder);
+        if (conditions.isEmpty())return null;
         return conditions.get(0);
     }
 

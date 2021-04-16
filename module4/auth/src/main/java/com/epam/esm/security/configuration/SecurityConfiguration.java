@@ -1,5 +1,6 @@
 package com.epam.esm.security.configuration;
 
+import com.epam.esm.security.exception.SpringSecurityExceptionHandler;
 import com.epam.esm.security.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -21,8 +22,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private int BCRYPT_ROUND = 12;
+    private final int BCRYPT_ROUND = 12;
     private final JwtTokenFilter jwtTokenFilter;
+
+    private final SpringSecurityExceptionHandler springSecurityExceptionHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,8 +38,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .antMatchers("/registration", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .exceptionHandling().authenticationEntryPoint(springSecurityExceptionHandler)
+                .and()
+                .addFilterAfter(jwtTokenFilter, ExceptionTranslationFilter.class);
+
     }
 
     @Override

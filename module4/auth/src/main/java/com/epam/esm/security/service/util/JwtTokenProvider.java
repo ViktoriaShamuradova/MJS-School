@@ -65,7 +65,6 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(Date.from(Instant.now()));
         } catch (RuntimeException e) {
-
             throw new InvalidTokenException(ExceptionMessageValue.ACCESS_IS_DENIED.getMessage());
         }
     }

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Pattern;
 
@@ -14,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDto extends RepresentationModel<TagDto> {
+public class TagDto extends EntityDto<Long, TagDto> {
 
     @Pattern(regexp = Regex.TAG_NAME, message = Message.TAG_NAME)
     private String name;

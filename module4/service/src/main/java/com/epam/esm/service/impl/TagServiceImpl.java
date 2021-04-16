@@ -1,12 +1,15 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.TagCriteriaInfo;
+import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.persistence.TagDao;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.NoSuchResourceException;
-import com.epam.esm.service.modelmapper.TagMapper;
+import com.epam.esm.service.modelmapper.GenericMapper;
+import com.epam.esm.service.modelmapper.impl.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +28,7 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDAO;
-    private final TagMapper mapper;
+    private final GenericMapper<TagDto, Tag, Long> mapper;
 
     @Override
     @Transactional(readOnly = true)
