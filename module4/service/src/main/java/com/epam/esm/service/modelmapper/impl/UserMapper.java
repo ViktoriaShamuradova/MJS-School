@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class UserMapper extends AbstractModelMapper<UserDto, User, Long> {
+public class UserMapper extends AbstractModelMapper<UserDto, User> {
 
     public UserMapper(ModelMapper modelMapper) {
         super(User.class, UserDto.class, modelMapper);

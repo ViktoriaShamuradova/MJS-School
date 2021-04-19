@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -106,5 +107,20 @@ public class TagController {
         PagedModel<TagDto> pagedModel = pagedResourcesAssembler.toModel(page, tagModelAssembler);
 
         return ResponseEntity.ok(pagedModel);
+    }
+
+    /**
+     * a method which realizes REST's READ operation of a specific resource with id stored in a request path
+     *
+     * @param id an identification number of a requested resource
+     * @return an ResponseEntity with TagDto with links
+     */
+    @GetMapping("/{id}")
+    @PreAuthorize(AUTHORITY_READ)
+    public ResponseEntity<TagDto> find(@PathVariable("id")
+                                               @Min(1) long id) {
+        TagDto tagDto = tagService.findById(id);
+        tagModelAssembler.toModel(tagDto);
+        return ResponseEntity.ok(tagDto);
     }
 }

@@ -1,6 +1,5 @@
 package com.epam.esm.exceptionhandler;
 
-import com.epam.esm.security.exception.InvalidTokenException;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.exception.ResourceAlreadyExistsException;
@@ -16,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,6 +39,12 @@ public class GlobalExceptionHandler {
                                                                            HttpServletRequest request) {
         return createResponseEntity(e, request, ExceptionCode.WRONG_PASSWORD_USERNAME, HttpStatus.UNAUTHORIZED);
     }
+
+@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+public ResponseEntity<ExceptionResponse> handleAuthenticationException(HttpRequestMethodNotSupportedException e,
+                                                                       HttpServletRequest request) {
+    return createResponseEntity(e, request, ExceptionCode.NOT_SUPPORTED_OPERATION, HttpStatus.UNAUTHORIZED);
+}
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ExceptionResponse> handleAuthenticationException(AuthenticationException e,

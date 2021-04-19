@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class OrderItemMapper extends AbstractModelMapper<OrderItemDto, OrderItem, Long> {
+public class OrderItemMapper extends AbstractModelMapper<OrderItemDto, OrderItem> {
 
     public OrderItemMapper(ModelMapper modelMapper) {
         super(OrderItem.class, OrderItemDto.class, modelMapper);

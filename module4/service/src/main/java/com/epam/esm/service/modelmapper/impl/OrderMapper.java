@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderMapper extends AbstractModelMapper<OrderDto, Order, Long> {
+public class OrderMapper extends AbstractModelMapper<OrderDto, Order> {
 
     private final OrderItemMapper orderItemMapper;
 

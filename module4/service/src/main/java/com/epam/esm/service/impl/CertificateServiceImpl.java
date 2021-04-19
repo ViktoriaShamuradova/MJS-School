@@ -33,7 +33,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDao certificateDao;
     private final TagRepository tagDAO;
-    private final GenericMapper<CertificateDto, Certificate, Long> mapper;
+    private final GenericMapper<CertificateDto, Certificate> mapper;
 
 
     @Transactional(readOnly = true)

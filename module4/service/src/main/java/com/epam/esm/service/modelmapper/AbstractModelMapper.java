@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 @Data
-public abstract class AbstractModelMapper<DTO extends EntityDto<ID, DTO>, ENTITY extends Entity<ID>, ID extends Serializable>
-        implements GenericMapper<DTO, ENTITY, ID> {
+public abstract class AbstractModelMapper<DTO extends EntityDto, ENTITY extends Entity>
+        implements GenericMapper<DTO, ENTITY> {
 
     private final ModelMapper mapper;
     private Class<ENTITY> entityClass;

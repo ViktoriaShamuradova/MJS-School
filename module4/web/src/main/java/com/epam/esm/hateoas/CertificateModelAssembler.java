@@ -2,7 +2,6 @@ package com.epam.esm.hateoas;
 
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.TagController;
-import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.TagDto;
 import org.springframework.hateoas.RepresentationModel;
@@ -46,19 +45,17 @@ public class CertificateModelAssembler extends RepresentationModelAssemblerSuppo
                 .withType(HttpMethod.DELETE.name()));
     }
 
-    private Set<TagDto> toTagDTOs(Set<TagDto> tags) {//Set<TagDTO>
+    private Set<TagDto> toTagDTOs(Set<TagDto> tags) {
         if (tags.isEmpty())
             return Collections.emptySet();
 
         return tags.stream()
                 .map(tag -> {
-                    TagDto t = new TagDto();
-                    t.setName(tag.getName());
-                    t.add(linkTo(
+                    tag.add(linkTo(
                             methodOn(TagController.class)
-                                    .find(null, new TagCriteriaInfo(t.getName())))
+                                    .find(tag.getId()))
                             .withSelfRel());
-                    return t;
+                    return tag;
                 }).collect(Collectors.toSet());
     }
 

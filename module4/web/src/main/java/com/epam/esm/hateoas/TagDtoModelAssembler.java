@@ -1,7 +1,6 @@
 package com.epam.esm.hateoas;
 
 import com.epam.esm.controller.TagController;
-import com.epam.esm.criteria_info.TagCriteriaInfo;
 import com.epam.esm.dto.TagDto;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -18,7 +17,6 @@ public class TagDtoModelAssembler extends RepresentationModelAssemblerSupport<Ta
         super(TagController.class, TagDto.class);
     }
 
-
     @Override
     public TagDto toModel(TagDto dto) {
         appendSelfReference(dto);
@@ -27,12 +25,12 @@ public class TagDtoModelAssembler extends RepresentationModelAssemblerSupport<Ta
 
     private void appendSelfReference(TagDto dto) {
         dto.add(linkTo(methodOn(TagController.class)
-                .find(null, new TagCriteriaInfo(dto.getName())))
+                .find(dto.getId()))
                 .withSelfRel()
                 .withType(HttpMethod.GET.name()));
         dto.add(linkTo(methodOn(TagController.class)
                 .delete(dto.getName()))
-                .withRel("delete a current certificate")
+                .withRel("delete a current tag")
                 .withType(HttpMethod.DELETE.name()));
     }
 

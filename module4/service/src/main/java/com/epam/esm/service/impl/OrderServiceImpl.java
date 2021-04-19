@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
 import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.CartItem;
-import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
@@ -15,7 +14,6 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.GenericMapper;
-import com.epam.esm.service.modelmapper.impl.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDAO;
     private final UserDao userDao;
-    private final GenericMapper<OrderDto, Order, Long> mapper;
+    private final GenericMapper<OrderDto, Order> mapper;
     private final CertificateDao certificateDao;
 
     @Override

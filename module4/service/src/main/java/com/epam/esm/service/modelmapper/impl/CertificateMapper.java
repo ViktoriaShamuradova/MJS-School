@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 
 @Component
-public class CertificateMapper extends AbstractModelMapper<CertificateDto, Certificate, Long> {
+public class CertificateMapper extends AbstractModelMapper<CertificateDto, Certificate> {
 
     private final TagMapper tagMapper;
 
