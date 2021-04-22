@@ -116,7 +116,7 @@ public ResponseEntity<ExceptionResponse> handleAuthenticationException(HttpReque
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(e.getErrorCode());
 
-        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getErrorCode(), new Object[]{request.getServletPath()},
+        exceptionResponse.setErrorMessage(resourceBundle.getMessage(e.getErrorCode(), new Object[]{e.getMessage()},
                 request.getLocale())
         );
         return new ResponseEntity<>(exceptionResponse, httpStatus);
@@ -130,7 +130,7 @@ public ResponseEntity<ExceptionResponse> handleAuthenticationException(HttpReque
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setErrorCode(exceptionCode.getErrorCode());
         exceptionResponse.setErrorMessage(resourceBundle.getMessage(exceptionCode.getErrorCode(), new Object[]{},
-                Locale.ENGLISH)
+                request.getLocale())
         );
         return new ResponseEntity<>(exceptionResponse, httpStatus);
     }

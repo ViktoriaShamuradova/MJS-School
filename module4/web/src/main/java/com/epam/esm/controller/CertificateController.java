@@ -81,7 +81,7 @@ public class CertificateController {
      * @return an object which represents Http response of DELETE operation
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize(AUTHORITY_READ)
+    @PreAuthorize(AUTHORITY_WRITE)
     public ResponseEntity<RepresentationModel> delete(@PathVariable @Min(1) long id) {
         RepresentationModel representationModel = new RepresentationModel();
         certificateModelAssembler.appendGenericCertificateHateoasActions(representationModel);

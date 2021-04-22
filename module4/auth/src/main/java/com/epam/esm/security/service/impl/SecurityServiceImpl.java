@@ -25,7 +25,7 @@ public class SecurityServiceImpl implements SecurityService {
                         authenticationRequest.getPassword()));
 
         User user = (User) authenticate.getPrincipal();
-        String token = jwtTokenProvider.createToken(user.getUsername());
-        return new AuthenticationResponse(user.getUsername(), token);
+        String token = jwtTokenProvider.createToken(user);
+        return new AuthenticationResponse(token);
     }
 }

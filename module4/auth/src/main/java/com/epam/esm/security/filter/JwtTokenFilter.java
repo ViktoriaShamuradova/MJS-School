@@ -1,6 +1,6 @@
 package com.epam.esm.security.filter;
 
-import com.epam.esm.security.exception.ExceptionMessageValue;
+import com.epam.esm.security.exception.ExceptionErrorCode;
 import com.epam.esm.security.exception.InvalidTokenException;
 import com.epam.esm.security.exception.SpringSecurityExceptionHandler;
 import com.epam.esm.security.service.util.JwtTokenProvider;
@@ -37,10 +37,11 @@ public class JwtTokenFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+
         } catch (AuthenticationException e) {
             SecurityContextHolder.clearContext();
             exceptionHandler.commence((HttpServletRequest) request, (HttpServletResponse) response,
-                    new InvalidTokenException(ExceptionMessageValue.ACCESS_IS_DENIED.getMessage()));
+                    new InvalidTokenException(ExceptionErrorCode.ACCESS_IS_DENIED.getErrorCode()));
         }
         chain.doFilter(request, response);
     }

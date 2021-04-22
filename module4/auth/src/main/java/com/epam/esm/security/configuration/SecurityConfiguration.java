@@ -22,7 +22,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
 
     private final int BCRYPT_ROUND = 12;
     private final JwtTokenFilter jwtTokenFilter;
-
     private final SpringSecurityExceptionHandler springSecurityExceptionHandler;
 
     @Override
