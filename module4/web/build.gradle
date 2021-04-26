@@ -1,8 +1,8 @@
 dependencies {
     implementation project(':model')
     implementation project(':service')
-    compile group: 'org.hibernate', name: 'hibernate-validator', version: '7.0.1.Final'
-    implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
+    implementation project(':auth')
+    compile group: 'org.hibernate', name: 'hibernate-validator', version: "${hibernate_validator_version}"
 }
 
 bootJar {

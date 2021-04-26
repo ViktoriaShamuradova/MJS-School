@@ -1,16 +1,15 @@
 package com.epam.esm.service;
 
 import com.epam.esm.criteria_info.TagCriteriaInfo;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.TagDto;
+
 import java.util.List;
 
-public interface TagService extends CrudService<TagDTO, Long, TagCriteriaInfo> {
+public interface TagService extends CrudService<TagDto, Long, TagCriteriaInfo> {
 
-    TagDTO find(String name);
+    TagDto find(String name);
 
     boolean delete(String name);
 
-    List<TagDTO> getMostUsedTagOfUserWithHighestCostOfOrders();
-
-    long getCount();
+    List<TagDto> getMostUsedTagOfUserWithHighestCostOfOrders();
 }

@@ -1,5 +1,7 @@
 package com.epam.esm.criteria_info;
 
+import com.epam.esm.constant.OrderConst;
+import com.epam.esm.constant.Regex;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,10 +17,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class OrderCriteriaInfo extends CriteriaInfo {
     @Positive
-    @Min(1)
+    @Min(Regex.MIN_ID)
     private Long idUser;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @Digits(integer=5, fraction=2)
+    @Digits(integer= OrderConst.MAX_COUNT_ITEM, fraction=OrderConst.PRICE_FRACTION)
     private BigDecimal totalSum;
+
 }

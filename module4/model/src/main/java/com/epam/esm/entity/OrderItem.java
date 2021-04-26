@@ -5,6 +5,7 @@ import com.epam.esm.listener.GeneralEntityListener;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -19,8 +20,8 @@ import java.math.BigDecimal;
 @Table(name = "order_items")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"certificate", "order"})
 @EntityListeners(GeneralEntityListener.class)
+@EqualsAndHashCode(callSuper = true, exclude = {"order", "certificate"})
 public class OrderItem extends com.epam.esm.entity.Entity<Long> {
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -47,5 +48,15 @@ public class OrderItem extends com.epam.esm.entity.Entity<Long> {
         this.certificate = new Certificate();
         certificate.setId(cartItem.getIdCertificate());
         count = cartItem.getCount();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "certificate=" + certificate +
+                ", count=" + count +
+                ", orderId=" + order.getId() +
+                ", priceOfCertificate=" + priceOfCertificate +
+                '}';
     }
 }

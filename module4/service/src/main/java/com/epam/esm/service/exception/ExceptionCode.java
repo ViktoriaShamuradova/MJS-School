@@ -11,7 +11,17 @@ public enum ExceptionCode {
     NO_SUCH_TAG_FOUND("40402"),
     NO_SUCH_ORDER_FOUND("40404"),
 
-    NOT_VALID_PAGE_INFO("40005");
+    NOT_VALID_PAGE_INFO("40005"),
+    NOT_VALID_ID("40007"),
+
+
+    ACCESS_IS_DENIED("40300"),
+    UNAUTHORIZED("40301"),
+    WRONG_PASSWORD_USERNAME ("40302"),
+
+    USER_ALREADY_EXIST ("40903"),
+
+    DEFAULT_ERROR_CODE("50100");
 
     private final String errorCode;
 

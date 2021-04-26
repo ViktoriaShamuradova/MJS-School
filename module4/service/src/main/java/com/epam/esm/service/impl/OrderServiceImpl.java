@@ -1,50 +1,50 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.criteria_info.OrderCriteriaInfo;
-import com.epam.esm.criteria_info.PageInfo;
 import com.epam.esm.dto.Cart;
 import com.epam.esm.dto.CartItem;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderItem;
-import com.epam.esm.persistence.CertificateDAO;
-import com.epam.esm.persistence.OrderDAO;
+import com.epam.esm.persistence.CertificateDao;
+import com.epam.esm.persistence.OrderDao;
+import com.epam.esm.persistence.UserDao;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.entitydtomapper.impl.OrderDtoMapper;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.NoSuchResourceException;
+import com.epam.esm.service.modelmapper.GenericMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderDAO orderDAO;
-    private final OrderDtoMapper orderDtoMapper;
-    private final CertificateDAO certificateDAO;
+    private final OrderDao orderDAO;
+    private final UserDao userDao;
+    private final GenericMapper<OrderDto, Order> mapper;
+    private final CertificateDao certificateDao;
 
     @Override
     public OrderDto findById(Long id) {
-        Order order = orderDAO.find(id).orElseThrow(() ->
+        Order order = orderDAO.findById(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_ORDER_FOUND.getErrorCode(), "id= " + id));
 
-        return orderDtoMapper.changeToDto(order);
+        return mapper.toDTO(order);
     }
 
     @Transactional
     @Override
     public OrderDto create(Cart cart) {
         Order order = new Order(cart.getUserId());
-        order.setCreateDate(Instant.now());
+        userDao.findById(cart.getUserId()).orElseThrow(()->
+                new NoSuchResourceException(ExceptionCode.NO_SUCH_USER_FOUND.getErrorCode(), "id= "+cart.getUserId()));
         for (CartItem cartItem : cart.getCartItems()) {
-            Certificate certificate = certificateDAO.find(cartItem.getIdCertificate()).orElseThrow(() ->
+            Certificate certificate = certificateDao.findById(cartItem.getIdCertificate()).orElseThrow(() ->
                     new NoSuchResourceException(ExceptionCode
                             .NO_SUCH_CERTIFICATE_FOUND
                             .getErrorCode(), "id= " + cartItem.getIdCertificate()));
@@ -52,27 +52,15 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setPriceOfCertificate(certificate.getPrice());
             order.add(orderItem);
         }
-        order.setId(orderDAO.create(order));
-        return orderDtoMapper.changeToDto(order);
-    }
-
-    @Transactional
-    @Override
-    public long getCount() {
-        return orderDAO.getCount();
+        orderDAO.save(order);
+        return mapper.toDTO(order);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderDto> find(PageInfo pageInfo, OrderCriteriaInfo criteriaInfo) {
-        List<Order> orders = orderDAO.findAll(pageInfo, criteriaInfo);
-        return getListOrderDto(orders);
-    }
-
-    private List<OrderDto> getListOrderDto(List<Order> orders) {
-        return orders.stream()
-                .map(orderDtoMapper::changeToDto)
-                .collect(Collectors.toList());
+    public Page<OrderDto> find(Pageable pageable, OrderCriteriaInfo criteriaInfo) {
+        Page<Order> all = orderDAO.findAll(criteriaInfo, pageable);
+        return all.map(mapper::toDTO);
     }
 
     @Transactional

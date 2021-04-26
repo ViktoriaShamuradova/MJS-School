@@ -1,9 +1,11 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.constant.Message;
+import com.epam.esm.constant.OrderConst;
+import com.epam.esm.constant.Regex;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -17,22 +19,19 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = {"orderReadItems"})
-public class OrderDto extends RepresentationModel<OrderDto> {
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItemDto"})
+public class OrderDto extends EntityDto<Long, OrderDto>{
 
-    @Positive
-    @Min(1)
-    private long id;
-    private Set<OrderItemDto> orderReadItems;
+    private Set<OrderItemDto> orderItemDto;
     @DecimalMin(value = "0.0", inclusive = false)
-    @Digits(integer=5, fraction=2)
+    @Digits(integer= OrderConst.PRICE_INTEGER, fraction=OrderConst.PRICE_FRACTION)
     private BigDecimal totalSum;
-    @Min(1)
-    @Max(100)
-    private int totalCount;
+    @Min(OrderConst.MIN_COUNT)
+    @Max(OrderConst.MAX_COUNT)
+    private int count;
     @Positive
-    @Min(1)
+    @Min(Regex.MIN_ID)
     private long userId;
-    @Null(message = "order create date cannot be defined by users")
+    @Null(message = Message.DATE_CANNOT_DEFINE)
     private Instant createDate;
 }

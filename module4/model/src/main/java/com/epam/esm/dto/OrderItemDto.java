@@ -1,9 +1,11 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.constant.Message;
+import com.epam.esm.constant.OrderConst;
+import com.epam.esm.constant.Regex;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -15,21 +17,21 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrderItemDto  extends RepresentationModel<OrderDto> {
+public class OrderItemDto  extends EntityDto<Long, OrderItemDto>{
 
     @Positive
-    @Min(1)
+    @Min(Regex.MIN_ID)
     private long idCertificate;
-    @Min(1)
-    @Max(10)
-    private int totalCount;
-    @Digits(integer = 15, fraction = 2)
-    @DecimalMin(value = "0", message = "Enter certificate price")
-    private BigDecimal priceOfCertificateAtTheTimeOfPurchase;
+    @Min(OrderConst.MIN_COUNT)
+    @Max(OrderConst.MAX_COUNT_ITEM)
+    private int count;
+    @Digits(integer = OrderConst.PRICE_INTEGER, fraction = OrderConst.PRICE_FRACTION)
+    @DecimalMin(value = "0", message = Message.ENTER_PRICE)
+    private BigDecimal priceOfCertificate;
 
-    public OrderItemDto(long idCertificate, int totalCount, BigDecimal priceOfCertificateAtTheTimeOfPurchase) {
+    public OrderItemDto(long idCertificate, int count, BigDecimal priceOfCertificate) {
         this.idCertificate = idCertificate;
-        this.totalCount = totalCount;
-        this.priceOfCertificateAtTheTimeOfPurchase = priceOfCertificateAtTheTimeOfPurchase;
+        this.count = count;
+        this.priceOfCertificate = priceOfCertificate;
     }
 }

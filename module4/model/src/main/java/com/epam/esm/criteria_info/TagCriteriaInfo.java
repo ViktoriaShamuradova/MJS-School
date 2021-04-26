@@ -1,17 +1,20 @@
 package com.epam.esm.criteria_info;
 
+import com.epam.esm.constant.Message;
+import com.epam.esm.constant.Regex;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.Pattern;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class TagCriteriaInfo extends CriteriaInfo {
 
-    @Pattern(regexp = "[0-9A-Za-zА-Яа-яЁё ]{1,45}", message = "tag name must contain from 1 to 45 " +
-            "characters without punctuation marks")
+    @Pattern(regexp = Regex.TAG_NAME, message = Message.TAG_NAME)
     private String name;
+
+    public TagCriteriaInfo(){}
+
 }

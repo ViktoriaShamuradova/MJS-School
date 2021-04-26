@@ -2,8 +2,6 @@ dependencies {
     implementation project (':model')
     implementation project (':persistence')
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
 }
 
 jar {
