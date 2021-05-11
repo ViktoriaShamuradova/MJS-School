@@ -1,7 +1,8 @@
 package com.epam.esm.security.exception;
 
 public enum ExceptionErrorCode {
-    ACCESS_IS_DENIED("40100");
+    ACCESS_IS_DENIED("40100"),
+    EMPTY_TOKEN("40101");
 
     private final String errorCode;
 

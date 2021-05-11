@@ -15,5 +15,4 @@ public final class Regex {
     public static final String CERTIFICATE_DATE = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     public static final String TIMEZONE = "UTC";
     public static final int MAX_CERTIFICATE_DURATION = 100;
-
 }
