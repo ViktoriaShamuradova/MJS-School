@@ -10,7 +10,7 @@ bootJar {
     mainClass = 'com.epam.esm.Application'
 }
 jar {
-    enabled = false
+    enabled = true
 }
 
 

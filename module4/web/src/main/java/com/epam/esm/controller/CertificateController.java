@@ -51,7 +51,6 @@ public class CertificateController {
      * @return a pagedModel of CertificatesDTO, which represents a resource "certificates" from database with links
      */
     @GetMapping()
-    @PreAuthorize(AUTHORITY_READ)
     public ResponseEntity<PagedModel<CertificateDto> > find(Pageable pageable, @Valid CertificateCriteriaInfo criteriaInfo) {
         Page<CertificateDto> certificates = certificateService.find(pageable, criteriaInfo);
         PagedModel<CertificateDto> pagedModel = pagedResourcesAssembler.toModel(certificates, certificateModelAssembler);

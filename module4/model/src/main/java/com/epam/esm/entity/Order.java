@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @javax.persistence.Entity
-@Table(name = "orders")
+@Table(name = "orders", schema="mjs")
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = {"orderItems", "user"})

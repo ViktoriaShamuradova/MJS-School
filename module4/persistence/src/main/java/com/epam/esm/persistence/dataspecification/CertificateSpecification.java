@@ -52,12 +52,14 @@ public class CertificateSpecification implements Specification<Certificate> {
         addPredicateName(root, query, criteriaBuilder);
         addPredicateNameOrDescription(root, query, criteriaBuilder);
         addPredicateTagNames(root, query, criteriaBuilder);
-
+        System.out.println(conditions);
         return finalPredicate(criteriaBuilder);
     }
 
     private Predicate finalPredicate(CriteriaBuilder criteriaBuilder) {
-        return criteriaBuilder.and(conditions.toArray(new Predicate[0]));
+        Predicate and = criteriaBuilder.and(conditions.toArray(new Predicate[0]));
+        System.out.println(and);
+        return and;
     }
 
     private void addPredicateTagNames(Root<Certificate> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

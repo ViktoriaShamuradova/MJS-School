@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @javax.persistence.Entity
-@Table(name = "order_items")
+@Table(name = "order_items", schema="mjs")
 @Data
 @NoArgsConstructor
 @EntityListeners(GeneralEntityListener.class)

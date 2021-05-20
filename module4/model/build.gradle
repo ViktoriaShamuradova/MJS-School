@@ -2,7 +2,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     testCompile 'com.jayway.jsonpath:json-path'
 }
-
 jar {
     enabled = true
+}
+bootJar {
+    enabled = false
 }

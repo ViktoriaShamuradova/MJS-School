@@ -1,9 +1,7 @@
 dependencies {
     implementation project (':model')
     implementation project (':persistence')
-
 }
-
 jar {
     enabled = true
 }

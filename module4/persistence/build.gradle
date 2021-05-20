@@ -1,6 +1,7 @@
 dependencies {
     implementation project(':model')
     implementation group: 'mysql', name: 'mysql-connector-java', version: "${mysql_version}"
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.20'
 }
 
 jar {

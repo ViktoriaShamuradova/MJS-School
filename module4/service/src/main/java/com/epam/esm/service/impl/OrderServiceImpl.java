@@ -24,14 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderDao orderDAO;
+    private final OrderDao orderDao;
     private final UserDao userDao;
     private final GenericMapper<OrderDto, Order> mapper;
     private final CertificateDao certificateDao;
 
     @Override
     public OrderDto findById(Long id) {
-        Order order = orderDAO.findById(id).orElseThrow(() ->
+        Order order = orderDao.findById(id).orElseThrow(() ->
                 new NoSuchResourceException(ExceptionCode.NO_SUCH_ORDER_FOUND.getErrorCode(), "id= " + id));
 
         return mapper.toDTO(order);
@@ -52,14 +52,14 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setPriceOfCertificate(certificate.getPrice());
             order.add(orderItem);
         }
-        orderDAO.save(order);
+        orderDao.save(order);
         return mapper.toDTO(order);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<OrderDto> find(Pageable pageable, OrderCriteriaInfo criteriaInfo) {
-        Page<Order> all = orderDAO.findAll(criteriaInfo, pageable);
+        Page<Order> all = orderDao.findAll(criteriaInfo, pageable);
         return all.map(mapper::toDTO);
     }
 

@@ -4,6 +4,7 @@ import com.epam.esm.security.exception.SpringSecurityExceptionHandler;
 import com.epam.esm.security.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/certificates").permitAll()
                 .antMatchers("/registration", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()

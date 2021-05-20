@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @javax.persistence.Entity
-@Table(name = "users")
+@Table(name = "users", schema="mjs")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"orders"})

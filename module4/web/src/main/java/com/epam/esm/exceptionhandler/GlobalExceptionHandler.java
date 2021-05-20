@@ -66,7 +66,7 @@ public ResponseEntity<ExceptionResponse> handleAuthenticationException(HttpReque
 
     @ExceptionHandler(value = {ConstraintViolationException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ExceptionResponse> handleException(Exception ex, HttpServletRequest request) {
-        return createResponseEntity(ex, request, ExceptionCode.NOT_VALID_ID, HttpStatus.BAD_REQUEST);
+       return createResponseEntity(ex, request, ExceptionCode.NOT_VALID_ID, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ValidationException.class)

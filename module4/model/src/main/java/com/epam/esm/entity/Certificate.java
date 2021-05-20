@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.Set;
 
 @javax.persistence.Entity
-@Table(name = "certificates")
+@Table(name = "certificates", schema="mjs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,9 +43,9 @@ public class Certificate extends com.epam.esm.entity.Entity<Long> {
     private Instant updateLastDate;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "certificates_tags",
-            joinColumns = @JoinColumn(name = "id_certificate"),
-            inverseJoinColumns = @JoinColumn(name = "id_tag"))
+    @JoinTable(name = "certificates_tags", schema = "mjs",
+            joinColumns = @JoinColumn(name = "certificates_id"),
+            inverseJoinColumns = @JoinColumn(name = "tags_id"))
     private Set<Tag> tags;
 
     public Certificate(long id) {

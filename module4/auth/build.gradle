@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':service')
+    implementation project(':model')
+}
+jar{
+    enabled = true
+}
+bootJar{
+    enabled = false
+}

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import java.util.Set;
 
 @javax.persistence.Entity
-@Table(name = "tags")
+@Table(name = "tags", schema="mjs")
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"certificates"})
 @Data
@@ -30,9 +30,9 @@ public class Tag extends com.epam.esm.entity.Entity<Long> {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "certificates_tags",
-            joinColumns = @JoinColumn(name = "id_tag"),
-            inverseJoinColumns = @JoinColumn(name = "id_certificate"))
+    @JoinTable(name = "certificates_tags", schema="mjs",
+            joinColumns = @JoinColumn(name = "tags_id"),
+            inverseJoinColumns = @JoinColumn(name = "certificates_id"))
     private Set<Certificate> certificates;
 
     public Tag(String name) {

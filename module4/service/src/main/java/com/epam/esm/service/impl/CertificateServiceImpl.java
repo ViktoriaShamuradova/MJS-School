@@ -46,7 +46,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CertificateDto>  find(Pageable pageable, CertificateCriteriaInfo criteriaInfo) {
+    public Page<CertificateDto> find(Pageable pageable, CertificateCriteriaInfo criteriaInfo) {
         Page<Certificate> all = certificateDao.findAll(criteriaInfo, pageable);
         return all.map(mapper::toDTO);
     }
@@ -80,9 +80,8 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional
     @Override
     public CertificateDto update(CertificateUpdateDto certificateUpdateDto, Long id) {
-        Certificate certificate = certificateDao.findById(id).orElseThrow(() ->
-                new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + certificateUpdateDto.getId().get()));
-
+        findById(id);
+        Certificate certificate = certificateDao.findById(id).get();
         if (certificateUpdateDto.getName().isPresent()) {
             certificate.setName(certificateUpdateDto.getName().get());
         }

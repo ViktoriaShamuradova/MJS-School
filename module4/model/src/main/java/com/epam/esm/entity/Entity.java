@@ -15,7 +15,8 @@ import javax.persistence.*;
 public abstract class Entity<ID> {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "general_seq")
+    @SequenceGenerator(name="general_seq", sequenceName = "serial_sequence", allocationSize=1, schema = "mjs")
     private ID id;
 
 }
