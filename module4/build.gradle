@@ -2,7 +2,10 @@ plugins {
     id 'org.springframework.boot' version "${spring_boot_version}"
     id 'io.spring.dependency-management' version "${spring_dependency_management_version}"
     id 'java'
+    id 'org.sonarqube' version '3.0' //3.2.0
+    id 'jacoco'
 }
+
 
 repositories {
     mavenCentral()
@@ -18,6 +21,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'application'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'jacoco'
 
     group = 'com.epam.esm'
     version = '0.0.1-SNAPSHOT'
@@ -40,7 +44,7 @@ subprojects {
         implementation group: 'org.springframework.boot', name: 'spring-boot-devtools'
         implementation group: 'org.modelmapper', name: 'modelmapper', version: "${model_mapper_version}"
 
-        implementation group:'io.jsonwebtoken', name:'jjwt', version:"${jsonwebtoken_version}"
+        implementation group: 'io.jsonwebtoken', name: 'jjwt', version: "${jsonwebtoken_version}"
 
         implementation group: 'org.springframework.security.oauth', name: 'spring-security-oauth2',
                 version: "${spring_security_version}"
@@ -53,10 +57,28 @@ subprojects {
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${jaskson_version}"
 
         implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: "${jackson_databind_nullable_version}"
+
     }
 
     test {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
     }
 }
+
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/reports/jacoco/report.xml")
+        html.enabled false
+        csv.enabled false
+    }
+}
+
 

@@ -129,8 +129,6 @@ public class CertificateServiceImplTest {
         verify(certificateDao, times(2)).findById(1L);
         verify(certificateDao).save(certificate);
         verify(mapper).toDTO(certificate);
-        Assertions.assertThat(certificateService.update(certificateUpdateDto, 1L)
-                .equals(certificateDTO));
     }
 
     @Test
