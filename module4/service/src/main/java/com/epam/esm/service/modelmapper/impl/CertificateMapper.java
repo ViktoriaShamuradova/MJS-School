@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 
 @Component
@@ -24,11 +25,13 @@ public class CertificateMapper extends AbstractModelMapper<CertificateDto, Certi
     @Override
     public CertificateDto toDTO(Certificate entity) {
         CertificateDto certificateDto = Objects.isNull(entity) ? null : super.getMapper().map(entity, CertificateDto.class);
-        Set<TagDto> tags = entity.getTags()
-                .stream()
-                .map(tagMapper::toDTO)
-                .collect(Collectors.toSet());
-        certificateDto.setTags(tags);
+        if (entity != null) {
+            Set<TagDto> tags = entity.getTags()
+                    .stream()
+                    .map(tagMapper::toDTO)
+                    .collect(Collectors.toSet());
+            certificateDto.setTags(tags);
+        }
         return certificateDto;
     }
 }
