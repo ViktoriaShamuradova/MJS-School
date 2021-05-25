@@ -17,6 +17,9 @@ bootJar {
 bootWar {
     mainClass = 'com.epam.esm.Application'
 }
+war {
+    enabled = false
+}
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
