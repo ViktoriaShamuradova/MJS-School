@@ -5,6 +5,9 @@ dependencies {
 jar{
     enabled = true
 }
+bootWar{
+    enabled = true
+}
 bootJar{
     enabled = false
 }
