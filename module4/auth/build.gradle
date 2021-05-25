@@ -2,12 +2,9 @@ dependencies {
     implementation project(':service')
     implementation project(':model')
 }
-jar{
+jar {
     enabled = true
 }
-bootWar{
-    enabled = true
-}
-bootJar{
+bootJar {
     enabled = false
 }
