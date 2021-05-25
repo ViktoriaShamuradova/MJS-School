@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                git branch: 'main', changelog: true, poll: true, url: 'https://github.com/ViktoriaShamuradova/MJS-School/tree/main/module4.git/'
+                git branch: 'main', changelog: true, poll: true, url: 'https://github.com/ViktoriaShamuradova/MJS-School/tree/main/module4'
             }
         }
         stage("Build, tests") {
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 deploy adapters: [tomcat9(credentialsId: 'tomcat_credentials',
                         path: '', url: 'http://localhost:8088/')],
-                        contextPath: '', onFailure: false, war: '**/*.war'
+                        contextPath: '', war: '**/*.war'
             }
         }
     }
