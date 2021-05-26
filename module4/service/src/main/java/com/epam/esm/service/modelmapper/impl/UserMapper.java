@@ -17,8 +17,10 @@ public class UserMapper extends AbstractModelMapper<UserDto, User> {
 
     public UserDto toDTO(User entity) {
         UserDto userDTO =  Objects.isNull(entity) ? null : super.getMapper().map(entity, UserDto.class);
-        userDTO.setUsername(entity.getEmail());
-        userDTO.setPassword(null);
+        if(userDTO != null) {
+            userDTO.setUsername(entity.getEmail());
+            userDTO.setPassword(null);
+        }
         return userDTO;
     }
 }
