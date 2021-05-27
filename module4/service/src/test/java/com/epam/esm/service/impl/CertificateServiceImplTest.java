@@ -125,12 +125,14 @@ public class CertificateServiceImplTest {
 
         when(certificateDao.findById(anyLong()))
                 .thenReturn(Optional.of(certificate));
-        when(mapper.toDTO(certificate))
+        when(certificateDao.save(any())).thenReturn(certificate);
+        when(mapper.toDTO(any()))
                 .thenReturn(certificateDTO);
+
         //when
         certificateService.update(certificateUpdateDto, 1L);
         //then
-        verify(certificateDao, times(2)).findById(1L);
+        verify(certificateDao).findById(1L);
         verify(certificateDao).save(certificate);
         verify(mapper).toDTO(certificate);
     }
