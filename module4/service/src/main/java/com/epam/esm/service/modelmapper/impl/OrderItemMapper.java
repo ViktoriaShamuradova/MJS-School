@@ -18,7 +18,9 @@ public class OrderItemMapper extends AbstractModelMapper<OrderItemDto, OrderItem
     @Override
     public OrderItemDto toDTO(OrderItem entity) {
         OrderItemDto orderItemDto = Objects.isNull(entity) ? null : super.getMapper().map(entity, OrderItemDto.class);
-        orderItemDto.setIdCertificate(entity.getCertificate().getId());
+        if(orderItemDto!=null){
+            orderItemDto.setIdCertificate(entity.getCertificate().getId());
+        }
         return orderItemDto;
     }
 }

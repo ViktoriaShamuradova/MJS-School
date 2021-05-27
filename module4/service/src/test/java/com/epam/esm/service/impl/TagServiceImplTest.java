@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
@@ -121,7 +122,7 @@ public class TagServiceImplTest {
         verify(tagDAO).find(any());
         verify(mapper).toDTO(t);
 
-        Assertions.assertThat(tagService.find(anyString()).equals(tagDTO));
+        assertThat(tagService.find(anyString()).equals(tagDTO));
     }
 
     @Test
@@ -143,7 +144,7 @@ public class TagServiceImplTest {
 
         verify(tagDAO).find(any());
         verify(tagDAO).delete(t);
-        Assertions.assertThat(tagService.delete(anyString()) == true);
+        assertThat(tagService.delete(anyString()));
     }
 
     @Test
@@ -161,7 +162,7 @@ public class TagServiceImplTest {
 
         tagService.getMostUsedTagOfUserWithHighestCostOfOrders();
 
-        Assertions.assertThat(tagService.getMostUsedTagOfUserWithHighestCostOfOrders().size()
+        assertThat(tagService.getMostUsedTagOfUserWithHighestCostOfOrders().size()
                 == tags.size());
     }
 

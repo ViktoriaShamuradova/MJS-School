@@ -8,7 +8,6 @@ import com.epam.esm.persistence.CertificateDao;
 import com.epam.esm.persistence.repository.TagRepository;
 import com.epam.esm.service.exception.NoSuchResourceException;
 import com.epam.esm.service.modelmapper.GenericMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,7 +78,7 @@ public class CertificateServiceImplTest {
         when(certificateDao.findAll(any(), any()))
                 .thenReturn(certificatePage);
 
-        Assertions.assertThat(certificateService.find(pageRequest, new CertificateCriteriaInfo()))
+        assertThat(certificateService.find(pageRequest, new CertificateCriteriaInfo()))
                 .isEmpty();
     }
 
@@ -95,7 +95,7 @@ public class CertificateServiceImplTest {
         //then
         verify(certificateDao).findById(1L);
         verify(mapper).toDTO(c);
-        Assertions.assertThat(certificateService.findById(1L)
+        assertThat(certificateService.findById(1L)
                 .equals(certificateDTO));
     }
 
@@ -136,7 +136,7 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void updateWithParameterCertificateDTO_shouldThrownException(){
+    public void updateWithParameterCertificateDTO_shouldThrownException() {
         assertThatThrownBy(() -> certificateService.update(new CertificateDto()))
                 .isInstanceOf(UnsupportedOperationException.class);
     }

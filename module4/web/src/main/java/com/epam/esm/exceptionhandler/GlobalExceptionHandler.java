@@ -24,7 +24,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice

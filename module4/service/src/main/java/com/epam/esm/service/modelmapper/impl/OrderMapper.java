@@ -20,15 +20,18 @@ public class OrderMapper extends AbstractModelMapper<OrderDto, Order> {
         super(Order.class, OrderDto.class, mapper);
         this.orderItemMapper = orderItemMapper;
     }
+
     public OrderDto toDTO(Order entity) {
         OrderDto orderDto = Objects.isNull(entity) ? null : super.getMapper().map(entity, OrderDto.class);
+        if (orderDto != null) {
+            Set<OrderItemDto> orderItemDtos = entity.getOrderItems()
+                    .stream()
+                    .map(orderItemMapper::toDTO)
+                    .collect(Collectors.toSet());
 
-        Set<OrderItemDto> orderItemDtos = entity.getOrderItems()
-                .stream()
-                .map(orderItemMapper::toDTO)
-                .collect(Collectors.toSet());
+            orderDto.setOrderItemDto(orderItemDtos);
+        }
 
-        orderDto.setOrderItemDto(orderItemDtos);
         return orderDto;
     }
 }

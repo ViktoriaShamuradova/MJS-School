@@ -52,7 +52,7 @@ public class Order extends com.epam.esm.entity.Entity<Long> {
         }
         boolean isExistOrderItem = false;
         for (OrderItem orderItem1 : orderItems) {
-            if (orderItem1.getCertificate().getId() == orderItem.getCertificate().getId()) {
+            if (orderItem1.getCertificate().getId().equals(orderItem.getCertificate().getId())) {
                 orderItem1.setCount(orderItem1.getCount() + orderItem.getCount());
                 isExistOrderItem = true;
             }

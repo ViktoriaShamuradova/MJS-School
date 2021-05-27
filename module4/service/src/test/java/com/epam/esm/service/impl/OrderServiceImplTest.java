@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +57,7 @@ public class OrderServiceImplTest {
         verify(orderDao).findById(o.getId());
         verify(mapper).toDTO(o);
 
-        Assertions.assertThat(orderService.findById(o.getId()).equals(orderDto));
+        assertThat(orderService.findById(o.getId()).equals(orderDto));
     }
 
     @Test
@@ -83,7 +84,7 @@ public class OrderServiceImplTest {
 
         orderService.create(cart);
 
-        Assertions.assertThat(orderService.create(cart).equals(orderDto));
+        assertThat(orderService.create(cart).equals(orderDto));
     }
     @Test
     public void find_shouldReturnPageOfOrders() {

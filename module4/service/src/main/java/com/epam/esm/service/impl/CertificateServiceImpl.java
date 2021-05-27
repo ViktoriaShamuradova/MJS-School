@@ -80,8 +80,9 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional
     @Override
     public CertificateDto update(CertificateUpdateDto certificateUpdateDto, Long id) {
-        findById(id);
-        Certificate certificate = certificateDao.findById(id).get();
+        Certificate certificate = certificateDao.findById(id).orElseThrow(() ->
+                new NoSuchResourceException(ExceptionCode.NO_SUCH_CERTIFICATE_FOUND.getErrorCode(), "id= " + id));
+
         if (certificateUpdateDto.getName().isPresent()) {
             certificate.setName(certificateUpdateDto.getName().get());
         }
